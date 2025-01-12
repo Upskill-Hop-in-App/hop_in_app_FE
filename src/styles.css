@@ -1,1 +1,45 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .input-standard {
+    @apply block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500;
+  }
+  .input-disabled {
+    @apply block w-full cursor-not-allowed rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400;
+  }
+  .btn-primary {
+    @apply w-fit whitespace-nowrap rounded-lg bg-primary-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800;
+  }
+  .btn-secondary {
+    @apply w-fit whitespace-nowrap rounded-lg bg-secondary-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-secondary-800 focus:outline-none focus:ring-1 focus:ring-secondary-300 sm:w-auto dark:bg-secondary-500 dark:hover:bg-secondary-700 dark:focus:ring-secondary-800;
+  }
+  .btn-danger {
+    @apply w-fit whitespace-nowrap rounded-lg bg-rose-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-rose-800 focus:outline-none focus:ring-1 focus:ring-rose-300 sm:w-auto dark:bg-rose-500 dark:hover:bg-rose-700 dark:focus:ring-rose-800;
+  }
+  .btn-gray {
+    @apply w-fit whitespace-nowrap rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-300 sm:w-auto dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800;
+  }
+  .table-container {
+    @apply relative overflow-x-auto shadow-md sm:rounded-lg;
+  }
+  .buttons-modal-container {
+    @apply flex justify-end gap-x-4 border-t pt-8 pb-4 dark:border-gray-600;
+  }
+  table {
+    @apply w-full py-4 text-left text-sm text-gray-500 rtl:text-right dark:text-gray-300;
+  }
+  thead {
+    @apply bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-300;
+  }
+  tr th {
+    @apply px-6 py-3;
+  }
+  tbody tr {
+    @apply border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800;
+  }
+  tr td {
+    @apply px-6 py-4;
+  }
+}
