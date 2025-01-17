@@ -1,0 +1,66 @@
+import { MyCar } from '../../app/models/my-car';
+
+const myCars: MyCar[] = [
+  {
+    cc: Math.round(Math.random() * 1000000000000).toString(),
+    brand: 'toyota',
+    model: 'corolla cross',
+    year: 2021,
+    color: 'red',
+    plate: 'abc-123',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    cc: Math.round(Math.random() * 1000000000000).toString(),
+    brand: 'acura',
+    model: 'cdx',
+    year: 2021,
+    color: 'green',
+    plate: 'def-456',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    cc: Math.round(Math.random() * 1000000000000).toString(),
+    brand: 'alfa romeo',
+    model: '146',
+    year: 2000,
+    color: 'yellow',
+    plate: 'ghi-789',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    cc: Math.round(Math.random() * 1000000000000).toString(),
+    brand: 'aston martin',
+    model: 'cygnet',
+    year: 2012,
+    color: 'pink',
+    plate: 'jkl-123',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    cc: Math.round(Math.random() * 1000000000000).toString(),
+    brand: 'audi',
+    model: 'a1',
+    year: 2020,
+    color: 'orange',
+    plate: 'mno-456',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    cc: Math.round(Math.random() * 1000000000000).toString(),
+    brand: 'alfa romeo',
+    model: '146',
+    year: 2000,
+    color: 'brown',
+    plate: 'pqr-789',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
+
+export default myCars;
