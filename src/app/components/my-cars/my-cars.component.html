@@ -1,0 +1,12 @@
+<h3>Cars</h3>
+<ul>
+    @for(car of cars; track [car.brand, car.model] ) {
+        <li>Car:</li>
+        <ul>
+            <li>Brand: {{car.brand}}</li>
+            <li>Model: {{car.model}}</li>
+            <li>Start Year: {{car.startYear}}</li>
+            <li>End Year: {{car.endYear}}</li>
+        </ul>
+    }
+</ul>
