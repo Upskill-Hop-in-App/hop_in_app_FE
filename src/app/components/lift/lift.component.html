@@ -10,28 +10,263 @@
         <th scope="col">Car</th>
         <th scope="col">Available seats</th>
         <th scope="col">Created at</th>
-        <th scope="col">Updated at</th>
       </tr>
     </thead>
     <tbody>
       @for (lift of lifts; track lift.cl) {
         <tr>
           <td>
-            {{ lift.startPoint.parish }}, {{ lift.startPoint.municipality }}
-            ({{ lift.startPoint.district }})
+            {{ lift.startPoint.parish }}, {{ lift.startPoint.municipality }} ({{
+              lift.startPoint.district
+            }})
           </td>
           <td>
-            {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }}
-            ({{ lift.endPoint.district }})
+            {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }} ({{
+              lift.endPoint.district
+            }})
           </td>
-          <td>{{ lift.schedule }}</td>
+          <td>{{ lift.schedule | date: "short" }}</td>
           <td>{{ lift.price }}€</td>
-          <td>{{ lift.driver.username }}</td>
-          <td>{{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }} {{ lift.car.plate }}</td>
-          <td>{{ lift.providedSeats - lift.occupiedSeats}} / {{lift.providedSeats}}</td>
-          <td>{{ lift.updatedAt }}</td>
+          <td>
+            {{ lift.driver.username }} <br />{{ lift.driver.driverRating
+            }}<span [innerHTML]="'faStar' | attachedIcon"></span>
+          </td>
+          <td>
+            {{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }}
+            {{ lift.car.plate }}
+          </td>
+          <td>
+            {{ lift.providedSeats - lift.occupiedSeats! }} /
+            {{ lift.providedSeats }}
+          </td>
+          <td>{{ lift.createdAt | date: "short" }}</td>
         </tr>
       }
     </tbody>
   </table>
 </div>
+
+<div
+  class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
+>
+  <a (click)="toggleCreate()"
+    ><span [innerHTML]="'faPlus' | attachedIcon"></span
+  ></a>
+</div>
+<app-modal modalTitle="Add lift">
+  <div content>
+    <!-- ------------------------- Toggle Create Form -------------------------- -->
+    @if (showCreateForm) {
+      <form
+        [formGroup]="liftForm"
+        (ngSubmit)="confirmCreate()"
+        #form="ngForm"
+        class="bg-white px-8 pt-6 pb-8 mb-4"
+      >
+        <!-- STARTPOINT -->
+        <div>
+          <!-- District Select -->
+          <div>
+            <label for="startDistrict">Select District</label>
+            <select
+              id="startDistrict"
+              formControlName="startDistrict"
+              (change)="onStartDistrictChange($event)"
+            >
+              <option
+                *ngFor="let startDistrict of startDistricts"
+                [value]="startDistrict"
+              >
+                {{ startDistrict }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Municipality Select -->
+          <div>
+            <label for="startMunicipality">Select Municipality</label>
+            <select
+              id="startMunicipality"
+              formControlName="startMunicipality"
+              [disabled]="!selectedStartDistrict"
+              (change)="onStartMunicipalityChange($event)"
+            >
+              <option
+                *ngFor="let startMunicipality of startMunicipalities"
+                [value]="startMunicipality"
+              >
+                {{ startMunicipality }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Parish Select -->
+          <div>
+            <label for="startParish">Select Parish</label>
+            <select
+              id="startParish"
+              formControlName="startParish"
+              [disabled]="!selectedStartMunicipality"
+            >
+              <option
+                *ngFor="let startParish of startParishes"
+                [value]="startParish"
+              >
+                {{ startParish }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ENDPOINT -->
+        <div>
+          <!-- District Select -->
+          <div>
+            <label for="endDistrict">Select District</label>
+            <select
+              id="endDistrict"
+              formControlName="endDistrict"
+              (change)="onEndDistrictChange($event)"
+            >
+              <option
+                *ngFor="let endDistrict of endDistricts"
+                [value]="endDistrict"
+              >
+                {{ endDistrict }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Municipality Select -->
+          <div>
+            <label for="endMunicipality">Select Municipality</label>
+            <select
+              id="endMunicipality"
+              formControlName="endMunicipality"
+              [disabled]="!selectedEndDistrict"
+              (change)="onEndMunicipalityChange($event)"
+            >
+              <option
+                *ngFor="let endMunicipality of endMunicipalities"
+                [value]="endMunicipality"
+              >
+                {{ endMunicipality }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Parish Select -->
+          <div>
+            <label for="endParish">Select Parish</label>
+            <select
+              id="endParish"
+              formControlName="endParish"
+              [disabled]="!selectedEndMunicipality"
+            >
+              <option *ngFor="let endParish of endParishes" [value]="endParish">
+                {{ endParish }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <!-- Driver -->
+        <div class="mb-6">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="driver"
+          >
+            Driver
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="driver"
+            name="driver"
+            type="text"
+            required
+            placeholder="Enter username"
+            formControlName="driver"
+          />
+        </div>
+
+        <!-- Car -->
+        <div>
+          <label for="car">Select Car</label>
+          <select id="car" formControlName="car">
+            <option *ngFor="let car of cars" [value]="car.cc">
+              {{ car.plate }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Schedule -->
+        <div class="mb-6">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="cschedule"
+          >
+            Schedule
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="schedule"
+            name="schedule"
+            type="datetime-local"
+            required
+            formControlName="schedule"
+          />
+        </div>
+
+        <!-- Price -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Price
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="price"
+            name="price"
+            type="number"
+            required
+            placeholder="Example: 20"
+            formControlName="price"
+          />
+        </div>
+
+        <!-- Provided Seats -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Number of passengers <span class="italic">(max.)</span>
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="providedSeats"
+            name="providedSeats"
+            type="number"
+            required
+            placeholder="Example: 4"
+            formControlName="providedSeats"
+          />
+        </div>
+
+        <!-- Botoes -->
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Confirm
+          </button>
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+        <div></div>
+      </form>
+    }
+    <!-- ----------------------------------------------------------------------- -->
+  </div></app-modal
+>

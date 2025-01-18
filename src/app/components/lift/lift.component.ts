@@ -1,13 +1,16 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Lift } from '../../models/lift.model';
+import { MyCar } from '../../models/my-car.model';
 import { LiftService } from '../../services/lift.service';
 import { FormsModule, Validators } from '@angular/forms';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
-  catchError,
-  of,
-} from 'rxjs';
-// import { ModalComponent } from '../modal/modal.component';
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  FormArray,
+} from '@angular/forms';
+import { catchError, of } from 'rxjs';
+import { ModalComponent } from '../modal/modal.component';
 import { DOCUMENT } from '@angular/common';
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
 import { CommonModule } from '@angular/common';
@@ -19,7 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   standalone: true,
   imports: [
     FormsModule,
-    // ModalComponent,
+    ModalComponent,
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
@@ -29,26 +32,41 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class LiftComponent implements OnInit {
   lifts: Lift[] = [];
+  cars: MyCar[] = [];
+  startDistricts: string[] = [];
+  startMunicipalities: string[] = [];
+  startParishes: string[] = [];
+  endDistricts: string[] = [];
+  endMunicipalities: string[] = [];
+  endParishes: string[] = [];
+  selectedStartDistrict: string | null = null;
+  selectedStartMunicipality: string | null = null;
+  selectedEndDistrict: string | null = null;
+  selectedEndMunicipality: string | null = null;
   // auxiliarLift: Lift = this.reset();
   showCreateForm: boolean = false;
   showEditForm: boolean = false;
   // backupLift: Lift = this.reset();
   showDeleteForm: boolean = false;
   liftForm = new FormGroup({
-    customer: new FormControl('', [Validators.required]),
-    tourPack: new FormControl('', [Validators.required]),
-    date: new FormControl('', [Validators.required]),
+    driver: new FormControl('', [Validators.required]),
+    car: new FormControl('', [Validators.required]),
+    startDistrict: new FormControl('', [Validators.required]),
+    startMunicipality: new FormControl('', [Validators.required]),
+    startParish: new FormControl('', [Validators.required]),
+    endDistrict: new FormControl('', [Validators.required]),
+    endMunicipality: new FormControl('', [Validators.required]),
+    endParish: new FormControl('', [Validators.required]),
+    schedule: new FormControl('', [Validators.required]),
+    price: new FormControl(0, [Validators.required, Validators.min(0)]),
+    providedSeats: new FormControl(null, [
+      Validators.required,
+      Validators.min(1),
+    ]),
+    occupiedSeats: new FormControl(0, [Validators.min(0)]),
   });
-  confirmationEmail: string = '';
-  selectedFilter: string = 'all';
-  inputFilter: string = '';
-  userRole: string | null = '';
-  userLog: string | null = '';
-  userEmail: string = '';
-  message: { text: string; type: string } | null = null;
-  tourPack: string | null = null;
 
-  // @ViewChild(ModalComponent) modalComponent!: ModalComponent;
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,7 +78,10 @@ export class LiftComponent implements OnInit {
 
   ngOnInit() {
     this.getLifts();
-    }
+    this.loadStartDistricts();
+    this.loadEndDistricts();
+    this.getCars();
+  }
 
   getLifts(): void {
     this.LiftService.getLifts()
@@ -75,75 +96,216 @@ export class LiftComponent implements OnInit {
       });
   }
 
-  // openModal(): void {
-  //   this.modalComponent.openModal();
-  // }
+  getCars(): void {
+    this.LiftService.getAllCars()
+      .pipe(
+        catchError((err) => {
+          this.toastr.error('No car found', err?.error?.message);
+          return of([]);
+        }),
+      )
+      .subscribe((data: MyCar[]) => {
+        this.cars = data;
+      });
+  }
 
-  // toggleCreate(): void {
-  //   this.showEditForm = false;
-  //   this.showDeleteForm = false;
-  //   this.showCreateForm = true;
-  //   this.resetForm();
-  //   this.openModal();
-  // }
+  loadStartDistricts(): void {
+    this.LiftService.getAllDistricts()
+      .pipe(
+        catchError((err) => {
+          this.toastr.error('No district found', err?.error?.message);
+          return of([]);
+        }),
+      )
+      .subscribe((districts: string[]) => {
+        this.startDistricts = districts;
+      });
+  }
 
-  // reset(): Booking {
-  //   return {
-  //     _id: '',
-  //     cb: '',
-  //     customer: { email: '', name: '' },
-  //     tourPack: {
-  //       ct: '',
-  //       category: '',
-  //       destination: {
-  //         cd: '',
-  //         name: '',
-  //         country: '',
-  //       },
-  //     },
-  //     date: null,
-  //     createdAt: '',
-  //     updatedAt: '',
-  //     __v: '',
-  //   };
-  // }
+  loadEndDistricts(): void {
+    this.LiftService.getAllDistricts()
+      .pipe(
+        catchError((err) => {
+          this.toastr.error('No district found', err?.error?.message);
+          return of([]);
+        }),
+      )
+      .subscribe((districts: string[]) => {
+        this.endDistricts = districts;
+      });
+  }
 
-  // resetForm() {
-  //   this.bookingForm.reset();
-  // }
+  onStartDistrictChange(event: any) {
+    this.selectedStartDistrict = event.target.value;
+    this.loadStartMunicipalities();
+  }
 
-  // confirmCreate(): void {
-  //   const newBooking: Booking = {
-  //     customer: { email: this.bookingForm.value.customer! },
-  //     tourPack: { ct: this.bookingForm.value.tourPack! },
-  //     date: new Date(this.bookingForm.value.date!),
-  //   };
-  //   this.BookingService.createBooking(newBooking).subscribe({
-  //     next: () => {
-  //       this.toastr.success('Booking added successfully.');
-  //       this.cancel();
-  //       if (this.userRole === 'client') {
-  //         this.BookingService.getBookingByEmail(this.userEmail).subscribe(
-  //           (data: { message: string; data: Booking[] }) => {
-  //             this.bookings = data.data;
-  //           },
-  //         );
-  //       } else {
-  //         this.getBookings();
-  //       }
-  //     },
-  //     error: (err) => {
-  //       this.toastr.error('Failed to add new booking.', err.error.error);
-  //     },
-  //   });
-  // }
+  loadStartMunicipalities(): void {
+    if (this.selectedStartDistrict) {
+      this.LiftService.getMunicipalitiesByDistrict(this.selectedStartDistrict)
+        .pipe(
+          catchError((err) => {
+            this.toastr.error(
+              'Failed to load municipalities',
+              err?.error?.message,
+            );
+            return of([]);
+          }),
+        )
+        .subscribe((municipalities: string[]) => {
+          this.startMunicipalities = municipalities;
+          this.liftForm.get('startPoint.municipality')?.enable();
+        });
+    }
+  }
 
-  // cancel(): void {
-  //   this.modalComponent.closeModal();
-  //   this.resetForm();
-  //   this.confirmationEmail = '';
-  //   this.tourPack = null;
-  // }
+  onEndDistrictChange(event: any) {
+    this.selectedEndDistrict = event.target.value;
+    this.loadEndMunicipalities();
+  }
+
+  loadEndMunicipalities(): void {
+    if (this.selectedEndDistrict) {
+      this.LiftService.getMunicipalitiesByDistrict(this.selectedEndDistrict)
+        .pipe(
+          catchError((err) => {
+            this.toastr.error(
+              'Failed to load municipalities',
+              err?.error?.message,
+            );
+            return of([]);
+          }),
+        )
+        .subscribe((municipalities: string[]) => {
+          this.endMunicipalities = municipalities;
+          this.liftForm.get('endPoint.municipality')?.enable();
+        });
+    }
+  }
+
+  onStartMunicipalityChange(event: any) {
+    this.selectedStartMunicipality = event.target.value;
+    this.loadStartParishes();
+  }
+
+  loadStartParishes() {
+    if (this.selectedStartMunicipality) {
+      this.LiftService.getParishesByMunicipalities(
+        this.selectedStartMunicipality,
+      )
+        .pipe(
+          catchError((err) => {
+            this.toastr.error('Failed to load parishes', err?.error?.message);
+            return of([]);
+          }),
+        )
+        .subscribe((parishes: string[]) => {
+          this.startParishes = parishes;
+          this.liftForm.get('startPoint.parish')?.enable();
+        });
+    }
+  }
+
+  onEndMunicipalityChange(event: any) {
+    this.selectedEndMunicipality = event.target.value;
+    this.loadEndParishes();
+  }
+
+  loadEndParishes() {
+    if (this.selectedEndMunicipality) {
+      this.LiftService.getParishesByMunicipalities(this.selectedEndMunicipality)
+        .pipe(
+          catchError((err) => {
+            this.toastr.error('Failed to load parishes', err?.error?.message);
+            return of([]);
+          }),
+        )
+        .subscribe((parishes: string[]) => {
+          this.endParishes = parishes;
+          this.liftForm.get('endPoint.parish')?.enable();
+        });
+    }
+  }
+
+  openModal(): void {
+    this.modalComponent.openModal();
+  }
+
+  toggleCreate(): void {
+    this.showEditForm = false;
+    this.showDeleteForm = false;
+    this.showCreateForm = true;
+    this.resetForm();
+    this.openModal();
+  }
+
+  reset(): Lift {
+    return {
+      _id: '',
+      cl: '',
+      driver: { username: '' },
+      car: { cc: '' },
+      startPoint: {
+        district: '',
+        municipality: '',
+        parish: '',
+      },
+      endPoint: {
+        district: '',
+        municipality: '',
+        parish: '',
+      },
+      schedule: null,
+      providedSeats: 0,
+      price: 0,
+      createdAt: '',
+      updatedAt: '',
+      __v: '',
+    };
+  }
+
+  resetForm() {
+    this.liftForm.reset();
+  }
+
+  confirmCreate(): void {
+    const formValues = this.liftForm.value;
+
+    const newLift: Lift = {
+      driver: { username: this.liftForm.value.driver! },
+      car: {
+        cc: this.liftForm.value.car!,
+      },
+      startPoint: {
+        district: this.liftForm.value.startDistrict!,
+        municipality: this.liftForm.value.startMunicipality!,
+        parish: this.liftForm.value.startParish!,
+      },
+      endPoint: {
+        district: this.liftForm.value.endDistrict!,
+        municipality: this.liftForm.value.endMunicipality!,
+        parish: this.liftForm.value.endParish!,
+      },
+      schedule: new Date(formValues.schedule ?? ''),
+      price: this.liftForm.value.price!,
+      providedSeats: this.liftForm.value.providedSeats!,
+    };
+    this.LiftService.createLift(newLift).subscribe({
+      next: () => {
+        this.toastr.success('Lift created successfully.');
+        this.cancel();
+        this.getLifts();
+      },
+      error: (err) => {
+        this.toastr.error('Failed to create new lift.', err.error.error);
+      },
+    });
+  }
+
+  cancel(): void {
+    this.modalComponent.closeModal();
+    this.resetForm();
+  }
 
   // toggleEdit(booking: Booking) {
   //   this.showCreateForm = false;

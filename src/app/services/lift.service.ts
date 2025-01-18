@@ -2,12 +2,31 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Lift } from '../models/lift.model';
+import { MyCar } from '../models/my-car.model';
+
+interface DistrictResponse {
+  distrito: string;
+  municipios: Municipio[];
+}
+
+interface Municipio {
+  nome: string;
+  codigoine: string;
+}
+
+interface MunicipioFreguesiaResponse {
+  nome: string;
+  freguesias: string[];
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class LiftService {
   private apiUrl = 'http://localhost:3000/api/lifts';
+  private carsUrl = 'http://localhost:3000/api/cars';
+  private districtsUrl = 'https://json.geoapi.pt/distritos';
+  private parishUrl = 'https://json.geoapi.pt/municipio';
 
   constructor(private http: HttpClient) {}
 
@@ -66,5 +85,36 @@ export class LiftService {
       price: updatedLift.price,
       providedSeats: updatedLift.providedSeats,
     });
+  }
+
+  getAllDistricts(): Observable<string[]> {
+    return this.http
+      .get<any[]>(this.districtsUrl)
+      .pipe(map((response) => response.map((district) => district.distrito)));
+  }
+
+  getMunicipalitiesByDistrict(district: string): Observable<string[]> {
+    const url = `${this.districtsUrl}/${district}/municipios`;
+    return this.http
+      .get<DistrictResponse>(url)
+      .pipe(
+        map((response) =>
+          response.municipios.map((municipio) => municipio.nome),
+        ),
+      );
+  }
+
+  getParishesByMunicipalities(municipio: string | null): Observable<string[]> {
+    const url = `${this.parishUrl}/${municipio}/freguesias`;
+    return this.http
+      .get<MunicipioFreguesiaResponse>(url)
+      .pipe(map((response) => response.freguesias));
+  }
+
+  //TODO MUDAR ISTO PARA GET CARS BY USERNAME QUE ESTIVER LOGGED IN
+  getAllCars(): Observable<MyCar[]> {
+    return this.http
+      .get<{ message: string; data: MyCar[] }>(this.carsUrl)
+      .pipe(map((response) => response.data));
   }
 }
