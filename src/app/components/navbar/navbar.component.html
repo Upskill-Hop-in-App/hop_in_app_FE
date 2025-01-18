@@ -141,6 +141,16 @@
           <span class="ms-4">Home</span>
         </a>
       </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/lifts"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <span [innerHTML]="'faThumbsUp' | attachedIcon"></span>
+          <span class="ms-4">Need a lift?</span>
+        </a>
+      </li>
     </ul>
   </div>
 </aside>

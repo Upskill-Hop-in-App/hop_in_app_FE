@@ -22,6 +22,7 @@ import {
   faSun,
   faUser,
   faUserPlus,
+  faThumbsUp,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faTrashCan as faSlimTrashCan,
@@ -55,6 +56,7 @@ export class AttachedIconPipe implements PipeTransform {
     faSun,
     faUser,
     faUserPlus,
+    faThumbsUp,
   };
 
   constructor(private sanitizer: DomSanitizer) {}

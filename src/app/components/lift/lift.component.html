@@ -1,0 +1,37 @@
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
+        <th scope="col">Schedule</th>
+        <th scope="col">Price</th>
+        <th scope="col">Driver</th>
+        <th scope="col">Car</th>
+        <th scope="col">Available seats</th>
+        <th scope="col">Created at</th>
+        <th scope="col">Updated at</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (lift of lifts; track lift.cl) {
+        <tr>
+          <td>
+            {{ lift.startPoint.parish }}, {{ lift.startPoint.municipality }}
+            ({{ lift.startPoint.district }})
+          </td>
+          <td>
+            {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }}
+            ({{ lift.endPoint.district }})
+          </td>
+          <td>{{ lift.schedule }}</td>
+          <td>{{ lift.price }}€</td>
+          <td>{{ lift.driver.username }}</td>
+          <td>{{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }} {{ lift.car.plate }}</td>
+          <td>{{ lift.providedSeats - lift.occupiedSeats}} / {{lift.providedSeats}}</td>
+          <td>{{ lift.updatedAt }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
