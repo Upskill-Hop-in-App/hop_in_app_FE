@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Lift } from '../../models/lift.model';
 import { MyCar } from '../../models/my-car.model';
+import { Application } from '../../models/application.model';
 import { LiftService } from '../../services/lift.service';
 import { FormsModule, Validators } from '@angular/forms';
 import {
@@ -16,6 +17,7 @@ import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ApplicationService } from '../../services/application.service';
 
 @Component({
   selector: 'app-lifts',
@@ -43,11 +45,17 @@ export class LiftComponent implements OnInit {
   selectedStartMunicipality: string | null = null;
   selectedEndDistrict: string | null = null;
   selectedEndMunicipality: string | null = null;
-  // auxiliarLift: Lift = this.reset();
+  auxiliarLift: Lift = this.reset();
   showCreateForm: boolean = false;
+  showApplicationForm: boolean = false;
   showEditForm: boolean = false;
   // backupLift: Lift = this.reset();
   showDeleteForm: boolean = false;
+  currentModalTitle: string = '';
+
+  //TODO mudar aqui para ir busca-lo ao token
+  clientUsername: string = 'client';
+
   liftForm = new FormGroup({
     driver: new FormControl('', [Validators.required]),
     car: new FormControl('', [Validators.required]),
@@ -66,12 +74,18 @@ export class LiftComponent implements OnInit {
     occupiedSeats: new FormControl(0, [Validators.min(0)]),
   });
 
+  applicationForm = new FormGroup({
+    passenger: new FormControl('', [Validators.required]),
+    lift: new FormControl('', [Validators.required]),
+  });
+
   @ViewChild(ModalComponent) modalComponent!: ModalComponent;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private LiftService: LiftService,
+    private ApplicationService: ApplicationService,
     @Inject(DOCUMENT) private document: Document,
     private toastr: ToastrService,
   ) {}
@@ -97,7 +111,7 @@ export class LiftComponent implements OnInit {
   }
 
   getCars(): void {
-    this.LiftService.getAllCars()
+    this.LiftService.getCarsByUsername(this.clientUsername)
       .pipe(
         catchError((err) => {
           this.toastr.error('No car found', err?.error?.message);
@@ -232,9 +246,11 @@ export class LiftComponent implements OnInit {
   }
 
   toggleCreate(): void {
+    this.currentModalTitle = 'Add lift';
     this.showEditForm = false;
     this.showDeleteForm = false;
     this.showCreateForm = true;
+    this.showApplicationForm = false;
     this.resetForm();
     this.openModal();
   }
@@ -266,13 +282,12 @@ export class LiftComponent implements OnInit {
 
   resetForm() {
     this.liftForm.reset();
+    this.applicationForm.reset();
   }
 
   confirmCreate(): void {
-    const formValues = this.liftForm.value;
-
     const newLift: Lift = {
-      driver: { username: this.liftForm.value.driver! },
+      driver: { username: this.clientUsername },
       car: {
         cc: this.liftForm.value.car!,
       },
@@ -286,7 +301,7 @@ export class LiftComponent implements OnInit {
         municipality: this.liftForm.value.endMunicipality!,
         parish: this.liftForm.value.endParish!,
       },
-      schedule: new Date(formValues.schedule ?? ''),
+      schedule: new Date(this.liftForm.value.schedule!),
       price: this.liftForm.value.price!,
       providedSeats: this.liftForm.value.providedSeats!,
     };
@@ -305,6 +320,37 @@ export class LiftComponent implements OnInit {
   cancel(): void {
     this.modalComponent.closeModal();
     this.resetForm();
+  }
+
+  toggleApplication(lift: Lift) {
+    this.currentModalTitle = 'Applying to lift';
+    this.showEditForm = false;
+    this.showDeleteForm = false;
+    this.showCreateForm = false;
+    this.showApplicationForm = true;
+    this.auxiliarLift = { ...lift };
+    this.applicationForm.setValue({
+      passenger: this.clientUsername!,
+      lift: lift.cl!,
+    });
+    this.openModal();
+  }
+
+  confirmApplication(): void {
+    const application: Application = {
+      passenger: { username: this.applicationForm.value.passenger! },
+      lift: { cl: this.applicationForm.value.lift! },
+    };
+    this.ApplicationService.createApplication(application).subscribe({
+      next: () => {
+        this.toastr.success('Application created successfully.');
+        this.cancel();
+        this.getLifts();
+      },
+      error: (err) => {
+        this.toastr.error('Failed to create application.', err.error.error);
+      },
+    });
   }
 
   // toggleEdit(booking: Booking) {

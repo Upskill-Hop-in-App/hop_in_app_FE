@@ -24,6 +24,9 @@ import {
   faUserPlus,
   faThumbsUp,
   faStar,
+  faFileSignature,
+  faCircleChevronRight,
+  faCoins,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faTrashCan as faSlimTrashCan,
@@ -59,6 +62,9 @@ export class AttachedIconPipe implements PipeTransform {
     faUserPlus,
     faThumbsUp,
     faStar,
+    faFileSignature,
+    faCircleChevronRight,
+    faCoins,
   };
 
   constructor(private sanitizer: DomSanitizer) {}

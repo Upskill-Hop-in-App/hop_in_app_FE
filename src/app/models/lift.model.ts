@@ -41,11 +41,13 @@ export interface Lift {
             passengerRating?: number;
           };
           status: string;
+          receivedPassengerRating?: number;
         },
       ]
     | [];
   occupiedSeats?: number;
   status?: string;
+  receivedDriverRatings?: number[];
   createdAt?: string;
   updatedAt?: string;
   __v?: string;

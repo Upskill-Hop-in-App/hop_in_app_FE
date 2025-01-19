@@ -112,9 +112,12 @@ export class LiftService {
   }
 
   //TODO MUDAR ISTO PARA GET CARS BY USERNAME QUE ESTIVER LOGGED IN
-  getAllCars(): Observable<MyCar[]> {
+  getCarsByUsername(username: string): Observable<MyCar[]> {
     return this.http
-      .get<{ message: string; data: MyCar[] }>(this.carsUrl)
+      .get<{
+        message: string;
+        data: MyCar[];
+      }>(this.carsUrl + '/username/' + username)
       .pipe(map((response) => response.data));
   }
 }

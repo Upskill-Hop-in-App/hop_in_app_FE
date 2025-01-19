@@ -9,6 +9,7 @@
         <th scope="col">Driver</th>
         <th scope="col">Car</th>
         <th scope="col">Available seats</th>
+        <th scope="col">Status</th>
         <th scope="col">Created at</th>
       </tr>
     </thead>
@@ -39,7 +40,20 @@
             {{ lift.providedSeats - lift.occupiedSeats! }} /
             {{ lift.providedSeats }}
           </td>
+          <td>{{ lift.status }}</td>
           <td>{{ lift.createdAt | date: "short" }}</td>
+          <td>
+            <div
+              class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
+            >
+              <a (click)="toggleApplication(lift)">
+                <span>Apply</span
+                ><span
+                  [innerHTML]="'faCircleChevronRight' | attachedIcon"
+                ></span
+              ></a>
+            </div>
+          </td>
         </tr>
       }
     </tbody>
@@ -53,7 +67,8 @@
     ><span [innerHTML]="'faPlus' | attachedIcon"></span
   ></a>
 </div>
-<app-modal modalTitle="Add lift">
+
+<app-modal modalTitle="{{ currentModalTitle }}">
   <div content>
     <!-- ------------------------- Toggle Create Form -------------------------- -->
     @if (showCreateForm) {
@@ -169,24 +184,6 @@
             </select>
           </div>
         </div>
-        <!-- Driver -->
-        <div class="mb-6">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="driver"
-          >
-            Driver
-          </label>
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
-            id="driver"
-            name="driver"
-            type="text"
-            required
-            placeholder="Enter username"
-            formControlName="driver"
-          />
-        </div>
 
         <!-- Car -->
         <div>
@@ -268,5 +265,79 @@
       </form>
     }
     <!-- ----------------------------------------------------------------------- -->
+    <!-- ------------------------- Toogle Application -------------------------- -->
+    @if (showApplicationForm) {
+      <form
+        (ngSubmit)="confirmApplication()"
+        #applicationForm="ngForm"
+        class="mt-4"
+      >
+        <div class="modal-header">
+          <h5 class="text-lg font-bold text-emerald-600">Confirmation</h5>
+        </div>
+        <div class="modal-body">
+          <p class="text-gray-700">You are about to apply to the lift:</p>
+          <div class="mt-2">
+            <strong class="block text-gray-800">Starting Point:</strong>
+            <span
+              >{{ auxiliarLift.startPoint.parish }},
+              {{ auxiliarLift.startPoint.municipality }} ({{
+                auxiliarLift.startPoint.district
+              }})
+            </span>
+          </div>
+          <div class="mt-1">
+            <strong class="block text-gray-800">Destination:</strong>
+            <span
+              >{{ auxiliarLift.endPoint.parish }},
+              {{ auxiliarLift.endPoint.municipality }} ({{
+                auxiliarLift.endPoint.district
+              }})</span
+            >
+          </div>
+          <div class="mt-1">
+            <strong class="block text-gray-800">Departure time:</strong>
+            <span>{{ auxiliarLift.schedule }}</span>
+          </div>
+          <div class="mt-1">
+            <strong class="block text-gray-800">Driver:</strong>
+            {{ auxiliarLift.driver.username
+            }}<span [innerHTML]="'faStar' | attachedIcon"></span
+            ><span>{{ auxiliarLift.driver.driverRating }}</span>
+          </div>
+          <div class="mt-1">
+            <div>
+              <strong class="block text-gray-800">Driver:</strong>
+              {{ auxiliarLift.driver.username
+              }}<span [innerHTML]="'faStar' | attachedIcon"></span
+              ><span>{{ auxiliarLift.driver.driverRating }}</span>
+            </div>
+            <div></div>
+          </div>
+          <div class="mt-1">
+            <span [innerHTML]="'faCoins' | attachedIcon"></span
+            ><strong class="block text-gray-800">Shared price:</strong>
+            {{ auxiliarLift.price }}€
+          </div>
+          <p class="mt-4 text-gray-700">Would you like to confirm?</p>
+        </div>
+        <div class="modal-footer mt-4 flex justify-between">
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            (click)="cancel()"
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            class="bg-primary-700 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Confirm
+          </button>
+        </div>
+      </form>
+    }
   </div></app-modal
 >
+<!-- ----------------------------------------------------------------------- -->
