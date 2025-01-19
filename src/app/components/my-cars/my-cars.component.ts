@@ -63,7 +63,6 @@ export class MyCarsComponent implements OnInit {
   });
 
   @ViewChild(AppModalComponent) modalComponent!: AppModalComponent;
-  // @ViewChild('filterSelect') filterSelect!: HTMLSelectElement;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -160,7 +159,6 @@ export class MyCarsComponent implements OnInit {
       year: 0,
       color: '',
       plate: '',
-      // TODO: new Date makes sense????
       createdAt: new Date(),
       updatedAt: new Date(),
     };
