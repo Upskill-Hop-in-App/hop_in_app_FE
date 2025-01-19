@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { NgOptimizedImage } from '@angular/common';
+//import { NgOptimizedImage } from '@angular/common';
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
 import {
   FontAwesomeModule,
@@ -17,7 +17,7 @@ import { faSun } from '@fortawesome/free-regular-svg-icons';
     CommonModule,
     FontAwesomeModule,
     RouterLink,
-    NgOptimizedImage,
+    //NgOptimizedImage,
     AttachedIconPipe,
   ],
   templateUrl: './navbar.component.html',
@@ -78,5 +78,20 @@ export class SidebarComponent {
 
   logout() {
     this.closeMenuNavbar();
+  }
+  login() {
+    this.closeMenuNavbar();
+    
+  }
+
+  // New Methods
+  viewAvailableLifts(): void {
+    console.log('Navigating to Available Lifts...');
+    // Add navigation or action logic here
+  }
+
+  publishRide(): void {
+    console.log('Navigating to Publish a Ride...');
+    // Add navigation or action logic here
   }
 }

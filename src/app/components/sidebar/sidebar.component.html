@@ -1,0 +1,140 @@
+<nav
+  class="fixed top-0 z-50 w-full border-b bg-white bg-opacity-60 p-3 text-gray-600 backdrop-blur-xl 2xl:px-5 2xl:pl-3 dark:border-gray-600 dark:bg-gray-900 dark:bg-opacity-60 dark:text-gray-300"
+>
+  <div class="flex items-center justify-between">
+    <div class="flex items-center justify-start rtl:justify-end">
+      <button
+        data-drawer-target="logo-sidebar"
+        data-drawer-toggle="logo-sidebar"
+        aria-controls="logo-sidebar"
+        type="button"
+        class="inline-flex items-center rounded-lg p-2 text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 2xl:hidden dark:hover:bg-gray-900"
+        (click)="toggleSidebar()"
+      >
+        <span class="sr-only">Open sidebar</span>
+        <fa-icon [icon]="['fas', 'bars']" size="2x"></fa-icon>
+      </button>
+      <a routerLink="/" class="ms-3 flex 2xl:me-24">
+        <img
+          ngSrc="/cars-logo.png"
+          class="me-3"
+          alt="Cars Logo"
+          width="36"
+          height="36"
+        />
+        <span
+          class="self-center whitespace-nowrap text-xl font-extrabold 2xl:text-2xl text-primary-600"
+          >Cars API</span
+        >
+      </a>
+    </div>
+    <div class="flex items-center">
+      <div class="ms-3 flex items-center">
+        <div>
+          <button
+            type="button"
+            class="flex text-lg"
+            aria-expanded="false"
+            data-dropdown-toggle="dropdown-user"
+            (click)="toggleMenuNavbar(); $event.stopPropagation()"
+          >
+            <span class="sr-only">Open user menu</span>
+            <fa-icon [icon]="['fas', 'circle-user']" size="2x"></fa-icon>
+          </button>
+        </div>
+        <div
+          class="fixed right-4 top-10 z-50 my-4 w-48 list-none divide-y divide-gray-100 rounded-lg border bg-white text-base shadow-lg dark:divide-gray-600 dark:border-gray-500 dark:bg-gray-700"
+          id="dropdown-user"
+          [ngClass]="{ hidden: !menuNavbarVisible }"
+        >
+          <ul class="p-1" role="none">
+            <li>
+              <button
+                type="button"
+                class="group flex w-full items-center rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                (click)="logout()"
+              >
+                <fa-icon [icon]="['fas', 'right-from-bracket']"></fa-icon>
+                <span class="ms-4">Logout</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<aside
+  id="logo-sidebar"
+  class="fixed left-0 top-0 z-40 h-screen w-56 border-r border-gray-200 bg-white bg-opacity-60 pt-20 text-gray-600 backdrop-blur-xl transition-transform 2xl:translate-x-0 dark:border-gray-600 dark:bg-gray-900 dark:bg-opacity-60 dark:text-gray-300"
+  [ngClass]="{
+    'translate-x-0': sidebarVisible,
+    '-translate-x-full': !sidebarVisible,
+  }"
+  aria-label="Sidebar"
+>
+  <div class="flex h-full flex-col justify-between overflow-y-auto p-3">
+    <ul class="space-y-2 text-lg font-medium">
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <fa-icon [icon]="['fas', 'home']"></fa-icon>
+          <span class="ms-4">Home</span>
+        </a>
+      </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/brands"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <fa-icon [icon]="['fas', 'car']"></fa-icon>
+          <span class="ms-4">Lifts</span>
+        </a>
+      </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/models"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <fa-icon [icon]="['fas', 'clipboard-list']"></fa-icon>
+          <span class="ms-4">Rides</span>
+        </a>
+      </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/reservations"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <fa-icon [icon]="['fas', 'calendar-check']"></fa-icon>
+          <span class="ms-4">My profile</span>
+        </a>
+      </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/manage-cars"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <fa-icon [icon]="['fas', 'tools']"></fa-icon>
+          <span class="ms-4">Manage Cars</span>
+        </a>
+      </li>
+    </ul>
+    <div class="static flex flex-col items-center justify-center p-8">
+      <img
+        ngSrc="/cars-logo-vertical.png"
+        class="me-3"
+        alt="Cars Logo"
+        width="160"
+        height="160"
+      />
+    </div>
+  </div>
+</aside>

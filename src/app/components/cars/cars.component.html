@@ -1,0 +1,26 @@
+<div>
+    <h2>Car Management</h2>
+  
+    <!-- Display list of cars -->
+    <div *ngIf="cars$ | async as cars">
+      <div *ngFor="let car of cars.data">
+        <p>{{ car.brand }} - {{ car.model }} ({{ car.startYear }} - {{ car.endYear }})</p>
+        <!-- Update and Delete options here -->
+      </div>
+    </div>
+  
+    <!-- Form to add a new car -->
+    <div>
+      <h3>Add New Car</h3>
+      <form (ngSubmit)="addCar()">
+        <input [(ngModel)]="car.brand" name="brand" placeholder="Brand" required />
+        <input [(ngModel)]="car.model" name="model" placeholder="Model" required />
+        <input [(ngModel)]="car.startYear" name="startYear" placeholder="Start Year" type="number" />
+        <input [(ngModel)]="car.endYear" name="endYear" placeholder="End Year" type="number" />
+        <button type="submit">Add Car</button>
+      </form>
+    </div>
+  
+    <!-- Add more options like updating car here -->
+  </div>
+  

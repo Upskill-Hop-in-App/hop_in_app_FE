@@ -1,0 +1,470 @@
+------------------------------- Filter --------------------------------
+<div class="flex flex-col justify-between py-2 md:flex-row">
+  <div>
+    <span class="main-title">{{ title }}</span>
+  </div>
+  <div class="flex flex-col justify-between gap-1 md:flex-row">
+    <div class="flex flex-row items-end gap-1">
+      @if (selectedFilter === "status") {
+        <form class="flex w-full flex-row items-end gap-1">
+          <button
+            class="btn-gray relative flex h-8 w-10 cursor-pointer items-center justify-center p-0 text-xl"
+          >
+            <fa-icon [icon]="['fas', 'magnifying-glass']" size="xs"></fa-icon>
+          </button>
+          <select
+            [(ngModel)]="inputFilter"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="filterGuideline()"
+            class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-500"
+          >
+            <option value="" disabled selected class="text-gray-400">
+              Select status
+            </option>
+            <option [value]="false">Valid</option>
+            <option [value]="true">Expired</option>
+          </select>
+        </form>
+      }
+      @if (selectedFilter === "code" || selectedFilter === "all") {
+        <form
+          (ngSubmit)="filterGuideline()"
+          class="flex w-full flex-row items-end gap-1"
+        >
+          <button
+            type="submit"
+            class="btn-gray relative flex h-8 w-10 cursor-pointer items-center justify-center p-0 text-xl"
+          >
+            <fa-icon [icon]="['fas', 'magnifying-glass']" size="xs"></fa-icon>
+          </button>
+          <input
+            type="text"
+            [(ngModel)]="inputFilter"
+            [ngModelOptions]="{ standalone: true }"
+            class="h-8 w-full rounded-lg border border-gray-300 px-2 text-sm focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-500"
+            [disabled]="selectedFilter === 'all'"
+            placeholder="Search..."
+          />
+        </form>
+      }
+      @if (selectedFilter === "countryAndVirus") {
+        <form
+          (ngSubmit)="filterGuideline()"
+          class="flex w-full flex-row items-center gap-1"
+        >
+          <button
+            type="submit"
+            class="btn-gray relative flex h-8 w-20 cursor-pointer items-center justify-center p-0 text-xl"
+          >
+            <fa-icon [icon]="['fas', 'magnifying-glass']" size="xs"></fa-icon>
+          </button>
+          <input
+            type="text"
+            [(ngModel)]="inputFilterCountry"
+            [ngModelOptions]="{ standalone: true }"
+            class="h-8 w-full rounded-lg border border-gray-300 px-2 text-sm focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-500"
+            placeholder="Country code..."
+          />
+          <input
+            type="text"
+            [(ngModel)]="inputFilterVirus"
+            [ngModelOptions]="{ standalone: true }"
+            class="h-8 w-full rounded-lg border border-gray-300 px-2 text-sm focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-500"
+            placeholder="Virus code..."
+          />
+        </form>
+      }
+    </div>
+    <div class="flex flex-row items-end justify-between gap-1">
+      <form class="w-full">
+        <select
+          #filterSelect
+          [(ngModel)]="selectedFilter"
+          [ngModelOptions]="{ standalone: true }"
+          class="h-8 w-full rounded-lg border border-gray-300 px-4 py-1 text-sm focus:border-primary-300 focus:ring dark:border-transparent dark:bg-gray-600"
+        >
+          <option value="all" disabled selected class="dark:text-gray-400">
+            Filter by
+          </option>
+          <option [value]="'code'">Code</option>
+          <option [value]="'status'">Status</option>
+          <option [value]="'countryAndVirus'">Country and Virus</option>
+        </select>
+      </form>
+
+      <div class="flex w-fit flex-row justify-end gap-1">
+        <fa-icon
+          (click)="resetFilter()"
+          class="btn-gray relative flex h-8 w-8 cursor-pointer items-center justify-center p-0 text-lg"
+          [icon]="['fas', 'filter-circle-xmark']"
+          size="xs"
+        ></fa-icon>
+
+        @if (isAdminAuth() || isEmployeeAuth()) {
+          <fa-icon
+            (click)="openCreateModal()"
+            class="btn-primary relative flex h-8 w-8 cursor-pointer items-center justify-center p-0"
+            [icon]="['fas', 'plus']"
+          ></fa-icon>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ----------------------------------------------------------------------- -->
+
+<!-- Show Info -->
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Code</th>
+        <th scope="col">Outbreak</th>
+        <th scope="col">Validity Period</th>
+        <th scope="col">Status</th>
+        <th scope="col">Message</th>
+        @if (isAdminAuth() || isEmployeeAuth()) {
+          <th scope="col">Created At</th>
+        }
+        <th scope="col">Updated At</th>
+        @if (isAdminAuth() || isEmployeeAuth()) {
+          <th></th>
+        }
+        @if (isAdminAuth()) {
+          <th></th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (guideline of guidelines; track guideline.cg) {
+        <tr>
+          <td>{{ guideline.cg }}</td>
+          <td>
+            <a
+              routerLink="/outbreaks"
+              [queryParams]="{ co: guideline.outbreak }"
+              >{{ guideline.outbreak }}</a
+            >
+          </td>
+          <td>
+            {{ guideline.validityPeriod }}
+          </td>
+          <td>
+            {{ guideline.isExpired ? "expired" : "valid" }}
+          </td>
+          <td>
+            <div>
+              <span class="line-clamp-2">
+                {{ guideline.message }}
+              </span>
+              @if (
+                !isAdminAuth() &&
+                !isEmployeeAuth() &&
+                guideline.message &&
+                guideline.message.length > 150
+              ) {
+                <button
+                  (click)="openMessageModal(guideline)"
+                  class="flex justify-self-end text-xs italic underline hover:text-primary-600"
+                >
+                  read more >>
+                </button>
+              }
+              @if (
+                !isAdminAuth() &&
+                isEmployeeAuth() &&
+                guideline.message &&
+                guideline.message.length > 54
+              ) {
+                <button
+                  (click)="openMessageModal(guideline)"
+                  class="flex justify-self-end text-xs italic underline hover:text-primary-600"
+                >
+                  read more >>
+                </button>
+              }
+              @if (
+                isAdminAuth() &&
+                !isEmployeeAuth() &&
+                guideline.message &&
+                guideline.message.length > 50
+              ) {
+                <button
+                  (click)="openMessageModal(guideline)"
+                  class="flex justify-self-end text-xs italic underline hover:text-primary-600"
+                >
+                  read more >>
+                </button>
+              }
+            </div>
+          </td>
+          @if (isAdminAuth() || isEmployeeAuth()) {
+            <td>
+              {{ guideline.createdAt | date: "short" }}
+            </td>
+          }
+          <td>
+            {{ guideline.updatedAt | date: "short" }}
+          </td>
+          @if (isAdminAuth() || isEmployeeAuth()) {
+            <td>
+              <div class="group relative">
+                <fa-icon
+                  (click)="openEditModal(guideline)"
+                  class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
+                  [icon]="['far', 'pen-to-square']"
+                  size="lg"
+                ></fa-icon>
+                <fa-icon
+                  (click)="openEditModal(guideline)"
+                  class="absolute left-0 top-0 cursor-pointer text-primary-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                  [icon]="['fas', 'pen-to-square']"
+                  size="lg"
+                ></fa-icon>
+              </div>
+            </td>
+          }
+          @if (isAdminAuth()) {
+            <td>
+              <div class="group relative">
+                <fa-icon
+                  (click)="openDeleteModal(guideline)"
+                  class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
+                  [icon]="['far', 'trash-can']"
+                  size="lg"
+                ></fa-icon>
+                <fa-icon
+                  (click)="openDeleteModal(guideline)"
+                  class="absolute left-0 top-0 cursor-pointer text-red-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                  [icon]="['fas', 'trash-can']"
+                  size="lg"
+                ></fa-icon>
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<app-modal modalTitle="{{ curentModalTitle }}">
+  <!-- -------------------------- Create Guideline --------------------------- -->
+  @if (this.showCreateForm === true) {
+    <div content>
+      <form
+        [formGroup]="guidelineForm"
+        (ngSubmit)="confirmAdd()"
+        class="space-y-8"
+      >
+        <div class="space-y-2">
+          <label for="Code">Guideline code</label>
+          <input
+            type="text"
+            id="cg"
+            class="input-standard"
+            placeholder="Example: 11gg"
+            formControlName="cg"
+            required
+          />
+        </div>
+        <div class="space-y-2">
+          <label for="Outbreak">Guideline Outbreak</label>
+          <input
+            type="text"
+            id="guidelineOutbreak"
+            class="input-standard"
+            placeholder="Example: 1o"
+            formControlName="outbreak"
+            required
+          />
+        </div>
+        <div class="space-y-2">
+          <label for="Message">Message</label>
+          <textarea
+            id="guidelineMessage"
+            class="input-standard h-32 resize-none"
+            placeholder="Safety recommendations..."
+            formControlName="message"
+            required
+          ></textarea>
+        </div>
+        <div class="space-y-2">
+          <label for="ValidityPeriod">Validity Period</label>
+          <input
+            type="number"
+            id="validityPeriod"
+            class="input-standard"
+            placeholder="Example: 10"
+            formControlName="validityPeriod"
+            required
+          />
+        </div>
+        <div class="buttons-modal-container">
+          <button type="button" (click)="cancel()" class="btn-gray">
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary">Create Guideline</button>
+        </div>
+        <app-message />
+      </form>
+    </div>
+  }
+  <!-- ----------------------------------------------------------------------- -->
+  <!-- --------------------------- Edit Guideline ---------------------------- -->
+  @if (this.showEditForm === true) {
+    <div content>
+      <form
+        [formGroup]="guidelineForm"
+        (ngSubmit)="confirmEdit()"
+        class="space-y-8"
+      >
+        <div class="space-y-2">
+          <label for="Code">Guideline code</label>
+          <input
+            type="text"
+            id="cg"
+            class="input-standard"
+            placeholder="Example: z1"
+            formControlName="cg"
+            required
+          />
+        </div>
+        <div class="space-y-2">
+          <label for="Outbreak">Guideline Outbreak</label>
+          <input
+            type="text"
+            id="outbreak"
+            class="input-standard"
+            placeholder="Example: guidelinetest1"
+            formControlName="outbreak"
+            required
+          />
+        </div>
+        <div class="space-y-2">
+          <label for="Message">Message</label>
+          <textarea
+            id="guidelineMessage"
+            class="input-standard h-32 resize-none"
+            placeholder="Safety recommendations..."
+            formControlName="message"
+            required
+          ></textarea>
+        </div>
+        <div class="space-y-2">
+          <label for="Validity Period">Guideline validity</label>
+          <input
+            type="number"
+            id="validityPeriod"
+            class="input-standard"
+            placeholder="Example: 10"
+            formControlName="validityPeriod"
+            required
+          />
+        </div>
+        <div class="buttons-modal-container">
+          <button type="button" (click)="cancel()" class="btn-gray">
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary">Edit Guideline</button>
+        </div>
+        <app-message />
+      </form>
+    </div>
+  }
+  <!-- ----------------------------------------------------------------------- -->
+  <!-- -------------------------- Delete Guideline --------------------------- -->
+  @if (this.showDeleteForm === true) {
+    <div content>
+      <form
+        [formGroup]="guidelineForm"
+        (ngSubmit)="confirmDelete()"
+        #deleteForm="ngForm"
+      >
+        <div class="space-y-8">
+          <!-- Guideline Code -->
+          <div class="space-y-2">
+            <label for="guidelineCode" class="font-semibold">Code:</label>
+            <input
+              type="text"
+              name="guidelineCode"
+              id="guidelineCode"
+              formControlName="cg"
+              class="input-disabled"
+              [readonly]="showDeleteForm ? true : null"
+            />
+          </div>
+          <!-- Guideline Outbreak -->
+          <div class="space-y-2">
+            <label for="guidelineOutbreak" class="font-semibold"
+              >Outbreak:</label
+            >
+            <input
+              type="text"
+              name="virusOutbreak"
+              id="virusOutbreak"
+              formControlName="outbreak"
+              class="input-disabled"
+              [readonly]="showDeleteForm ? true : null"
+            />
+          </div>
+          <!-- ---------------------- Guideline ValidityPeriod ----------------------- -->
+          <div class="space-y-2">
+            <label for="guidelinevalidityPeriod" class="font-semibold"
+              >validityPeriod:</label
+            >
+            <input
+              type="text"
+              name="virusvalidityPeriod"
+              id="virusvalidityPeriod"
+              formControlName="validityPeriod"
+              class="input-disabled"
+              [readonly]="showDeleteForm ? true : null"
+            />
+          </div>
+          <div class="space-y-2 border-t py-8 dark:border-gray-600">
+            <p class="font-semibold text-rose-500">
+              This action cannot be undone. Please enter the guideline code to
+              confirm:
+            </p>
+            <input
+              type="text"
+              name="confirmationCg"
+              id="confirmationCg"
+              class="input-standard"
+              formControlName="confirmationCg"
+              placeholder="Enter guideline code"
+              required
+            />
+          </div>
+        </div>
+        <!-- Buttons -->
+        <div class="buttons-modal-container">
+          <button class="btn-gray" (click)="cancel()" type="button">
+            Cancel
+          </button>
+          <button
+            class="btn-danger"
+            type="submit"
+            [disabled]="
+              !deleteForm.valid ||
+              guidelineForm.value.confirmationCg?.toUpperCase() !==
+                selectedGuideline.cg.toUpperCase()
+            "
+          >
+            Delete
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+  <!-- ----------------------------------------------------------------------- -->
+  <!-- ------------------------------- Read Full Message ------------------------------- -->
+  @if (this.showMessageModal === true) {
+    <div content>
+      {{ backupGuideline.message }}
+    </div>
+  }
+  <!-- ----------------------------------------------------------------------- -->
+</app-modal>

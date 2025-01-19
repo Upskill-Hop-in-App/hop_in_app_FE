@@ -1,0 +1,28 @@
+<form (ngSubmit)="submitCar()">
+    <label for="brand">Brand</label>
+    <input id="brand" [(ngModel)]="car.brand" name="brand" required />
+  
+    <label for="model">Model</label>
+    <input id="model" [(ngModel)]="car.model" name="model" required />
+  
+    <label for="startYear">Start Year</label>
+    <input
+      id="startYear"
+      type="number"
+      [(ngModel)]="car.startYear"
+      name="startYear"
+      required
+    />
+  
+    <label for="endYear">End Year</label>
+    <input
+      id="endYear"
+      type="number"
+      [(ngModel)]="car.endYear"
+      name="endYear"
+      required
+    />
+  
+    <button type="submit">Submit</button>
+  </form>
+  

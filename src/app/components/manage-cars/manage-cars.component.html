@@ -1,0 +1,20 @@
+<div class="manage-cars">
+    <h1>Manage Cars</h1>
+  
+    <div class="car-list">
+      <h2>Car List</h2>
+      <ul>
+        <li *ngFor="let car of cars$ | async">
+          <span>{{ car.brand }} - {{ car.model }} ({{ car.startYear }} - {{ car.endYear }})</span>
+          <button (click)="updateCar(car)">Update</button>
+          <button (click)="deleteCar(car)">Delete</button>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="add-car">
+      <h2>Add a New Car</h2>
+      <app-car-form (formSubmit)="loadCars()"></app-car-form>
+    </div>
+  </div>
+  
