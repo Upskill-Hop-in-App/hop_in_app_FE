@@ -17,4 +17,12 @@ export class ApplicationService {
       lift: application.lift.cl,
     });
   }
+
+  acceptApplication(ca: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/accept/${ca}`, {});
+  }
+
+  rejectApplication(ca: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/reject/${ca}`, {});
+  }
 }

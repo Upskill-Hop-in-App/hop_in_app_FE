@@ -120,4 +120,14 @@ export class LiftService {
       }>(this.carsUrl + '/username/' + username)
       .pipe(map((response) => response.data));
   }
+
+  //TODO MUDAR ISTO PARA GET CARS BY USERNAME QUE ESTIVER LOGGED IN
+  getLiftsByUsername(username: string): Observable<Lift[]> {
+    return this.http
+      .get<{
+        message: string;
+        data: Lift[];
+      }>(this.apiUrl + '/username/' + username)
+      .pipe(map((response) => response.data));
+  }
 }
