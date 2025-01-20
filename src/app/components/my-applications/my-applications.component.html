@@ -1,0 +1,137 @@
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
+        <th scope="col">Schedule</th>
+        <th scope="col">Price</th>
+        <th scope="col">Driver</th>
+        <th scope="col">Car</th>
+        <th scope="col">Status</th>
+        <th scope="col">Created at</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (application of applications; track application.ca) {
+        <tr>
+          <td>
+            {{ application.lift.startPoint?.parish! }},
+            {{ application.lift.startPoint?.municipality! }} ({{
+              application.lift.startPoint?.district!
+            }})
+          </td>
+          <td>
+            {{ application.lift.endPoint?.parish! }},
+            {{ application.lift.endPoint?.municipality! }} ({{
+              application.lift.endPoint?.district!
+            }})
+          </td>
+          <td>{{ application.lift.schedule | date: "short" }}</td>
+          <td>{{ application.lift.price }}€</td>
+          <td>
+            {{ application.lift.driver?.username! }} <br />{{
+              application.lift.driver?.driverRating!
+            }}<span [innerHTML]="'faStar' | attachedIcon"></span>
+          </td>
+          <td>
+            {{ application.lift.car?.brand! }}
+            {{ application.lift.car?.model! }}
+            {{ application.lift.car?.color! }}
+            {{ application.lift.car?.plate! }}
+          </td>
+          <td>{{ application.status }}</td>
+          <td>{{ application.createdAt | date: "short" }}</td>
+          <td>
+            <div
+              class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-danger"
+            >
+              <a (click)="toggleCancel(application)"> <span>Cancel</span></a>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<app-modal modalTitle="{{ currentModalTitle }}">
+  <div content>
+    <!-- ------------------------- Toggle Create Form -------------------------- -->
+    @if (showCancelForm) {
+      <form
+        (ngSubmit)="cancelApplication()"
+        #applicationForm="ngForm"
+        class="mt-4"
+      >
+        <div class="modal-header">
+          <h5 class="text-lg font-bold text-red-600">Confirmation</h5>
+        </div>
+        <div class="modal-body">
+          <p class="text-gray-700">You are about to cancel this application:</p>
+          <div class="mt-2">
+            <strong class="block text-gray-800">Starting Point:</strong>
+            <span
+              >{{ auxiliarApplication.lift.startPoint!.parish! }},
+              {{ (auxiliarApplication.lift?.startPoint)!.municipality! }} ({{
+                (auxiliarApplication.lift?.startPoint)!.district!
+              }})
+            </span>
+          </div>
+          <div class="mt-1">
+            <strong class="block text-gray-800">Destination:</strong>
+            <span
+              >{{ auxiliarApplication.lift.endPoint!.parish! }},
+              {{ auxiliarApplication.lift.endPoint!.municipality! }} ({{
+                auxiliarApplication.lift.endPoint!.district!
+              }})</span
+            >
+          </div>
+          <div class="mt-1">
+            <strong class="block text-gray-800">Departure time:</strong>
+            <span>{{ auxiliarApplication.lift.schedule }}</span>
+          </div>
+          <div class="mt-1">
+            <strong class="block text-gray-800">Driver:</strong>
+            {{ auxiliarApplication.lift.driver!.username!
+            }}<span [innerHTML]="'faStar' | attachedIcon"></span
+            ><span>{{ auxiliarApplication.lift.driver!.driverRating! }}</span>
+          </div>
+          <div class="mt-1">
+            <div>
+              <strong class="block text-gray-800">Contacts:</strong>
+              <span [innerHTML]="'faPhone' | attachedIcon"></span>
+              {{ auxiliarApplication.lift.driver!.contact!
+              }}<span [innerHTML]="'faAt' | attachedIcon"></span
+              ><span>{{ auxiliarApplication.lift.driver!.email! }}</span>
+            </div>
+            <div></div>
+          </div>
+          <div class="mt-1">
+            <span [innerHTML]="'faCoins' | attachedIcon"></span
+            ><strong class="block text-gray-800">Shared price:</strong>
+            {{ auxiliarApplication.lift.price }}€
+          </div>
+          <p class="mt-4 text-gray-700">Are you sure?</p>
+        </div>
+        <div class="modal-footer mt-4 flex justify-between">
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            (click)="cancel()"
+            type="button"
+          >
+            Back
+          </button>
+          <button
+            class="bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Confirm
+          </button>
+        </div>
+      </form>
+    }
+  </div></app-modal
+>
+<!-- ----------------------------------------------------------------------- -->
