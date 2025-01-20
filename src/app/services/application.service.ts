@@ -11,6 +11,15 @@ export class ApplicationService {
 
   constructor(private http: HttpClient) {}
 
+  getApplicationsByUsername(username: string): Observable<Application[]> {
+    return this.http
+      .get<{
+        message: string;
+        data: Application[];
+      }>(this.apiUrl + '/username/' + username)
+      .pipe(map((response) => response.data));
+  }
+
   createApplication(application: Application): Observable<Application> {
     return this.http.post<Application>(this.apiUrl, {
       passenger: application.passenger.username,
@@ -24,5 +33,9 @@ export class ApplicationService {
 
   rejectApplication(ca: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/reject/${ca}`, {});
+  }
+
+  cancelApplication(ca: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/cancel/${ca}`, {});
   }
 }
