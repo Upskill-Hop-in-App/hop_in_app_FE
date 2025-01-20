@@ -1,13 +1,9 @@
+// modelList.ts
 export interface ModelList {
-    brand: YearsList[]
-  }
-
-  interface YearsList {
-    model: Years[]
-  }
-
-  interface Years {
-    startYear: number;
-    endYear: number | null;
-  }
-  
+  [brand: string]: {
+    [model: string]: {
+      startYear: number;
+      endYear: number | null;
+    };
+  };
+}

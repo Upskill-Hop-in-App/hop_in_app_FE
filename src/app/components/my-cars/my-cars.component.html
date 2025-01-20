@@ -1,65 +1,20 @@
-
-
-<!-- ------------------------------- Filter -------------------------------- -->
-<!-- <div class="flex flex-col justify-between py-4 md:flex-row">
-    <div>
-      <span class="main-title">{{ title }}</span>
-    </div>
-    <div class="flex flex-col justify-between gap-1 md:flex-row">
-      <div class="flex flex-row items-end gap-1">
-        <form
-          (ngSubmit)="filterCar()"
-          class="flex w-full flex-row items-end gap-1"
-        >
-          <button
-            type="submit"
-            class="btn-gray relative flex h-8 w-10 cursor-pointer items-center justify-center p-0 text-xl"
-          >
-            <fa-icon [icon]="['fas', 'magnifying-glass']" size="xs"></fa-icon>
-          </button>
-          <input
-            type="text"
-            [(ngModel)]="inputFilter"
-            [ngModelOptions]="{ standalone: true }"
-            class="h-8 w-full rounded-lg border border-gray-300 px-2 text-sm focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-500"
-            [disabled]="selectedFilter === 'all'"
-            placeholder="Search..."
-          />
-        </form>
-      </div>
-      <div class="flex flex-row items-end justify-between gap-1">
-        <form class="w-full">
-          <select
-            #filterSelect
-            [(ngModel)]="selectedFilter"
-            [ngModelOptions]="{ standalone: true }"
-            class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
-          >
-            <option value="all" disabled selected class="text-gray-400">
-              Filter by
-            </option>
-            <option [value]="'code'">Code</option>
-            <option [value]="'name'">Name</option>
-          </select>
-        </form>
-  
-        <div class="flex w-fit flex-row justify-end gap-1">
-          <fa-icon
-            (click)="resetFilter()"
-            class="btn-gray relative flex h-8 w-8 cursor-pointer items-center justify-center p-0 text-lg"
-            [icon]="['fas', 'filter-circle-xmark']"
-            size="xs"
-          ></fa-icon>
-  
-          <fa-icon
-            (click)="openCreateModal()"
-            class="btn-primary relative flex h-8 w-8 cursor-pointer items-center justify-center p-0"
-            [icon]="['fas', 'plus']"
-          ></fa-icon>
-        </div>
+<!-- ------------------------------- Upper Bar -------------------------------- -->
+<div class="flex flex-col justify-between py-4 md:flex-row">
+  <div>
+    <span class="main-title">{{ title }}</span>
+  </div>
+  <div class="flex flex-col justify-between gap-1 md:flex-row">
+    <div class="flex flex-row items-end gap-1"></div>
+    <div class="flex flex-row items-end justify-between gap-1">
+      <div class="flex w-fit flex-row justify-end gap-1">
+        <fa-icon
+          (click)="openCreateModal()"
+          class="btn-primary relative flex h-8 w-8 cursor-pointer items-center justify-center p-0"
+          [icon]="['fas', 'plus']"></fa-icon>
       </div>
     </div>
-  </div> -->
+  </div>
+</div>
 
 <!-- ----------------------------------------------------------------------- -->
 
@@ -99,14 +54,12 @@
                   (click)="openEditModal(car)"
                   class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
                   [icon]="['far', 'pen-to-square']"
-                  size="lg"
-                ></fa-icon>
+                  size="lg"></fa-icon>
                 <fa-icon
                   (click)="openEditModal(car)"
                   class="absolute left-0 top-0 cursor-pointer text-primary-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
                   [icon]="['fas', 'pen-to-square']"
-                  size="lg"
-                ></fa-icon>
+                  size="lg"></fa-icon>
               </div>
             </td>
 
@@ -116,14 +69,12 @@
                   (click)="openDeleteModal(car)"
                   class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
                   [icon]="['far', 'trash-can']"
-                  size="lg"
-                ></fa-icon>
+                  size="lg"></fa-icon>
                 <fa-icon
                   (click)="openDeleteModal(car)"
                   class="absolute left-0 top-0 cursor-pointer text-rose-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
                   [icon]="['fas', 'trash-can']"
-                  size="lg"
-                ></fa-icon>
+                  size="lg"></fa-icon>
               </div>
             </td>
           </tr>
@@ -139,66 +90,75 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmCreate()"
-          class="space-y-8"
-        >
+          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
-            <input
-              type="text"
-              name="brandName"
-              id="brandName"
-              placeholder="ex: Honda"
+            <select
               formControlName="brand"
-              class="input-standard"
-            />
+              (ngModelChange)="onBrandChange()"
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+              <option
+                value=""
+                disabled
+                selected
+                class="h-8 w-full text-gray-400">
+                Select Brand
+              </option>
+              @for (brand of brands; track brand) {
+                <option [value]="brand">{{ brand }}</option>
+              }
+            </select>
           </div>
 
           <div class="space-y-2">
-            <label for="modelName" class="font-semibold">Brand: </label>
-            <input
-              type="text"
-              name="modelName"
-              id="modelName"
-              placeholder="ex: Honda"
+            <label for="modelName" class="font-semibold">Model: </label>
+            <select
               formControlName="model"
-              class="input-standard"
-            />
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+              <option
+                value=""
+                disabled
+                selected
+                class="h-8 w-full text-gray-400">
+                Select Model
+              </option>
+              @for (model of models; track model) {
+                <option [value]="model">{{ model }}</option>
+              }
+            </select>
           </div>
 
           <div class="space-y-2">
-            <label for="yearName" class="font-semibold">Brand: </label>
+            <label for="carYear" class="font-semibold">Year: </label>
             <input
               type="text"
-              name="yearName"
-              id="yearName"
-              placeholder="ex: Honda"
+              name="carYear"
+              id="carYear"
+              placeholder="ex: 1998"
               formControlName="year"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
-            <label for="colorName" class="font-semibold">Brand: </label>
+            <label for="colorName" class="font-semibold">Color: </label>
             <input
               type="text"
               name="colorName"
               id="colorName"
-              placeholder="ex: Honda"
+              placeholder="ex: Blue"
               formControlName="color"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
-            <label for="plateName" class="font-semibold">Brand: </label>
+            <label for="plateNumber" class="font-semibold">Plate: </label>
             <input
               type="text"
-              name="plateName"
-              id="plateName"
-              placeholder="ex: Honda"
+              name="plateNumber"
+              id="plateNumber"
+              placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="buttons-modal-container">
@@ -214,42 +174,53 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmEdit()"
-          class="space-y-8"
-        >
+          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
-            <input
-              type="text"
-              name="brandName"
-              id="brandName"
-              placeholder="ex: Honda"
+            <select
               formControlName="brand"
-              class="input-standard"
-            />
+              (ngModelChange)="onBrandChange()"
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+              <option
+                value=""
+                disabled
+                selected
+                class="h-8 w-full text-gray-400">
+                Select Brand
+              </option>
+              @for (brand of brands; track brand) {
+                <option [value]="brand">{{ brand }}</option>
+              }
+            </select>
           </div>
 
           <div class="space-y-2">
             <label for="modelName" class="font-semibold">Model: </label>
-            <input
-              type="text"
-              name="modelName"
-              id="modelName"
-              placeholder="ex: Honda"
+            <select
               formControlName="model"
-              class="input-standard"
-            />
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+              <option
+                value=""
+                disabled
+                selected
+                class="h-8 w-full text-gray-400">
+                Select Model
+              </option>
+              @for (model of models; track model) {
+                <option [value]="model">{{ model }}</option>
+              }
+            </select>
           </div>
 
           <div class="space-y-2">
-            <label for="yearName" class="font-semibold">Year: </label>
+            <label for="carYear" class="font-semibold">Year: </label>
             <input
               type="text"
-              name="yearName"
-              id="yearName"
-              placeholder="ex: Honda"
+              name="carYear"
+              id="carYear"
+              placeholder="ex: 1998"
               formControlName="year"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
@@ -258,22 +229,20 @@
               type="text"
               name="colorName"
               id="colorName"
-              placeholder="ex: Honda"
+              placeholder="ex: Blue"
               formControlName="color"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
-            <label for="plateName" class="font-semibold">Plate: </label>
+            <label for="plateNumber" class="font-semibold">Plate: </label>
             <input
               type="text"
-              name="plateName"
-              id="plateName"
-              placeholder="ex: Honda"
+              name="plateNumber"
+              id="plateNumber"
+              placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="buttons-modal-container">
@@ -289,43 +258,54 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmDelete()"
-          #deleteForm="ngForm"
-        >
+          #deleteForm="ngForm">
           <div class="space-y-8">
             <div class="space-y-2">
               <label for="brandName" class="font-semibold">Brand: </label>
-              <input
-                type="text"
-                name="brandName"
-                id="brandName"
-                placeholder="ex: Honda"
+              <select
                 formControlName="brand"
-                class="input-standard"
-              />
+                (ngModelChange)="onBrandChange()"
+                class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+                <option
+                  value=""
+                  disabled
+                  selected
+                  class="h-8 w-full text-gray-400">
+                  Select Brand
+                </option>
+                @for (brand of brands; track brand) {
+                  <option [value]="brand">{{ brand }}</option>
+                }
+              </select>
             </div>
 
             <div class="space-y-2">
               <label for="modelName" class="font-semibold">Model: </label>
-              <input
-                type="text"
-                name="modelName"
-                id="modelName"
-                placeholder="ex: Honda"
+              <select
                 formControlName="model"
-                class="input-standard"
-              />
+                class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+                <option
+                  value=""
+                  disabled
+                  selected
+                  class="h-8 w-full text-gray-400">
+                  Select Model
+                </option>
+                @for (model of models; track model) {
+                  <option [value]="model">{{ model }}</option>
+                }
+              </select>
             </div>
 
             <div class="space-y-2">
-              <label for="yearName" class="font-semibold">Year </label>
+              <label for="carYear" class="font-semibold">Year: </label>
               <input
                 type="text"
-                name="yearName"
-                id="yearName"
-                placeholder="ex: Honda"
+                name="carYear"
+                id="carYear"
+                placeholder="ex: 1998"
                 formControlName="year"
-                class="input-standard"
-              />
+                class="input-standard" />
             </div>
 
             <div class="space-y-2">
@@ -334,22 +314,20 @@
                 type="text"
                 name="colorName"
                 id="colorName"
-                placeholder="ex: Honda"
+                placeholder="ex: Blue"
                 formControlName="color"
-                class="input-standard"
-              />
+                class="input-standard" />
             </div>
 
             <div class="space-y-2">
-              <label for="plateName" class="font-semibold">Plate: </label>
+              <label for="plateNumber" class="font-semibold">Plate: </label>
               <input
                 type="text"
-                name="plateName"
-                id="plateName"
-                placeholder="ex: Honda"
+                name="plateNumber"
+                id="plateNumber"
+                placeholder="ex: 22-YY-44"
                 formControlName="plate"
-                class="input-standard"
-              />
+                class="input-standard" />
             </div>
             <div class="space-y-2 border-t py-8 dark:border-gray-600">
               <p class="font-semibold text-rose-500">
@@ -363,8 +341,7 @@
                 class="input-standard"
                 formControlName="confirmationCc"
                 placeholder="Enter car code"
-                required
-              />
+                required />
             </div>
           </div>
           <div class="buttons-modal-container">

@@ -4,19 +4,21 @@ import {
   Inject,
   OnInit,
   ViewChild,
-} from '@angular/core';
+} from '@angular/core'
 import {
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { MyCar } from '../../models/my-car';
-import myCars from '../../../utils/data/cars';
-// import { MyCarService } from '../../services/my-car/my-car.service';
-// import { ToastrService } from 'ngx-toastr';
+} from '@angular/forms'
+import { CommonModule, DOCUMENT } from '@angular/common'
+import { catchError } from 'rxjs/operators'
+import { of } from 'rxjs'
+import { MyCar } from '../../models/my-car'
+import myCars from '../../../utils/data/cars'
+import { MyCarService } from '../../services/my-car/my-car.service'
+import { ToastrService } from 'ngx-toastr'
 import {
   faMagnifyingGlass,
   faFilterCircleXmark,
@@ -24,53 +26,65 @@ import {
   faHome,
   faPenToSquare as faPenToSquareSolid,
   faTrashCan as faTrashCanSolid,
-} from '@fortawesome/free-solid-svg-icons';
+} from '@fortawesome/free-solid-svg-icons'
 import {
   faPenToSquare,
   faTrashCan as faTrashCanRegular,
-} from '@fortawesome/free-regular-svg-icons';
+} from '@fortawesome/free-regular-svg-icons'
 import {
   FontAwesomeModule,
   FaIconLibrary,
-} from '@fortawesome/angular-fontawesome';
-import { AppModalComponent } from '../modal/modal.component';
+} from '@fortawesome/angular-fontawesome'
+import { AppModalComponent } from '../modal/modal.component'
+import { ModelList } from '../../models/modelList'
 
 @Component({
   selector: 'app-my-cars',
-  imports: [AppModalComponent, CommonModule, FormsModule, FontAwesomeModule, ReactiveFormsModule],
+  imports: [
+    AppModalComponent,
+    CommonModule,
+    FormsModule,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './my-cars.component.html',
   styleUrl: './my-cars.component.css',
 })
 export class MyCarsComponent implements OnInit {
-  cars: MyCar[] = [];
-  title = 'My Cars';
-  backupCar: MyCar = this.reset();
-  auxiliarCar: MyCar = this.reset();
-  showCreateForm: boolean = false;
-  showEditForm: boolean = false;
-  showDeleteForm: boolean = false;
-  selectedFilter: string = 'all';
-  inputFilter: string = '';
-  curentModalTitle: string = '';
+  cars: MyCar[] = []
+  brands: string[] = []
+  modelList: ModelList[] = []
+  models: string[] = []
+  // selectModelDisabled: boolean = true
+  brandIsSelected: boolean = false
+  title = 'My Cars'
+  backupCar: MyCar = this.reset()
+  auxiliarCar: MyCar = this.reset()
+  showCreateForm: boolean = false
+  showEditForm: boolean = false
+  showDeleteForm: boolean = false
+  curentModalTitle: string = ''
   carForm = new FormGroup({
     cc: new FormControl(''),
     brand: new FormControl('', [Validators.required]),
-    model: new FormControl('', [Validators.required]),
+    model: new FormControl({ value: '', disabled: true }, [
+      Validators.required,
+    ]),
     year: new FormControl(0, [Validators.required]),
     color: new FormControl('', [Validators.required]),
     plate: new FormControl('', [Validators.required]),
     confirmationCc: new FormControl(''),
-  });
+  })
 
-  @ViewChild(AppModalComponent) modalComponent!: AppModalComponent;
+  @ViewChild(AppModalComponent) modalComponent!: AppModalComponent
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     // private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
-    // private myCarService: MyCarService,
-    // private toastr: ToastrService,
-    library: FaIconLibrary,
+    private myCarService: MyCarService,
+    private toastr: ToastrService,
+    library: FaIconLibrary
   ) {
     library.addIcons(
       faHome,
@@ -80,75 +94,91 @@ export class MyCarsComponent implements OnInit {
       faPenToSquareSolid,
       faMagnifyingGlass,
       faFilterCircleXmark,
-      faPlus,
-    );
+      faPlus
+    )
   }
 
   ngOnInit(): void {
-    this.getMyCars();
+    this.getMyCars()
+    this.carForm = new FormGroup({
+      cc: new FormControl(''),
+      brand: new FormControl('', [Validators.required]),
+      model: new FormControl({ value: '', disabled: true }, [
+        Validators.required,
+      ]),
+      year: new FormControl(0, [Validators.required]),
+      color: new FormControl('', [Validators.required]),
+      plate: new FormControl('', [Validators.required]),
+      confirmationCc: new FormControl(''),
+    })
   }
 
   getMyCars(): void {
-    this.cars = myCars;
+    this.cars = myCars
   }
 
-  //#region Modal
-
   openModal(): void {
-    this.modalComponent.openModal();
+    this.modalComponent.openModal()
   }
 
   openCreateModal(): void {
-    this.curentModalTitle = 'Add Car';
-    this.showEditForm = false;
-    this.showDeleteForm = false;
-    this.showCreateForm = true;
-    this.openModal();
-    this.resetForm();
-    this.changeDetector.detectChanges();
+    // Add a loading state if needed
+    this.getAllBrands().then(() => {
+      this.curentModalTitle = 'Add Car'
+      this.showEditForm = false
+      this.showDeleteForm = false
+      this.showCreateForm = true
+      this.openModal()
+      this.resetForm()
+      this.changeDetector.detectChanges()
+    })
   }
 
   openEditModal(car: MyCar): void {
-    this.curentModalTitle = 'Edit Car';
-    this.showCreateForm = false;
-    this.showDeleteForm = false;
-    this.backupCar = { ...car };
-    this.carForm.setValue({
-      cc: car.cc!,
-      brand: car.brand,
-      model: car.model,
-      year: car.year,
-      color: car.color,
-      plate: car.plate,
-      confirmationCc: '',
-    });
-    this.showEditForm = true;
-    this.openModal();
-    this.changeDetector.detectChanges();
+    this.getAllBrands().then(() => {
+      this.curentModalTitle = 'Edit Car'
+      this.showCreateForm = false
+      this.showDeleteForm = false
+      this.backupCar = { ...car }
+      this.carForm.setValue({
+        cc: car.cc!,
+        brand: car.brand,
+        model: car.model,
+        year: car.year,
+        color: car.color,
+        plate: car.plate,
+        confirmationCc: '',
+      })
+      this.showEditForm = true
+      this.openModal()
+      this.changeDetector.detectChanges()
+    })
   }
-
+  
   openDeleteModal(car: MyCar): void {
-    this.curentModalTitle = 'Delete Car';
-    this.showCreateForm = false;
-    this.showEditForm = false;
-    this.auxiliarCar = { ...car };
-    this.carForm.setValue({
-      cc: car.cc!,
-      brand: car.brand,
-      model: car.model,
-      year: car.year,
-      color: car.color,
-      plate: car.plate,
-      confirmationCc: '',
-    });
-    this.showDeleteForm = true;
-    this.openModal();
-    this.changeDetector.detectChanges();
+    this.getAllBrands().then(() => {  
+      this.curentModalTitle = 'Delete Car'
+      this.showCreateForm = false
+      this.showEditForm = false
+      this.auxiliarCar = { ...car }
+      this.carForm.setValue({
+        cc: car.cc!,
+        brand: car.brand,
+        model: car.model,
+        year: car.year,
+        color: car.color,
+        plate: car.plate,
+        confirmationCc: '',
+      })
+      this.showDeleteForm = true
+      this.openModal()
+      this.changeDetector.detectChanges()
+    })
   }
 
   closeModal(): void {
-    this.modalComponent.closeModal();
-    this.auxiliarCar = this.reset();
+    this.modalComponent.closeModal()
+    this.auxiliarCar = this.reset()
   }
 
   reset(): MyCar {
@@ -161,14 +191,90 @@ export class MyCarsComponent implements OnInit {
       plate: '',
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    }
   }
 
   resetForm() {
-    this.carForm.reset();
+    this.carForm.reset()
   }
 
-  getAllCountries(): void {}
+  onBrandChange(): void {
+    const selectedBrand = this.carForm.get('brand')?.value
+
+    if (selectedBrand) {
+      this.brandIsSelected = true
+      this.carForm.get('model')?.enable()
+      this.models = []
+
+      this.getAllModels(selectedBrand).then(() => {
+        this.changeDetector.detectChanges()
+      })
+    } else {
+      this.brandIsSelected = false
+      this.carForm.get('model')?.disable()
+      this.models = []
+    }
+  }
+
+  getAllBrands(): Promise<void> {
+    return new Promise((resolve) => {
+      this.myCarService
+        .getBrands()
+        .pipe(
+          catchError((error) => {
+            this.toastr.error(
+              error.error?.error || 'Error',
+              'Failed to get brands'
+            )
+            return of([] as string[])
+          })
+        )
+        .subscribe({
+          next: (data: string[]) => {
+            this.brands = [...data]
+            resolve()
+          },
+          error: () => {
+            this.brands = []
+            resolve()
+          },
+        })
+    })
+  }
+
+  getAllModels(brand: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.myCarService
+        .getModels(brand)
+        .pipe(
+          catchError((error) => {
+            this.toastr.error(
+              error.error?.error || 'Error',
+              'Failed to get models'
+            )
+            return of({} as ModelList)
+          })
+        )
+        .subscribe({
+          next: (data: ModelList) => {
+            // Get the models for the selected brand
+            const brandModels = data[brand.toLowerCase()]
+
+            if (brandModels) {
+              // Extract model names from the object keys
+              this.models = Object.keys(brandModels)
+            } else {
+              this.models = []
+            }
+            resolve()
+          },
+          error: () => {
+            this.models = []
+            resolve()
+          },
+        })
+    })
+  }
 
   confirmCreate(): void {
     const newCar: MyCar = {
@@ -180,7 +286,7 @@ export class MyCarsComponent implements OnInit {
       plate: this.carForm.value.plate!,
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    }
 
     // this.carService.create(newCar).subscribe({
     //   next: () => {
@@ -195,12 +301,12 @@ export class MyCarsComponent implements OnInit {
   }
 
   confirmEdit(): void {
-    this.auxiliarCar.cc = this.carForm.value.cc!;
-    this.auxiliarCar.brand = this.carForm.value.brand!;
-    this.auxiliarCar.model = this.carForm.value.model!;
-    this.auxiliarCar.year = this.carForm.value.year!;
-    this.auxiliarCar.color = this.carForm.value.color!;
-    this.auxiliarCar.plate = this.carForm.value.plate!;
+    this.auxiliarCar.cc = this.carForm.value.cc!
+    this.auxiliarCar.brand = this.carForm.value.brand!
+    this.auxiliarCar.model = this.carForm.value.model!
+    this.auxiliarCar.year = this.carForm.value.year!
+    this.auxiliarCar.color = this.carForm.value.color!
+    this.auxiliarCar.plate = this.carForm.value.plate!
     // this.carService
     //   .update(this.backupCar, this.auxiliarCar)
     //   .subscribe({
@@ -225,7 +331,6 @@ export class MyCarsComponent implements OnInit {
     //   );
     //   return;
     // }
-
     // this.carService.delete(this.auxiliarCar.cc!).subscribe({
     //   next: () => {
     //     this.toastr.success('Car deleted successfully');

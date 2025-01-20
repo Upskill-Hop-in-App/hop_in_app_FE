@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiUrl } from '../../../utils/apiUrl';
+import { ApiUrl } from '../../../utils/api-url';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Car } from '../../models/car.model';
@@ -9,14 +9,14 @@ import { ModelList } from '../../models/modelList';
   providedIn: 'root',
 })
 export class MyCarService {
-  apiUrlCountries = ApiUrl.cars;
+  apiUrlCars = ApiUrl.cars;
 
   constructor(private http: HttpClient) {}
 
   // CREATE
 
   create(car: Car): Observable<Car> {
-    return this.http.post<Car>(this.apiUrlCountries, {
+    return this.http.post<Car>(this.apiUrlCars, {
       model: car.model,
       brand: car.brand,
       startYear: car.startYear,
@@ -28,13 +28,25 @@ export class MyCarService {
 
   getAll(): Observable<Car[]> {
     return this.http
-      .get<{ message: string; data: Car[] }>(this.apiUrlCountries)
+      .get<{ message: string; data: Car[] }>(this.apiUrlCars)
+      .pipe(map((res) => res.data));
+  }
+
+  getBrands(): Observable<string[]> {
+    return this.http
+      .get<{ message: string; data: string[] }>(`${this.apiUrlCars}/brands`)
+      .pipe(map((res) => res.data));
+  }
+
+  getModels(brand: string): Observable<ModelList> {
+    return this.http
+      .get<{ message: string; data: ModelList }>(`${this.apiUrlCars}/brand/${brand}`)
       .pipe(map((res) => res.data));
   }
 
   getByModel(model: string): Observable<ModelList> {
     return this.http
-      .get<{ message: string; data: ModelList }>(`${this.apiUrlCountries}/${model}`)
+      .get<{ message: string; data: ModelList }>(`${this.apiUrlCars}/${model}`)
       .pipe(map((res) => res.data));
   }
 
@@ -43,14 +55,14 @@ export class MyCarService {
       .get<{
         message: string;
         data: boolean;
-      }>(`${this.apiUrlCountries}/verify/${brand}/${model}/${year}`)
+      }>(`${this.apiUrlCars}/verify/${brand}/${model}/${year}`)
       .pipe(map((res) => res.data));
   }
 
   // UPDATE
 
   update(oldCar: Car, updatedCar: Car): Observable<Car> {
-    return this.http.put<Car>(`${this.apiUrlCountries}/${oldCar.brand}/${oldCar.brand}`, {
+    return this.http.put<Car>(`${this.apiUrlCars}/${oldCar.brand}/${oldCar.brand}`, {
       model: updatedCar.model,
       brand: updatedCar.brand,
       startYear: updatedCar.startYear,
