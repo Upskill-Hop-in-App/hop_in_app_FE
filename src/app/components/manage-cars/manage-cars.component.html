@@ -1,20 +1,30 @@
-<div class="manage-cars">
-    <h1>Manage Cars</h1>
-  
-    <div class="car-list">
-      <h2>Car List</h2>
-      <ul>
-        <li *ngFor="let car of cars$ | async">
-          <span>{{ car.brand }} - {{ car.model }} ({{ car.startYear }} - {{ car.endYear }})</span>
-          <button (click)="updateCar(car)">Update</button>
-          <button (click)="deleteCar(car)">Delete</button>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="add-car">
-      <h2>Add a New Car</h2>
-      <app-car-form (formSubmit)="loadCars()"></app-car-form>
-    </div>
-  </div>
-  
+<!-- Show Info -->
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Brand</th>
+        <th scope="col">Model</th>
+        <th scope="col">Start Year</th>
+        <th scope="col">End Year</th>
+          <th scope="col">Created at</th>
+          <th scope="col">Updated at</th>
+          <th></th>
+          <th></th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      @for (car of cars; track car.id) {
+        <tr>
+          <td>{{ car.brand }}</td>
+          <td>{{ car.model }}</td>
+          <td>{{ car.startYear }}</td>
+          <td>{{ car.endYear }}</td>
+          <td>{{car.createdAt}}</td>
+          <td>{{car.updatedAt}}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
