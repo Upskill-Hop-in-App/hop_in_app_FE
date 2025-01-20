@@ -2,8 +2,8 @@
 export interface ModelList {
   [brand: string]: {
     [model: string]: {
-      startYear: number;
-      endYear: number | null;
-    };
-  };
+      startYear: number
+      endYear: number | null
+    }
+  }
 }

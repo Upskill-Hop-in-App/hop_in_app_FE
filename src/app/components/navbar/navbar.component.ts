@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { NgOptimizedImage } from '@angular/common';
-import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
+import { Component } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { RouterLink } from '@angular/router'
+import { NgOptimizedImage } from '@angular/common'
+import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
 import {
   FontAwesomeModule,
   FaIconLibrary,
-} from '@fortawesome/angular-fontawesome';
-import { faMoon } from '@fortawesome/free-solid-svg-icons';
-import { faSun } from '@fortawesome/free-regular-svg-icons';
+} from '@fortawesome/angular-fontawesome'
+import { faMoon } from '@fortawesome/free-solid-svg-icons'
+import { faSun } from '@fortawesome/free-regular-svg-icons'
 
 @Component({
   selector: 'app-navbar',
@@ -24,59 +24,59 @@ import { faSun } from '@fortawesome/free-regular-svg-icons';
   styleUrl: './navbar.component.css',
 })
 export class SidebarComponent {
-  sidebarVisible: boolean = false;
-  menuNavbarVisible: boolean = false;
+  sidebarVisible: boolean = false
+  menuNavbarVisible: boolean = false
 
   constructor(library: FaIconLibrary) {
-    library.addIcons(faMoon, faSun);
+    library.addIcons(faMoon, faSun)
   }
 
   ngAfterViewInit(): void {
-    const theme = localStorage.getItem('theme');
+    const theme = localStorage.getItem('theme')
     const themeToggleCheckbox = document.querySelector(
-      'input[type="checkbox"]',
-    ) as HTMLInputElement;
+      'input[type="checkbox"]'
+    ) as HTMLInputElement
 
     if (theme === 'dark') {
-      themeToggleCheckbox.checked = true;
+      themeToggleCheckbox.checked = true
     } else {
-      themeToggleCheckbox.checked = false;
+      themeToggleCheckbox.checked = false
     }
   }
 
   toggleSidebar() {
-    this.sidebarVisible = !this.sidebarVisible;
+    this.sidebarVisible = !this.sidebarVisible
   }
 
   toggleMenuNavbar() {
-    this.menuNavbarVisible = !this.menuNavbarVisible;
+    this.menuNavbarVisible = !this.menuNavbarVisible
   }
 
   closeSidebar() {
-    this.sidebarVisible = false;
+    this.sidebarVisible = false
   }
 
   closeMenuNavbar() {
-    this.menuNavbarVisible = false;
+    this.menuNavbarVisible = false
   }
 
   toggleTheme() {
-    document.body.classList.toggle('dark');
+    document.body.classList.toggle('dark')
 
     if (document.body.classList.contains('dark')) {
-      localStorage.setItem('theme', 'dark');
+      localStorage.setItem('theme', 'dark')
     } else {
-      localStorage.setItem('theme', 'light');
+      localStorage.setItem('theme', 'light')
     }
 
     const themeToggleCheckbox = document.querySelector(
-      'input[name="theme-toggle"]',
-    ) as HTMLInputElement;
+      'input[name="theme-toggle"]'
+    ) as HTMLInputElement
 
-    themeToggleCheckbox.checked = document.body.classList.contains('dark');
+    themeToggleCheckbox.checked = document.body.classList.contains('dark')
   }
 
   logout() {
-    this.closeMenuNavbar();
+    this.closeMenuNavbar()
   }
 }

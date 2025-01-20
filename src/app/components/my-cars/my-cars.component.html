@@ -30,8 +30,6 @@
           <th scope="col">Year</th>
           <th scope="col">Color</th>
           <th scope="col">Plate</th>
-          <th scope="col">Created</th>
-          <th scope="col">Updated</th>
           <th></th>
           <th></th>
         </tr>
@@ -45,8 +43,6 @@
             <td>{{ car.year }}</td>
             <td>{{ car.color }}</td>
             <td>{{ car.plate }}</td>
-            <td>{{ car.createdAt.toLocaleDateString("pt-PT") }}</td>
-            <td>{{ car.updatedAt.toLocaleDateString("pt-PT") }}</td>
 
             <td>
               <div class="group relative">
@@ -114,6 +110,7 @@
             <label for="modelName" class="font-semibold">Model: </label>
             <select
               formControlName="model"
+              (ngModelChange)="onModelChange()"
               class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 value=""
@@ -129,14 +126,21 @@
           </div>
 
           <div class="space-y-2">
-            <label for="carYear" class="font-semibold">Year: </label>
-            <input
-              type="text"
-              name="carYear"
-              id="carYear"
-              placeholder="ex: 1998"
+            <label for="yearName" class="font-semibold">Year: </label>
+            <select
               formControlName="year"
-              class="input-standard" />
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+              <option
+                value=""
+                disabled
+                selected
+                class="h-8 w-full text-gray-400">
+                Select Year
+              </option>
+              @for (year of years; track year) {
+                <option [value]="year">{{ year }}</option>
+              }
+            </select>
           </div>
 
           <div class="space-y-2">
@@ -198,6 +202,7 @@
             <label for="modelName" class="font-semibold">Model: </label>
             <select
               formControlName="model"
+              (ngModelChange)="onModelChange()"
               class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 value=""
@@ -213,14 +218,21 @@
           </div>
 
           <div class="space-y-2">
-            <label for="carYear" class="font-semibold">Year: </label>
-            <input
-              type="text"
-              name="carYear"
-              id="carYear"
-              placeholder="ex: 1998"
+            <label for="yearName" class="font-semibold">Year: </label>
+            <select
               formControlName="year"
-              class="input-standard" />
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+              <option
+                value=""
+                disabled
+                selected
+                class="h-8 w-full text-gray-400">
+                Select Year
+              </option>
+              @for (year of years; track year) {
+                <option [value]="year">{{ year }}</option>
+              }
+            </select>
           </div>
 
           <div class="space-y-2">
@@ -283,6 +295,7 @@
               <label for="modelName" class="font-semibold">Model: </label>
               <select
                 formControlName="model"
+                (ngModelChange)="onModelChange()"
                 class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
                 <option
                   value=""
@@ -298,14 +311,21 @@
             </div>
 
             <div class="space-y-2">
-              <label for="carYear" class="font-semibold">Year: </label>
-              <input
-                type="text"
-                name="carYear"
-                id="carYear"
-                placeholder="ex: 1998"
+              <label for="yearName" class="font-semibold">Year: </label>
+              <select
                 formControlName="year"
-                class="input-standard" />
+                class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
+                <option
+                  value=""
+                  disabled
+                  selected
+                  class="h-8 w-full text-gray-400">
+                  Select Year
+                </option>
+                @for (year of years; track year) {
+                  <option [value]="year">{{ year }}</option>
+                }
+              </select>
             </div>
 
             <div class="space-y-2">

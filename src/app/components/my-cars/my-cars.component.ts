@@ -53,10 +53,10 @@ import { ModelList } from '../../models/modelList'
 export class MyCarsComponent implements OnInit {
   cars: MyCar[] = []
   brands: string[] = []
-  modelList: ModelList[] = []
+  modelList: ModelList = {}
   models: string[] = []
-  // selectModelDisabled: boolean = true
-  brandIsSelected: boolean = false
+  years: Number[] = []
+
   title = 'My Cars'
   backupCar: MyCar = this.reset()
   auxiliarCar: MyCar = this.reset()
@@ -136,43 +136,59 @@ export class MyCarsComponent implements OnInit {
 
   openEditModal(car: MyCar): void {
     this.getAllBrands().then(() => {
-      this.curentModalTitle = 'Edit Car'
-      this.showCreateForm = false
-      this.showDeleteForm = false
-      this.backupCar = { ...car }
-      this.carForm.setValue({
-        cc: car.cc!,
-        brand: car.brand,
-        model: car.model,
-        year: car.year,
-        color: car.color,
-        plate: car.plate,
-        confirmationCc: '',
+      this.getAllModels(car.brand).then(() => {
+        this.curentModalTitle = 'Edit Car'
+        this.showCreateForm = false
+        this.showDeleteForm = false
+        this.backupCar = { ...car }
+
+        this.carForm.get('model')?.enable()
+
+        this.carForm.patchValue({
+          cc: car.cc!,
+          brand: car.brand,
+          model: car.model,
+          year: car.year,
+          color: car.color,
+          plate: car.plate,
+          confirmationCc: '',
+        })
+
+        this.getAllYears(car.brand, car.model)
+
+        this.showEditForm = true
+        this.openModal()
+        this.changeDetector.detectChanges()
       })
-      this.showEditForm = true
-      this.openModal()
-      this.changeDetector.detectChanges()
     })
   }
-  
+
   openDeleteModal(car: MyCar): void {
-    this.getAllBrands().then(() => {  
-      this.curentModalTitle = 'Delete Car'
-      this.showCreateForm = false
-      this.showEditForm = false
-      this.auxiliarCar = { ...car }
-      this.carForm.setValue({
-        cc: car.cc!,
-        brand: car.brand,
-        model: car.model,
-        year: car.year,
-        color: car.color,
-        plate: car.plate,
-        confirmationCc: '',
+    this.getAllBrands().then(() => {
+      this.getAllModels(car.brand).then(() => {
+        this.curentModalTitle = 'Delete Car'
+        this.showCreateForm = false
+        this.showEditForm = false
+        this.auxiliarCar = { ...car }
+
+        this.carForm.get('model')?.enable()
+
+        this.carForm.patchValue({
+          cc: car.cc!,
+          brand: car.brand,
+          model: car.model,
+          year: car.year,
+          color: car.color,
+          plate: car.plate,
+          confirmationCc: '',
+        })
+
+        this.getAllYears(car.brand, car.model)
+
+        this.showDeleteForm = true
+        this.openModal()
+        this.changeDetector.detectChanges()
       })
-      this.showDeleteForm = true
-      this.openModal()
-      this.changeDetector.detectChanges()
     })
   }
 
@@ -202,7 +218,6 @@ export class MyCarsComponent implements OnInit {
     const selectedBrand = this.carForm.get('brand')?.value
 
     if (selectedBrand) {
-      this.brandIsSelected = true
       this.carForm.get('model')?.enable()
       this.models = []
 
@@ -210,9 +225,24 @@ export class MyCarsComponent implements OnInit {
         this.changeDetector.detectChanges()
       })
     } else {
-      this.brandIsSelected = false
       this.carForm.get('model')?.disable()
       this.models = []
+    }
+  }
+
+  onModelChange(): void {
+    const selectedBrand = this.carForm.get('brand')?.value!
+    const selectedModel = this.carForm.get('model')?.value!
+
+    if (selectedModel) {
+      this.carForm.get('year')?.enable()
+      this.years = []
+
+      this.getAllYears(selectedBrand, selectedModel)
+      this.changeDetector.detectChanges()
+    } else {
+      this.carForm.get('year')?.disable()
+      this.years = []
     }
   }
 
@@ -257,11 +287,10 @@ export class MyCarsComponent implements OnInit {
         )
         .subscribe({
           next: (data: ModelList) => {
-            // Get the models for the selected brand
             const brandModels = data[brand.toLowerCase()]
+            this.modelList = { ...data }
 
             if (brandModels) {
-              // Extract model names from the object keys
               this.models = Object.keys(brandModels)
             } else {
               this.models = []
@@ -274,6 +303,22 @@ export class MyCarsComponent implements OnInit {
           },
         })
     })
+  }
+
+  getAllYears(brand: string, model: string): void {
+    const currentYear = new Date().getFullYear()
+    const years = []
+
+    if (brand && model && this.modelList) {
+      const brandData = this.modelList[brand]
+      if (brandData && brandData[model]) {
+        const { startYear, endYear } = this.modelList[brand][model]
+        for (let i = startYear; i <= (endYear || currentYear); i++) {
+          years.push(i)
+        }
+      }
+    }
+    this.years = [...years]
   }
 
   confirmCreate(): void {
