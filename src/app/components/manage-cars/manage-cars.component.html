@@ -1,5 +1,9 @@
 <!-- Show Info -->
 <div class="table-container">
+  <button (click)="openCreateModal()" class="mb-4 flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+    <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+    <span>Add New Car</span>
+  </button>
   <table>
     <thead>
       <tr>
@@ -53,7 +57,6 @@
             type="text"
             name="carBrand"
             id="carBrand"
-            placeholder="ex: Audi"
             formControlName="brand"
             class="input-standard"
           />
@@ -64,10 +67,44 @@
             type="text"
             name="model"
             id="model"
-            placeholder="ex: model"
             formControlName="model"
             class="input-standard"
           />
+        </div>
+        <div class="space-y-2">
+          <label for="brand" class="font-semibold">Start Year: </label>
+          <input
+            type="number"
+            name="startYear"
+            id="startYear"
+            formControlName="startYear"
+            class="input-standard"
+          />
+        </div>
+        <div class="space-y-2">
+          <label for="brand" class="font-semibold">End Year: </label>
+          <input
+            type="number"
+            name="endYear"
+            id="endYear"
+            formControlName="endYear"
+            class="input-standard"
+          />
+          <div class="space-y-2 border-t py-8 dark:border-gray-600">
+            <p class="font-semibold text-rose-500">
+              Please enter the car brand to
+              confirm:
+            </p>
+            <input
+              type="text"
+              name="confirmationCc"
+              id="confirmationCc"
+              class="input-standard"
+              formControlName="confirmationCc"
+              placeholder="Enter car brand"
+              required
+            />
+          </div>
         </div>
         <div class="buttons-modal-container">
           <button type="button" (click)="closeModal()" class="btn-gray">
@@ -192,7 +229,7 @@
               id="confirmationCc"
               class="input-standard"
               formControlName="confirmationCc"
-              placeholder="Enter country code"
+              placeholder="Enter car brand"
               required
             />
           </div>

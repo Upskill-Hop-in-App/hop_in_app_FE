@@ -37,7 +37,7 @@ export class ManageCarsComponent implements OnInit {
   cars: Car[] = [];
   title: string = 'Manage Cars';
   currentModalTitle: string = '';
-  showCreateButton: boolean = false;
+  //showCreateButton: boolean = false;
   showUpdateButton: boolean = false;
   showDeleteButton: boolean = false;
   showCreateForm: boolean = false;
@@ -83,7 +83,7 @@ export class ManageCarsComponent implements OnInit {
 
   openCreateModal(): void {
     this.currentModalTitle = 'Create Car';
-    this.showCreateButton = true;
+    this.showCreateForm = true;
     this.showUpdateButton = false;
     this.showDeleteButton = false;
     this.carForm.reset();
@@ -92,7 +92,6 @@ export class ManageCarsComponent implements OnInit {
 
   openUpdateModal(car: Car): void {
     this.currentModalTitle = 'Update Car';
-    this.showCreateButton = false;
     this.showUpdateButton = true;
     this.showDeleteButton = false;
     this.carForm.setValue({
@@ -108,7 +107,6 @@ export class ManageCarsComponent implements OnInit {
 
   openDeleteModal(car: Car): void {
     this.currentModalTitle = 'Delete Car';
-    this.showCreateButton = false;
     this.showUpdateButton = false;
     this.showDeleteButton = true;
     this.auxiliarCar = { ...car };
