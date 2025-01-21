@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { ApiUrl } from '../../../utils/api-url'
+import { CarApiUrl } from '../../../utils/api-url'
 import { HttpClient } from '@angular/common/http'
 import { Observable, map } from 'rxjs'
 import { Car } from '../../models/car.model'
@@ -8,8 +8,8 @@ import { ModelList } from '../../models/modelList'
 @Injectable({
   providedIn: 'root',
 })
-export class MyCarService {
-  apiUrlCars = ApiUrl.cars
+export class CarService {
+  apiUrlCars = CarApiUrl.cars
 
   constructor(private http: HttpClient) {}
 
@@ -78,7 +78,7 @@ export class MyCarService {
 
   // DELETE
 
-  // delete(): Observable<Car> {
-  //   return;
-  // }
+  delete(): Observable<Car> {
+    return this.http.delete<Car>(this.apiUrlCars)
+  }
 }

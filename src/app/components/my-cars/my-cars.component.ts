@@ -15,9 +15,8 @@ import {
 import { CommonModule, DOCUMENT } from '@angular/common'
 import { catchError } from 'rxjs/operators'
 import { of } from 'rxjs'
-import { MyCar } from '../../models/my-car'
-import myCars from '../../../utils/data/cars'
-import { MyCarService } from '../../services/my-car/my-car.service'
+import { MyCar } from '../../models/my-car.model'
+import { CarService } from '../../services/car/car.service'
 import { ToastrService } from 'ngx-toastr'
 import {
   faMagnifyingGlass,
@@ -35,13 +34,14 @@ import {
   FontAwesomeModule,
   FaIconLibrary,
 } from '@fortawesome/angular-fontawesome'
-import { AppModalComponent } from '../modal/modal.component'
+import { ModalComponent } from '../modal/modal.component'
 import { ModelList } from '../../models/modelList'
+import { MyCarService } from '../../services/my-car/my-car.service'
 
 @Component({
   selector: 'app-my-cars',
   imports: [
-    AppModalComponent,
+    ModalComponent,
     CommonModule,
     FormsModule,
     FontAwesomeModule,
@@ -51,6 +51,7 @@ import { ModelList } from '../../models/modelList'
   styleUrl: './my-cars.component.css',
 })
 export class MyCarsComponent implements OnInit {
+  user = 'client1_name'
   cars: MyCar[] = []
   brands: string[] = []
   modelList: ModelList = {}
@@ -73,15 +74,16 @@ export class MyCarsComponent implements OnInit {
     year: new FormControl(0, [Validators.required]),
     color: new FormControl('', [Validators.required]),
     plate: new FormControl('', [Validators.required]),
-    confirmationCc: new FormControl(''),
+    confirmationPlate: new FormControl(''),
   })
 
-  @ViewChild(AppModalComponent) modalComponent!: AppModalComponent
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     // private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
+    private carService: CarService,
     private myCarService: MyCarService,
     private toastr: ToastrService,
     library: FaIconLibrary
@@ -109,12 +111,24 @@ export class MyCarsComponent implements OnInit {
       year: new FormControl(0, [Validators.required]),
       color: new FormControl('', [Validators.required]),
       plate: new FormControl('', [Validators.required]),
-      confirmationCc: new FormControl(''),
+      confirmationPlate: new FormControl(''),
     })
   }
 
   getMyCars(): void {
-    this.cars = myCars
+    this.myCarService.getCarByUsername(this.user)
+      .pipe(
+        catchError((error) => {
+          this.toastr.error(
+            error.error?.error || 'Error',
+            'Failed to get your cars'
+          );
+          return of([] as MyCar[]);
+        })
+      )
+      .subscribe((data) => {
+        this.cars = data;
+      });
   }
 
   openModal(): void {
@@ -135,32 +149,25 @@ export class MyCarsComponent implements OnInit {
   }
 
   openEditModal(car: MyCar): void {
-    this.getAllBrands().then(() => {
-      this.getAllModels(car.brand).then(() => {
-        this.curentModalTitle = 'Edit Car'
-        this.showCreateForm = false
-        this.showDeleteForm = false
-        this.backupCar = { ...car }
+    this.carForm.get('brand')?.disable()
+    this.carForm.get('model')?.disable()
+    this.carForm.get('year')?.setValue(car.year)
+    this.carForm.get('year')?.disable()
+    
+    this.curentModalTitle = 'Edit Car'
+    this.showCreateForm = false
+    this.showDeleteForm = false
+    this.backupCar = { ...car }
 
-        this.carForm.get('model')?.enable()
-
-        this.carForm.patchValue({
-          cc: car.cc!,
-          brand: car.brand,
-          model: car.model,
-          year: car.year,
-          color: car.color,
-          plate: car.plate,
-          confirmationCc: '',
-        })
-
-        this.getAllYears(car.brand, car.model)
-
-        this.showEditForm = true
-        this.openModal()
-        this.changeDetector.detectChanges()
-      })
+    this.carForm.patchValue({
+      color: car.color,
+      plate: car.plate,
+      confirmationPlate: '',
     })
+
+    this.showEditForm = true
+    this.openModal()
+    this.changeDetector.detectChanges()
   }
 
   openDeleteModal(car: MyCar): void {
@@ -180,7 +187,7 @@ export class MyCarsComponent implements OnInit {
           year: car.year,
           color: car.color,
           plate: car.plate,
-          confirmationCc: '',
+          confirmationPlate: '',
         })
 
         this.getAllYears(car.brand, car.model)
@@ -203,6 +210,7 @@ export class MyCarsComponent implements OnInit {
       brand: '',
       model: '',
       year: 0,
+      user: '',
       color: '',
       plate: '',
       createdAt: new Date(),
@@ -248,7 +256,7 @@ export class MyCarsComponent implements OnInit {
 
   getAllBrands(): Promise<void> {
     return new Promise((resolve) => {
-      this.myCarService
+      this.carService
         .getBrands()
         .pipe(
           catchError((error) => {
@@ -274,7 +282,7 @@ export class MyCarsComponent implements OnInit {
 
   getAllModels(brand: string): Promise<void> {
     return new Promise((resolve) => {
-      this.myCarService
+      this.carService
         .getModels(brand)
         .pipe(
           catchError((error) => {
@@ -327,65 +335,66 @@ export class MyCarsComponent implements OnInit {
       brand: this.carForm.value.brand!,
       model: this.carForm.value.model!,
       year: this.carForm.value.year!,
+      user: this.user,
       color: this.carForm.value.color!,
       plate: this.carForm.value.plate!,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
 
-    // this.carService.create(newCar).subscribe({
-    //   next: () => {
-    //     this.toastr.success('Car added successfully');
-    //     this.closeModal();
-    //     this.getAllCountries();
-    //   },
-    //   error: (err) => {
-    //     this.toastr.error(err.error.error, 'Failed to add new car');
-    //   },
-    // });
+    this.myCarService.create(newCar).subscribe({
+      next: () => {
+        this.toastr.success('Car added successfully');
+        this.closeModal();
+        this.getMyCars();
+      },
+      error: (err) => {
+        this.toastr.error(err.error.error, 'Failed to add new car');
+      },
+    });
   }
 
   confirmEdit(): void {
-    this.auxiliarCar.cc = this.carForm.value.cc!
     this.auxiliarCar.brand = this.carForm.value.brand!
     this.auxiliarCar.model = this.carForm.value.model!
     this.auxiliarCar.year = this.carForm.value.year!
+    this.auxiliarCar.user = this.user
     this.auxiliarCar.color = this.carForm.value.color!
     this.auxiliarCar.plate = this.carForm.value.plate!
-    // this.carService
-    //   .update(this.backupCar, this.auxiliarCar)
-    //   .subscribe({
-    //     next: () => {
-    //       this.toastr.success('Car updated successfully');
-    //       this.closeModal();
-    //       this.getAllCountries();
-    //     },
-    //     error: (err) => {
-    //       this.toastr.error(err.error.error, 'Failed to update car');
-    //     },
-    //   });
+    this.myCarService
+      .updateCarByCode(this.backupCar, this.auxiliarCar)
+      .subscribe({
+        next: () => {
+          this.toastr.success('Car updated successfully');
+          this.closeModal();
+          this.getMyCars();
+        },
+        error: (err) => {
+          this.toastr.error(err.error.error, 'Failed to update car');
+        },
+      });
   }
 
   confirmDelete(): void {
-    // if (
-    //   this.carForm.value.confirmationCc?.toUpperCase() !==
-    //   this.auxiliarCar.cc?.toUpperCase()
-    // ) {
-    //   this.toastr.error(
-    //     `The confirmation code does not match the car code. ${this.carForm.value.confirmationCc} - ${this.auxiliarCar.cc} `,
-    //   );
-    //   return;
-    // }
-    // this.carService.delete(this.auxiliarCar.cc!).subscribe({
-    //   next: () => {
-    //     this.toastr.success('Car deleted successfully');
-    //     this.closeModal();
-    //     this.getAllCountries();
-    //   },
-    //   error: (err) => {
-    //     this.toastr.error(err.error.error, 'Failed to delete car');
-    //     this.getAllCountries();
-    //   },
-    // });
+    if (
+      this.carForm.value.confirmationPlate?.toUpperCase() !==
+      this.auxiliarCar.plate?.toUpperCase()
+    ) {
+      this.toastr.error(
+        `The confirmation code does not match the car code. ${this.carForm.value.confirmationPlate} - ${this.auxiliarCar.cc} `,
+      );
+      return;
+    }
+    this.myCarService.deleteCarByCode(this.auxiliarCar.cc!).subscribe({
+      next: () => {
+        this.toastr.success('Car deleted successfully');
+        this.closeModal();
+        this.getMyCars();
+      },
+      error: (err) => {
+        this.toastr.error(err.error.error, 'Failed to delete car');
+        this.getMyCars();
+      },
+    });
   }
 }

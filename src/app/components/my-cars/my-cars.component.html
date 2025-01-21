@@ -183,14 +183,13 @@
             <label for="brandName" class="font-semibold">Brand: </label>
             <select
               formControlName="brand"
-              (ngModelChange)="onBrandChange()"
               class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 value=""
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                Select Brand
+                {{backupCar.brand}}
               </option>
               @for (brand of brands; track brand) {
                 <option [value]="brand">{{ brand }}</option>
@@ -202,14 +201,13 @@
             <label for="modelName" class="font-semibold">Model: </label>
             <select
               formControlName="model"
-              (ngModelChange)="onModelChange()"
               class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 value=""
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                Select Model
+                {{backupCar.model}}
               </option>
               @for (model of models; track model) {
                 <option [value]="model">{{ model }}</option>
@@ -223,11 +221,11 @@
               formControlName="year"
               class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
-                value=""
+                [value]="backupCar.year"
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                Select Year
+                {{backupCar.year}}
               </option>
               @for (year of years; track year) {
                 <option [value]="year">{{ year }}</option>
@@ -274,58 +272,38 @@
           <div class="space-y-8">
             <div class="space-y-2">
               <label for="brandName" class="font-semibold">Brand: </label>
-              <select
+              <input
+                type="text"
+                name="brandName"
+                id="brandName"
                 formControlName="brand"
-                (ngModelChange)="onBrandChange()"
-                class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
-                <option
-                  value=""
-                  disabled
-                  selected
-                  class="h-8 w-full text-gray-400">
-                  Select Brand
-                </option>
-                @for (brand of brands; track brand) {
-                  <option [value]="brand">{{ brand }}</option>
-                }
-              </select>
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
             </div>
 
             <div class="space-y-2">
               <label for="modelName" class="font-semibold">Model: </label>
-              <select
+              <input
+                type="text"
+                name="modelName"
+                id="modelName"
                 formControlName="model"
-                (ngModelChange)="onModelChange()"
-                class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
-                <option
-                  value=""
-                  disabled
-                  selected
-                  class="h-8 w-full text-gray-400">
-                  Select Model
-                </option>
-                @for (model of models; track model) {
-                  <option [value]="model">{{ model }}</option>
-                }
-              </select>
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
             </div>
 
             <div class="space-y-2">
               <label for="yearName" class="font-semibold">Year: </label>
-              <select
+              <input
+                type="text"
+                name="yearName"
+                id="yearName"
                 formControlName="year"
-                class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
-                <option
-                  value=""
-                  disabled
-                  selected
-                  class="h-8 w-full text-gray-400">
-                  Select Year
-                </option>
-                @for (year of years; track year) {
-                  <option [value]="year">{{ year }}</option>
-                }
-              </select>
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
             </div>
 
             <div class="space-y-2">
@@ -334,9 +312,10 @@
                 type="text"
                 name="colorName"
                 id="colorName"
-                placeholder="ex: Blue"
                 formControlName="color"
-                class="input-standard" />
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
             </div>
 
             <div class="space-y-2">
@@ -345,9 +324,10 @@
                 type="text"
                 name="plateNumber"
                 id="plateNumber"
-                placeholder="ex: 22-YY-44"
                 formControlName="plate"
-                class="input-standard" />
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
             </div>
             <div class="space-y-2 border-t py-8 dark:border-gray-600">
               <p class="font-semibold text-rose-500">
@@ -356,11 +336,11 @@
               </p>
               <input
                 type="text"
-                name="confirmationCc"
-                id="confirmationCc"
+                name="confirmationPlate"
+                id="confirmationPlate"
                 class="input-standard"
-                formControlName="confirmationCc"
-                placeholder="Enter car code"
+                formControlName="confirmationPlate"
+                placeholder="Enter car plate number"
                 required />
             </div>
           </div>
