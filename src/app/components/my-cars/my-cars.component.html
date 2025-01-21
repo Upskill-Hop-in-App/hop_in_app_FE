@@ -24,7 +24,6 @@
     <table>
       <thead>
         <tr>
-          <th scope="col">Code</th>
           <th scope="col">Brand</th>
           <th scope="col">Model</th>
           <th scope="col">Year</th>
@@ -37,7 +36,6 @@
       <tbody>
         @for (car of cars; track [car.brand, car.model]) {
           <tr>
-            <td>{{ car.cc }}</td>
             <td>{{ car.brand }}</td>
             <td>{{ car.model }}</td>
             <td>{{ car.year }}</td>
@@ -185,11 +183,11 @@
               formControlName="brand"
               class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
-                value=""
+                [value]="backupCar.brand"
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                {{backupCar.brand}}
+                {{ backupCar.brand }}
               </option>
               @for (brand of brands; track brand) {
                 <option [value]="brand">{{ brand }}</option>
@@ -203,11 +201,11 @@
               formControlName="model"
               class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
-                value=""
+                [value]="backupCar.model"
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                {{backupCar.model}}
+                {{ backupCar.model }}
               </option>
               @for (model of models; track model) {
                 <option [value]="model">{{ model }}</option>
@@ -225,7 +223,7 @@
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                {{backupCar.year}}
+                {{ backupCar.year }}
               </option>
               @for (year of years; track year) {
                 <option [value]="year">{{ year }}</option>
@@ -278,8 +276,7 @@
                 id="brandName"
                 formControlName="brand"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -290,8 +287,7 @@
                 id="modelName"
                 formControlName="model"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -302,8 +298,7 @@
                 id="yearName"
                 formControlName="year"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -314,8 +309,7 @@
                 id="colorName"
                 formControlName="color"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -326,8 +320,7 @@
                 id="plateNumber"
                 formControlName="plate"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
             <div class="space-y-2 border-t py-8 dark:border-gray-600">
               <p class="font-semibold text-rose-500">

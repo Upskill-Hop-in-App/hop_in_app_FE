@@ -1,6 +1,6 @@
 import { Injectable, model } from '@angular/core'
 import { CarpoolApiUrl } from '../../../utils/api-url'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpRequest } from '@angular/common/http'
 import { Observable, map } from 'rxjs'
 import { MyCar } from '../../models/my-car.model'
 
@@ -12,7 +12,7 @@ export class MyCarService {
 
   constructor(private http: HttpClient) {}
 
-  // CREATE
+  /* ------------------------------- CREATE -------------------------------- */
 
   create(myCar: MyCar): Observable<MyCar> {
     return this.http.post<MyCar>(this.apiUrlCars, {
@@ -25,14 +25,19 @@ export class MyCarService {
     })
   }
 
-  // READ
+  /* ------------------------------- READ -------------------------------- */
 
-  // TODO: Think how to to this using GET with body or alternative
-  // filterCars(username: string): Observable<MyCar[]> {
-  //   return this.http
-  //     .get<{ message: string; data: MyCar[] }>(`${this.apiUrlCars}/filter/username/${username}`)
-  //     .pipe(map((res) => res.data))
-  // }
+  filterCars(
+    username: string,
+    filterName: string,
+    filter: string
+  ): Observable<MyCar[]> {
+    return this.http.request<MyCar[]>(
+      'GET',
+      `${this.apiUrlCars}/username/${username}`,
+      { body: { [filterName]: filter } }
+    )
+  }
 
   getCarByUsername(username: string): Observable<MyCar[]> {
     return this.http
@@ -43,18 +48,9 @@ export class MyCarService {
       .pipe(map((res) => res.data))
   }
 
-  // UPDATE
+  /* ------------------------------- UPDATE -------------------------------- */
 
   updateCarByCode(oldCar: MyCar, updatedCar: MyCar): Observable<MyCar> {
-    console.log('Old car CC:', oldCar.cc) // Check if cc exists
-    console.log('Update payload:', {
-      brand: updatedCar.brand,
-      model: updatedCar.model,
-      year: updatedCar.year,
-      user: updatedCar.user,
-      color: updatedCar.color,
-      plate: updatedCar.plate,
-    })
     return this.http.put<MyCar>(`${this.apiUrlCars}/${oldCar.cc}`, {
       brand: updatedCar.brand,
       model: updatedCar.model,
@@ -65,7 +61,7 @@ export class MyCarService {
     })
   }
 
-  // DELETE
+  /* ------------------------------- DELETE -------------------------------- */
 
   deleteCarByCode(cc: string): Observable<MyCar> {
     return this.http.delete<MyCar>(`${this.apiUrlCars}/${cc}`)

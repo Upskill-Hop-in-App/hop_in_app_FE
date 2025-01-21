@@ -59,6 +59,8 @@ export class MyCarsComponent implements OnInit {
   years: Number[] = []
 
   title = 'My Cars'
+  selectedFilter: string = ''
+  inputFilter: string = ''
   backupCar: MyCar = this.reset()
   auxiliarCar: MyCar = this.reset()
   showCreateForm: boolean = false
@@ -115,28 +117,40 @@ export class MyCarsComponent implements OnInit {
     })
   }
 
-  getMyCars(): void {
-    this.myCarService.getCarByUsername(this.user)
-      .pipe(
-        catchError((error) => {
-          this.toastr.error(
-            error.error?.error || 'Error',
-            'Failed to get your cars'
-          );
-          return of([] as MyCar[]);
-        })
-      )
-      .subscribe((data) => {
-        this.cars = data;
-      });
-  }
+  /* ------------------------------- MODAL/ FORM GENERAL FUNCTIONS -------------------------------- */
 
   openModal(): void {
     this.modalComponent.openModal()
   }
 
+  closeModal(): void {
+    this.modalComponent.closeModal()
+    this.auxiliarCar = this.reset()
+  }
+
+  reset(): MyCar {
+    return {
+      cc: '',
+      brand: '',
+      model: '',
+      year: 0,
+      user: '',
+      color: '',
+      plate: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+  }
+
+  resetForm() {
+    this.carForm.reset()
+  }
+
+  /* ------------------------------- CREATE MODAL -------------------------------- */
+
   openCreateModal(): void {
     // Add a loading state if needed
+    this.carForm.get('brand')?.enable()
     this.getAllBrands().then(() => {
       this.curentModalTitle = 'Add Car'
       this.showEditForm = false
@@ -148,27 +162,85 @@ export class MyCarsComponent implements OnInit {
     })
   }
 
+  confirmCreate(): void {
+    const newCar: MyCar = {
+      cc: this.carForm.value.cc!,
+      brand: this.carForm.value.brand!,
+      model: this.carForm.value.model!,
+      year: this.carForm.value.year!,
+      user: this.user,
+      color: this.carForm.value.color!,
+      plate: this.carForm.value.plate!,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+
+    this.myCarService.create(newCar).subscribe({
+      next: () => {
+        this.toastr.success('Car added successfully')
+        this.closeModal()
+        this.getMyCars()
+      },
+      error: (err) => {
+        this.toastr.error(err.error.error, 'Failed to add new car')
+      },
+    })
+  }
+
+  /* ------------------------------- EDIT MODAL -------------------------------- */
+
   openEditModal(car: MyCar): void {
-    this.carForm.get('brand')?.disable()
-    this.carForm.get('model')?.disable()
-    this.carForm.get('year')?.setValue(car.year)
-    this.carForm.get('year')?.disable()
-    
     this.curentModalTitle = 'Edit Car'
     this.showCreateForm = false
     this.showDeleteForm = false
     this.backupCar = { ...car }
 
-    this.carForm.patchValue({
+    this.carForm.get('brand')?.enable()
+    this.carForm.get('model')?.enable()
+    this.carForm.get('year')?.enable()
+
+    this.carForm.setValue({
+      cc: car.cc!,
+      brand: car.brand,
+      model: car.model,
+      year: car.year,
       color: car.color,
       plate: car.plate,
       confirmationPlate: '',
     })
 
+    this.carForm.get('brand')?.disable()
+    this.carForm.get('model')?.disable()
+    this.carForm.get('year')?.disable()
+
     this.showEditForm = true
     this.openModal()
     this.changeDetector.detectChanges()
   }
+
+  confirmEdit(): void {
+    this.auxiliarCar.brand = this.carForm.getRawValue().brand!
+    this.auxiliarCar.model = this.carForm.getRawValue().model!
+    this.auxiliarCar.year = this.carForm.getRawValue().year!
+    this.auxiliarCar.user = this.user
+    this.auxiliarCar.color = this.carForm.value.color!
+    this.auxiliarCar.plate = this.carForm.value.plate!
+
+    this.myCarService
+      .updateCarByCode(this.backupCar, this.auxiliarCar)
+      .subscribe({
+        next: () => {
+          this.toastr.success('Car updated successfully')
+          this.closeModal()
+          this.getMyCars()
+        },
+        error: (err) => {
+          this.toastr.error(err.error.error, 'Failed to update car')
+        },
+      })
+  }
+
+  /* ------------------------------- DELETE MODAL -------------------------------- */
 
   openDeleteModal(car: MyCar): void {
     this.getAllBrands().then(() => {
@@ -199,27 +271,46 @@ export class MyCarsComponent implements OnInit {
     })
   }
 
-  closeModal(): void {
-    this.modalComponent.closeModal()
-    this.auxiliarCar = this.reset()
-  }
-
-  reset(): MyCar {
-    return {
-      cc: '',
-      brand: '',
-      model: '',
-      year: 0,
-      user: '',
-      color: '',
-      plate: '',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  confirmDelete(): void {
+    if (
+      this.carForm.value.confirmationPlate?.toUpperCase() !==
+      this.auxiliarCar.plate?.toUpperCase()
+    ) {
+      this.toastr.error(
+        `The confirmation code does not match the car code. ${this.carForm.value.confirmationPlate} - ${this.auxiliarCar.cc} `
+      )
+      return
     }
+    this.myCarService.deleteCarByCode(this.auxiliarCar.cc!).subscribe({
+      next: () => {
+        this.toastr.success('Car deleted successfully')
+        this.closeModal()
+        this.getMyCars()
+      },
+      error: (err) => {
+        this.toastr.error(err.error.error, 'Failed to delete car')
+        this.getMyCars()
+      },
+    })
   }
 
-  resetForm() {
-    this.carForm.reset()
+  /* ------------------------------- HTML SELECT On Change -------------------------------- */
+
+  getMyCars(): void {
+    this.myCarService
+      .getCarByUsername(this.user)
+      .pipe(
+        catchError((error) => {
+          this.toastr.error(
+            error.error?.error || 'Error',
+            'Failed to get your cars'
+          )
+          return of([] as MyCar[])
+        })
+      )
+      .subscribe((data) => {
+        this.cars = data
+      })
   }
 
   onBrandChange(): void {
@@ -253,6 +344,8 @@ export class MyCarsComponent implements OnInit {
       this.years = []
     }
   }
+
+  /* ------------------------------- Get CAR Fields Functions -------------------------------- */
 
   getAllBrands(): Promise<void> {
     return new Promise((resolve) => {
@@ -327,74 +420,5 @@ export class MyCarsComponent implements OnInit {
       }
     }
     this.years = [...years]
-  }
-
-  confirmCreate(): void {
-    const newCar: MyCar = {
-      cc: this.carForm.value.cc!,
-      brand: this.carForm.value.brand!,
-      model: this.carForm.value.model!,
-      year: this.carForm.value.year!,
-      user: this.user,
-      color: this.carForm.value.color!,
-      plate: this.carForm.value.plate!,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-
-    this.myCarService.create(newCar).subscribe({
-      next: () => {
-        this.toastr.success('Car added successfully');
-        this.closeModal();
-        this.getMyCars();
-      },
-      error: (err) => {
-        this.toastr.error(err.error.error, 'Failed to add new car');
-      },
-    });
-  }
-
-  confirmEdit(): void {
-    this.auxiliarCar.brand = this.carForm.value.brand!
-    this.auxiliarCar.model = this.carForm.value.model!
-    this.auxiliarCar.year = this.carForm.value.year!
-    this.auxiliarCar.user = this.user
-    this.auxiliarCar.color = this.carForm.value.color!
-    this.auxiliarCar.plate = this.carForm.value.plate!
-    this.myCarService
-      .updateCarByCode(this.backupCar, this.auxiliarCar)
-      .subscribe({
-        next: () => {
-          this.toastr.success('Car updated successfully');
-          this.closeModal();
-          this.getMyCars();
-        },
-        error: (err) => {
-          this.toastr.error(err.error.error, 'Failed to update car');
-        },
-      });
-  }
-
-  confirmDelete(): void {
-    if (
-      this.carForm.value.confirmationPlate?.toUpperCase() !==
-      this.auxiliarCar.plate?.toUpperCase()
-    ) {
-      this.toastr.error(
-        `The confirmation code does not match the car code. ${this.carForm.value.confirmationPlate} - ${this.auxiliarCar.cc} `,
-      );
-      return;
-    }
-    this.myCarService.deleteCarByCode(this.auxiliarCar.cc!).subscribe({
-      next: () => {
-        this.toastr.success('Car deleted successfully');
-        this.closeModal();
-        this.getMyCars();
-      },
-      error: (err) => {
-        this.toastr.error(err.error.error, 'Failed to delete car');
-        this.getMyCars();
-      },
-    });
   }
 }

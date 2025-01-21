@@ -13,8 +13,8 @@ export class CarService {
 
   constructor(private http: HttpClient) {}
 
-  // CREATE
-
+  /* ------------------------------- CREATE -------------------------------- */
+  
   create(car: Car): Observable<Car> {
     return this.http.post<Car>(this.apiUrlCars, {
       model: car.model,
@@ -23,47 +23,47 @@ export class CarService {
       endYear: car.endYear,
     })
   }
-
+  
   // READ
-
+  
   getAll(): Observable<Car[]> {
     return this.http
-      .get<{ message: string; data: Car[] }>(this.apiUrlCars)
-      .pipe(map((res) => res.data))
+    .get<{ message: string; data: Car[] }>(this.apiUrlCars)
+    .pipe(map((res) => res.data))
   }
-
+  
   getBrands(): Observable<string[]> {
     return this.http
-      .get<{ message: string; data: string[] }>(`${this.apiUrlCars}/brands`)
-      .pipe(map((res) => res.data))
+    .get<{ message: string; data: string[] }>(`${this.apiUrlCars}/brands`)
+    .pipe(map((res) => res.data))
   }
-
+  
   getModels(brand: string): Observable<ModelList> {
     return this.http
-      .get<{
-        message: string
-        data: ModelList
-      }>(`${this.apiUrlCars}/brand/${brand}`)
-      .pipe(map((res) => res.data))
+    .get<{
+      message: string
+      data: ModelList
+    }>(`${this.apiUrlCars}/brand/${brand}`)
+    .pipe(map((res) => res.data))
   }
-
+  
   getByModel(model: string): Observable<ModelList> {
     return this.http
-      .get<{ message: string; data: ModelList }>(`${this.apiUrlCars}/${model}`)
-      .pipe(map((res) => res.data))
+    .get<{ message: string; data: ModelList }>(`${this.apiUrlCars}/${model}`)
+    .pipe(map((res) => res.data))
   }
-
+  
   verifyCar(brand: string, model: string, year: number): Observable<boolean> {
     return this.http
-      .get<{
-        message: string
-        data: boolean
-      }>(`${this.apiUrlCars}/verify/${brand}/${model}/${year}`)
-      .pipe(map((res) => res.data))
+    .get<{
+      message: string
+      data: boolean
+    }>(`${this.apiUrlCars}/verify/${brand}/${model}/${year}`)
+    .pipe(map((res) => res.data))
   }
-
-  // UPDATE
-
+  
+  /* ------------------------------- UPDATE -------------------------------- */
+  
   update(oldCar: Car, updatedCar: Car): Observable<Car> {
     return this.http.put<Car>(
       `${this.apiUrlCars}/${oldCar.brand}/${oldCar.brand}`,
@@ -75,9 +75,9 @@ export class CarService {
       }
     )
   }
-
-  // DELETE
-
+  
+  /* ------------------------------- DELETE -------------------------------- */
+  
   delete(): Observable<Car> {
     return this.http.delete<Car>(this.apiUrlCars)
   }
