@@ -42,4 +42,6 @@ export interface Application {
   };
   status?: string;
   receivedPassengerRating?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

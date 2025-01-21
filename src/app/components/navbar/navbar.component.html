@@ -151,6 +151,16 @@
           <span class="ms-4">My Lifts</span>
         </a>
       </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/my-applications"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <span [innerHTML]="'faAddressCard' | attachedIcon"></span>
+          <span class="ms-4">My Applications</span>
+        </a>
+      </li>
     </ul>
   </div>
 </aside>

@@ -9,6 +9,8 @@ import {
 } from '@fortawesome/angular-fontawesome'
 import { faMoon } from '@fortawesome/free-solid-svg-icons'
 import { faSun } from '@fortawesome/free-regular-svg-icons'
+import { AuthService } from '../../services/auth.service';
+import { UserRoles } from '../../models/user.model';
 
 @Component({
   selector: 'app-navbar',
@@ -27,7 +29,10 @@ export class SidebarComponent {
   sidebarVisible: boolean = false
   menuNavbarVisible: boolean = false
 
-  constructor(library: FaIconLibrary) {
+  constructor(
+    private authService: AuthService,
+    library: FaIconLibrary,
+  ) {
     library.addIcons(faMoon, faSun)
   }
 
@@ -77,6 +82,7 @@ export class SidebarComponent {
   }
 
   logout() {
+    this.authService.logout();
     this.closeMenuNavbar()
   }
 }
