@@ -51,6 +51,16 @@
   </div>
 </div>
 
+<div>
+  <div
+    class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
+  >
+    <a (click)="toggleDelete()"
+      ><span [innerHTML]="'faTrashCan' | attachedIcon"></span>Delete account</a
+    >
+  </div>
+</div>
+
 <app-modal modalTitle="{{ currentModalTitle }}">
   <div content>
     <!-- ------------------------- Toggle Edit Profile Form -------------------------- -->
@@ -192,6 +202,55 @@
             type="submit"
           >
             Confirm
+          </button>
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    }
+
+    <!-- ------------------------- Toggle Delete Form -------------------------- -->
+    @if (showDeleteForm) {
+      <form
+        [formGroup]="deleteForm"
+        (ngSubmit)="confirmDelete()"
+        #form="ngForm"
+        class="bg-white px-8 pt-6 pb-8 mb-4"
+      >
+        <p>Email</p>
+        <p>{{ backupUser.email }}</p>
+        <!-- Confirm Email -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Confirm your email
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="confirmationEmail"
+            name="confirmationEmail"
+            type="text"
+            required
+            placeholder="insert your email here..."
+            formControlName="confirmationEmail"
+          />
+        </div>
+        <p class="mt-4 text-gray-700">
+          You are about to delete your account. This process is irreversible.
+          Are you sure?
+        </p>
+
+        <!-- Botoes -->
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Delete
           </button>
           <button
             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

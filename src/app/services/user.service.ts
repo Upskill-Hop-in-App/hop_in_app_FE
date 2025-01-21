@@ -30,4 +30,9 @@ export class UserService {
     const localURL = this.apiUrl + '/password/' + username;
     return this.http.put<string>(localURL, updatedPassword);
   }
+
+  deleteUser(username: string) {
+    const localURL = this.apiUrl + '/delete/' + username;
+    return this.http.put<string>(localURL, {});
+  }
 }

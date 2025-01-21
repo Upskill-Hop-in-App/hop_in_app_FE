@@ -21,6 +21,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -60,10 +61,13 @@ export class ProfileComponent {
     { validators: this.passwordMatchValidator },
   );
 
-  deleteForm = new FormGroup({});
+  deleteForm = new FormGroup({
+    confirmationEmail: new FormControl('', [Validators.required]),
+  });
 
   //TODO mudar aqui para ir busca-lo ao token
-  clientUsername: string = 'tobiaslindo';
+  clientUsername: string = '';
+  clientEmail: string = '';
 
   @ViewChild(ModalComponent) modalComponent!: ModalComponent;
 
@@ -71,12 +75,23 @@ export class ProfileComponent {
     private route: ActivatedRoute,
     private router: Router,
     private UserService: UserService,
+    private AuthService: AuthService,
     @Inject(DOCUMENT) private document: Document,
     private toastr: ToastrService,
   ) {}
 
   ngOnInit() {
+    this.getUsername();
+    this.getUserEmail();
     this.getUserByUsername(this.clientUsername);
+  }
+
+  getUsername() {
+    this.clientUsername = this.AuthService.getUserName();
+  }
+
+  getUserEmail() {
+    this.clientEmail = this.AuthService.getUserEmail();
   }
 
   getUserByUsername(username: string) {
@@ -182,6 +197,37 @@ export class ProfileComponent {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
+  toggleDelete() {
+    this.currentModalTitle = 'Delete account';
+    this.showProfileForm = false;
+    this.showPasswordForm = false;
+    this.showDeleteForm = true;
+    this.backupUser.email = this.clientEmail;
+    this.backupUser.username = this.clientUsername;
+    this.deleteForm.setValue({
+      confirmationEmail: '',
+    });
+    this.openModal();
+  }
+
+  confirmDelete() {
+    console.log('oi', this.deleteForm.value.confirmationEmail);
+    if (this.deleteForm.value.confirmationEmail! === this.backupUser.email) {
+      this.UserService.deleteUser(this.backupUser.username).subscribe({
+        next: () => {
+          this.toastr.success('User deleted successfully.');
+          this.cancel();
+          this.logout();
+        },
+        error: (err: any) => {
+          this.toastr.error('Failed to delete user.', err.error.error);
+        },
+      });
+    } else {
+      this.toastr.error('Confirmation email does not match user email');
+    }
+  }
+
   openModal(): void {
     this.modalComponent.openModal();
   }
@@ -195,5 +241,9 @@ export class ProfileComponent {
     this.profileForm.reset();
     this.passwordForm.reset();
     this.deleteForm.reset();
+  }
+
+  logout() {
+    this.AuthService.logout();
   }
 }
