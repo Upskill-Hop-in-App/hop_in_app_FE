@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CarService } from '../../services/car.service';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
+import { response } from 'express';
 
 @Component({
   selector: 'app-car',
-  templateUrl: './component/cars.component.html',
+  templateUrl: '../cars.component.html',
   //styleUrls: ['./component/cars.component.css']
 })
 export class CarComponent implements OnInit {
@@ -27,13 +28,13 @@ export class CarComponent implements OnInit {
   }
 
   addCar(): void {
-    this.carService.create(this.car).subscribe(
-      (response: any) => {
-        this.loadCars();
-      },
-      (error: any) => {
-        console.error('Error adding car:', error);
-      }
-    );
+    this.carService.create(this.car).pipe(
+      catchError((err) => {
+        console.error('Failed to add car:', err);
+        return new Observable();
+      })
+    ).subscribe(() => {
+      this.loadCars();
+    });
   }
 }
