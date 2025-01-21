@@ -1,6 +1,6 @@
-import { Injectable, model } from '@angular/core'
-import { CarpoolApiUrl } from '../../../utils/api-url'
-import { HttpClient, HttpRequest } from '@angular/common/http'
+import { Injectable } from '@angular/core'
+import { ApiUrl } from '../../utils/api-url'
+import { HttpClient } from '@angular/common/http'
 import { Observable, map } from 'rxjs'
 import { MyCar } from '../../models/my-car.model'
 
@@ -8,7 +8,7 @@ import { MyCar } from '../../models/my-car.model'
   providedIn: 'root',
 })
 export class MyCarService {
-  apiUrlCars = CarpoolApiUrl.myCars
+  apiUrlCars = ApiUrl.myCars
 
   constructor(private http: HttpClient) {}
 

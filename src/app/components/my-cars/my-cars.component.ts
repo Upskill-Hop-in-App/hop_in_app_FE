@@ -35,8 +35,9 @@ import {
   FaIconLibrary,
 } from '@fortawesome/angular-fontawesome'
 import { ModalComponent } from '../modal/modal.component'
-import { ModelList } from '../../models/modelList'
+import { ModelList } from '../../models/modelList.model'
 import { MyCarService } from '../../services/my-car/my-car.service'
+import { AuthService } from '../../services/auth.service'
 
 @Component({
   selector: 'app-my-cars',
@@ -51,7 +52,6 @@ import { MyCarService } from '../../services/my-car/my-car.service'
   styleUrl: './my-cars.component.css',
 })
 export class MyCarsComponent implements OnInit {
-  user = 'client1_name'
   cars: MyCar[] = []
   brands: string[] = []
   modelList: ModelList = {}
@@ -83,7 +83,7 @@ export class MyCarsComponent implements OnInit {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    // private authService: AuthService,
+    private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
     private carService: CarService,
     private myCarService: MyCarService,
@@ -168,7 +168,7 @@ export class MyCarsComponent implements OnInit {
       brand: this.carForm.value.brand!,
       model: this.carForm.value.model!,
       year: this.carForm.value.year!,
-      user: this.user,
+      user: this.authService.getUser()!,
       color: this.carForm.value.color!,
       plate: this.carForm.value.plate!,
       createdAt: new Date(),
@@ -222,7 +222,7 @@ export class MyCarsComponent implements OnInit {
     this.auxiliarCar.brand = this.carForm.getRawValue().brand!
     this.auxiliarCar.model = this.carForm.getRawValue().model!
     this.auxiliarCar.year = this.carForm.getRawValue().year!
-    this.auxiliarCar.user = this.user
+    this.auxiliarCar.user = this.authService.getUser()!
     this.auxiliarCar.color = this.carForm.value.color!
     this.auxiliarCar.plate = this.carForm.value.plate!
 
@@ -298,7 +298,7 @@ export class MyCarsComponent implements OnInit {
 
   getMyCars(): void {
     this.myCarService
-      .getCarByUsername(this.user)
+      .getCarByUsername(this.authService.getUser()!)
       .pipe(
         catchError((error) => {
           this.toastr.error(
