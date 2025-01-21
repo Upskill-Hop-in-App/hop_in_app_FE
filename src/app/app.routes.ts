@@ -9,7 +9,7 @@ import { LoginComponent } from './components/login/login.component';
 import { MyCarsComponent } from './components/my-cars/my-cars.component';
 
 export const routes: Routes = [
-  { path: 'my-cars', component: MyCarsComponent }, 
+  { path: 'my-cars', component: MyCarsComponent, canActivate: [UserGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'lifts', component: LiftComponent, canActivate: [UserGuard] },
