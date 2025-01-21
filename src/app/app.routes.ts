@@ -2,9 +2,18 @@ import { Routes } from '@angular/router';
 import { LiftComponent } from './components/lift/lift.component';
 import { MyLiftsComponent } from './components/my-lifts/my-lifts.component';
 import { MyApplicationsComponent } from './components/my-applications/my-applications.component';
+import { AdminGuard, UserGuard } from './guards/user.guard';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
 
 export const routes: Routes = [
-  { path: 'lifts', component: LiftComponent },
-  { path: 'my-lifts', component: MyLiftsComponent },
-  { path: 'my-applications', component: MyApplicationsComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'lifts', component: LiftComponent, canActivate: [UserGuard] },
+  { path: 'my-lifts', component: MyLiftsComponent, canActivate: [UserGuard] },
+  {
+    path: 'my-applications',
+    component: MyApplicationsComponent,
+    canActivate: [UserGuard],
+  },
 ];
