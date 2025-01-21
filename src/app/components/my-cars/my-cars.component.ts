@@ -38,6 +38,7 @@ import { ModalComponent } from '../modal/modal.component'
 import { ModelList } from '../../models/modelList.model'
 import { MyCarService } from '../../services/my-car/my-car.service'
 import { AuthService } from '../../services/auth.service'
+import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
 
 @Component({
   selector: 'app-my-cars',
@@ -47,6 +48,7 @@ import { AuthService } from '../../services/auth.service'
     FormsModule,
     FontAwesomeModule,
     ReactiveFormsModule,
+    AttachedIconPipe,
   ],
   templateUrl: './my-cars.component.html',
   styleUrl: './my-cars.component.css',
