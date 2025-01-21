@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root',
 })
-export class UserGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -14,10 +14,10 @@ export class UserGuard implements CanActivate {
   ) {}
 
   canActivate(): boolean {
-    if (this.authService.isClientAuth() || this.authService.isAdminAuth()) {
+    if (this.authService.isAdminAuth()) {
       return true;
     } else {
-      this.toastr.error('Access denied. Authenticated users only.');
+      this.toastr.error('Access denied. Admins only.');
       this.router.navigate(['/']);
       return false;
     }
