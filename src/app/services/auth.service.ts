@@ -31,6 +31,11 @@ export class AuthService {
     window.location.href = '/';
   }
 
+  getUser(): string {
+    const user = localStorage.getItem('decodedUser');
+    return user ? JSON.parse(user) : null;
+  }
+
   getUserId(): string {
     const user = localStorage.getItem('decodedUser');
     return user ? JSON.parse(user).id : null;
@@ -41,24 +46,9 @@ export class AuthService {
     return user ? JSON.parse(user).username : null;
   }
 
-  getUser(): string {
-    const user = localStorage.getItem('decodedUser');
-    return user ? JSON.parse(user) : null;
-  }
-
-  getUserIdCard(): string {
-    const user = localStorage.getItem('decodedUser');
-    return user ? JSON.parse(user).idCard : null;
-  }
-
   getUserRole(): UserRoles | null {
     const user = localStorage.getItem('decodedUser');
     return user ? JSON.parse(user).role : null;
-  }
-
-  getUserStatus(): string {
-    const user = localStorage.getItem('decodedUser');
-    return user ? JSON.parse(user).status : null;
   }
 
   getToken(): string | null {

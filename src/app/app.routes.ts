@@ -2,7 +2,8 @@ import { Routes } from '@angular/router';
 import { LiftComponent } from './components/lift/lift.component';
 import { MyLiftsComponent } from './components/my-lifts/my-lifts.component';
 import { MyApplicationsComponent } from './components/my-applications/my-applications.component';
-import { AdminGuard, UserGuard } from './guards/user.guard';
+import { AdminGuard } from './guards/admin.guard';
+import { UserGuard } from './guards/user.guard';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 
