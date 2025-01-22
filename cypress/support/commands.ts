@@ -18,7 +18,7 @@ Cypress.Commands.add('register', (email, name, username, contact, password) => {
   cy.wait('@registerRequest').then((interception) => {
     expect(interception.response?.statusCode).to.eq(201)
   })
-  cy.demoWait(5000)
+  cy.demoWait()
 })
 
 /* -------------------------------------------------------------------------- */
@@ -31,6 +31,7 @@ Cypress.Commands.add('login', (email, password) => {
 
   cy.getByDataCy('input-email').type(email)
   cy.getByDataCy('input-password').type(password)
+  cy.highlight('submit-btn')
   cy.getByDataCy('submit-btn').click()
   cy.get('.toast-message').should('be.visible')
 
@@ -38,12 +39,13 @@ Cypress.Commands.add('login', (email, password) => {
     expect(interception.response?.statusCode).to.eq(200)
     cy.window().its('localStorage.userToken').should('exist')
   })
-  cy.demoWait(5000)
+  cy.demoWait()
 })
 
 Cypress.Commands.add('logout', () => {
   cy.intercept('POST', '/api/auth/logout').as('logoutRequest')
 
+  cy.highlight('logout-btn')
   cy.getByDataCy('logout-btn').click()
   cy.wait('@logoutRequest').then((interception) => {
     expect(interception.response?.statusCode).to.eq(200)
@@ -62,12 +64,14 @@ Cypress.Commands.add('getByDataCy', (selector, ...args) => {
 /* -------------------------------------------------------------------------- */
 /* ------------------------------ DEMO FEATURES ----------------------------- */
 /* -------------------------------------------------------------------------- */
-Cypress.Commands.add('demoWait', (time = 500) => {
+Cypress.Commands.add('demoWait', (time = 1000) => {
   cy.wait(time)
 })
 
 // Highlight elements
 Cypress.Commands.add('highlight', (selector) => {
+  cy.demoWait()
+  cy.demoWait()
   cy.getByDataCy(selector).then(($el) => {
     // Add a temporary highlight effect (e.g., border)
     $el.css({
@@ -78,7 +82,7 @@ Cypress.Commands.add('highlight', (selector) => {
     // Remove the highlight after a short delay
     setTimeout(() => {
       $el.css('border', '') // Remove the border after 300ms
-    }, 2000)
-    cy.demoWait()
+    }, 300)
   })
+  cy.demoWait()
 })

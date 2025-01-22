@@ -36,7 +36,7 @@ declare namespace Cypress {
     /**
      * Command to logout
      */
-    logout(): void
+    logout(): Chainable<void>
 
     /**
      * Custom command to wait for a specific time

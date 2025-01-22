@@ -1,13 +1,11 @@
+import { getRandomNumber } from '../support/utils'
 import {
   UserLogin,
   UserRegister,
   UserRoles,
 } from './../../src/app/models/user.model'
 describe('Register and Login', () => {
-  const min = 100000
-  const max = 999999
-
-  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min
+  const randomNumber = getRandomNumber()
   const adminTest: UserRegister = {
     email: `tobias-${randomNumber}@test.com`,
     name: 'Tobias',
@@ -38,13 +36,14 @@ describe('Register and Login', () => {
 
   it('Should register a client', () => {
     cy.register(
-      adminTest.email,
-      adminTest.name,
-      adminTest.username,
-      adminTest.contact,
-      adminTest.password
+      clientTest.email,
+      clientTest.name,
+      clientTest.username,
+      clientTest.contact,
+      clientTest.password
     )
   })
+
   it('Should login as a client', () => {
     cy.login(`tobias-${randomNumber}@test.com`, `psw@${randomNumber}`)
   })
