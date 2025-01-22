@@ -21,6 +21,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-current-lift',
@@ -38,6 +39,8 @@ export class CurrentLiftComponent implements OnInit {
   liftClosed: boolean = false;
   showRatingModal: boolean = false;
   currentModalTitle: string = "";
+  userRole: string | null = "";
+  user: string | null = "";
 
   ratingsForm: FormGroup;
 
@@ -50,19 +53,22 @@ export class CurrentLiftComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
+    private authService: AuthService
   ) {
     this.ratingsForm = new FormGroup({});
   }
 
   ngOnInit() {
+    this.userRole = this.authService.getUserRole()
+    this.user = this.authService.getUserName()
     this.ratingsForm = this.createRatingsForm();
     this.route.queryParamMap.subscribe((params) => {
       this.liftCode = params.get('lift');
     });
     if (this.liftCode) {
-      localStorage.setItem('currentLiftCode', this.liftCode);
-      this.getLiftByCode(this.liftCode);
+      this.getLiftByCode(`cl=${this.liftCode}`, this.user);
     } else {
+      this.getLiftInProgress(`driver=${this.user}`)
       this.toastr.error('Invalid lift code');
     }
     /* this.router.events.subscribe((event) => {
@@ -72,8 +78,8 @@ export class CurrentLiftComponent implements OnInit {
     }); */
   }
 
-  getLiftByCode(code: string): void {
-    this.LiftService.filterLift(`cl=${code}`, this.clientUsername)
+  getLiftByCode(query:string, role: string): void {
+    this.LiftService.filterLift(query, this.user!)
       .pipe(
         catchError((err) => {
           this.toastr.error(
@@ -90,8 +96,23 @@ export class CurrentLiftComponent implements OnInit {
       });
   }
 
-  getLiftByCodeAndStatus(code: string): void {
-
+  getLiftInProgress(query:string): void {
+    this.LiftService.filterLift(query, this.user!)
+      .pipe(
+        catchError((err) => {
+          this.toastr.error(
+            'No lift found',
+            err?.error?.message || 'Error fetching lift',
+          );
+          return of({ message: '', data: [] });
+        }),
+      )
+      .subscribe((response: { message: string; data: Lift[] }) => {
+        this.lifts = response.data;
+        this.lifts.filter((lift) => (lift.status !== "open" && lift.status !== "ready"))
+        this.lift = this.lifts[0]
+        this.ratingsForm = this.createRatingsForm();
+      });
   }
 
   reset(): Lift {
