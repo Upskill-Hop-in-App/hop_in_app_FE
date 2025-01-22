@@ -49,7 +49,16 @@ export class LiftService {
     });
   }
 
-  filterLift(query: string, username: string): Observable<{ message: string; data: Lift[] }> {
+  filterLifts(query: string): Observable<{ message: string; data: Lift[] }> {
+    const headers = this.authService.getHeaders();
+    const localURL = `${this.apiUrl}/filter?${query}`;
+    console.log(localURL)
+    return this.http.get<{ message: string; data: Lift[] }>(localURL, {
+      headers,
+    });
+  }
+
+  filterLiftByUsername(query: string, username: string): Observable<{ message: string; data: Lift[] }> {
     const headers = this.authService.getHeaders();
     const localURL = `${this.apiUrl}/filter/username/${username}?${query}`;
     console.log(localURL)
@@ -58,6 +67,18 @@ export class LiftService {
     });
   }
 
+  checkInProgress(username: string): Observable<boolean> {
+    const headers = this.authService.getHeaders();
+    const localURL = `${this.apiUrl}/inProgress/${username}`
+    return this.http.get<boolean>(localURL, { headers });
+  }
+
+  getRole(username: string): Observable<string> {
+    const headers = this.authService.getHeaders();
+    const localURL = `${this.apiUrl}/role/${username}`
+    return this.http.get<string>(localURL, { headers });
+  }
+  
   createLift(lift: Lift): Observable<Lift> {
     const headers = this.authService.getHeaders();
     return this.http.post<Lift>(
@@ -157,10 +178,12 @@ export class LiftService {
   }
 
   updateStatusLift(code: string, status: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/cl/status/${code}/${status}`, {});
+    const headers = this.authService.getHeaders();
+    return this.http.put(`${this.apiUrl}/cl/status/${code}/${status}`, {}, { headers });
   }
 
   updateDriverRating(code: string, rating: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/cl/rating/${code}/${rating}`, {});
+    const headers = this.authService.getHeaders();
+    return this.http.put(`${this.apiUrl}/cl/rating/${code}/${rating}`, {}, { headers });
   }
 }

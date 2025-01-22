@@ -171,16 +171,18 @@
           <span class="ms-4">My Applications</span>
         </a>
       </li>
-      <li>
-        <a
-          (click)="closeSidebar()"
-          routerLink="/current-lift"
-          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
-        >
-          <span [innerHTML]="'faCar' | attachedIcon"></span>
-          <span class="ms-4">Lift in Progress</span>
-        </a>
-      </li>
+      @if(liftInProgress) {
+        <li>
+          <a
+            (click)="closeSidebar()"
+            routerLink="/current-lift"
+            class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+          >
+            <span [innerHTML]="'faCar' | attachedIcon"></span>
+            <span class="ms-4">Lift in Progress</span>
+          </a>
+        </li>
+      }
     </ul>
   </div>
 </aside>

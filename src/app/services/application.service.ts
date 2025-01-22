@@ -53,10 +53,12 @@ export class ApplicationService {
   }
 
   readyApplication(ca: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/ready/${ca}`, {});
+    const headers = this.authService.getHeaders();
+    return this.http.put(`${this.apiUrl}/ready/${ca}`, {}, { headers });
   }
 
   updatePassengerRating(ca: string, rating: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/ca/rating/${ca}/${rating}`, {});
+    const headers = this.authService.getHeaders();
+    return this.http.put(`${this.apiUrl}/ca/rating/${ca}/${rating}`, {}, { headers });
   }
 }

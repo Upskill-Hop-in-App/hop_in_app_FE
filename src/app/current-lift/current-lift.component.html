@@ -1,4 +1,4 @@
-@if (!liftStarted && (lift.status === "open" || lift.status === "ready")) {
+@if (liftCode && (lift.status === "open" || lift.status === "ready")) {
   <h2>Manage Applications</h2>
   <table>
     <thead>
@@ -32,7 +32,7 @@
   </button>
 }
 
-@if (liftStarted || lift.status === "inProgress") {
+@if (lift.status === "inProgress") {
   <div
     class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg"
   >
@@ -93,7 +93,7 @@
   </div>
 }
 
-@if (liftFinished || lift.status === "finished") {
+@if (lift.status === "finished") {
   <div
     class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg"
   >
@@ -146,24 +146,50 @@
     </div>
 
     <!-- Button to open Ratings Modal -->
-    <button
-      (click)="toggleRatingModal()"
-      class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105"
-    >
-      Rate Passenger(s)
-    </button>
-    <button
-      (click)="closeLift()"
-      class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105"
-    >
-      Close Lift
-    </button>
+    @if (isDriver) {
+      <button
+        (click)="toggleRatingModal()"
+        class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105"
+      >
+        Rate Passenger(s)
+      </button>
+      <button
+        (click)="closeLift()"
+        class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105"
+      >
+        Close Lift
+      </button>
+    } @else if (isPassenger) {
+      <button
+        (click)="toggleRatingModal(lift)"
+        class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105"
+      >
+        Rate Driver
+      </button>
+    }
   </div>
 }
 
-<app-modal modalTitle="{{currentModalTitle}}">
+@if (lift.status === "closed") {
+    <div class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold mb-6 text-primary-800">Lift Closed</h2>
+  
+      <p class="text-center mb-4">
+        The lift has been closed. Thank you for using our service!
+      </p>
+  
+      <button
+        (click)="navigateToHome()"
+        class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105"
+      >
+        Return to Home
+      </button>
+    </div>
+  }
+
+<app-modal modalTitle="{{ currentModalTitle }}">
   <div content>
-    @if (showRatingModal) {
+    @if (showRatingModal && isDriver) {
       <form [formGroup]="ratingsForm" (ngSubmit)="submitRatings()">
         @for (app of lift.applications; track app.ca) {
           @if (app.status === "ready") {
@@ -195,11 +221,45 @@
       </form>
 
       <button
+        type="button"
         (click)="cancel()"
         class="bg-gray-500 text-white font-bold py-2 px-4 rounded mt-4 w-full"
       >
         Cancel
       </button>
+    } @else if (showRatingModal && isPassenger) {
+      <form [formGroup]="driverRatingForm" (ngSubmit)="submitDriverRating()">
+        <div class="mb-4">
+          <label
+            for="driver rating"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Rate {{ auxiliarLift!.driver!.username }}
+          </label>
+          <input
+            id="driverRating"
+            type="number"
+            formControlName="rating"
+            min="1"
+            max="5"
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="bg-primary-500 text-white font-bold py-2 px-4 rounded w-full mt-4"
+        >
+          Submit Ratings
+        </button>
+        <button
+          type="button"
+          (click)="cancel()"
+          class="bg-gray-500 text-white font-bold py-2 px-4 rounded mt-4 w-full"
+        >
+          Cancel
+        </button>
+      </form>
     }
   </div>
 </app-modal>

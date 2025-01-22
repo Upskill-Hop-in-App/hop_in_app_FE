@@ -10,6 +10,7 @@ import {
 import { faMoon } from '@fortawesome/free-solid-svg-icons'
 import { faSun } from '@fortawesome/free-regular-svg-icons'
 import { AuthService } from '../../services/auth.service';
+import { LiftService } from '../../services/lift.service'
 import { UserRoles } from '../../models/user.model';
 
 @Component({
@@ -28,15 +29,19 @@ import { UserRoles } from '../../models/user.model';
 export class SidebarComponent {
   sidebarVisible: boolean = false
   menuNavbarVisible: boolean = false
+  liftInProgress: boolean = false
+  user: string | null = null
 
   constructor(
     private authService: AuthService,
+    private liftService: LiftService,
     library: FaIconLibrary,
   ) {
     library.addIcons(faMoon, faSun)
   }
 
   ngAfterViewInit(): void {
+    this.user = this.authService.getUserName()
     const theme = localStorage.getItem('theme')
     const themeToggleCheckbox = document.querySelector(
       'input[type="checkbox"]'
@@ -47,6 +52,10 @@ export class SidebarComponent {
     } else {
       themeToggleCheckbox.checked = false
     }
+    this.liftService.checkInProgress(this.user).subscribe((data: boolean) => {
+      this.liftInProgress = data;
+    });
+
   }
 
   toggleSidebar() {
