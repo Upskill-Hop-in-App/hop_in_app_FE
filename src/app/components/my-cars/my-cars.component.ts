@@ -170,7 +170,7 @@ export class MyCarsComponent implements OnInit {
       brand: this.carForm.value.brand!,
       model: this.carForm.value.model!,
       year: this.carForm.value.year!,
-      user: this.authService.getUser()!,
+      user: this.authService.getUserName()!,
       color: this.carForm.value.color!,
       plate: this.carForm.value.plate!,
       createdAt: new Date(),
@@ -224,7 +224,7 @@ export class MyCarsComponent implements OnInit {
     this.auxiliarCar.brand = this.carForm.getRawValue().brand!
     this.auxiliarCar.model = this.carForm.getRawValue().model!
     this.auxiliarCar.year = this.carForm.getRawValue().year!
-    this.auxiliarCar.user = this.authService.getUser()!
+    this.auxiliarCar.user = this.authService.getUserName()!
     this.auxiliarCar.color = this.carForm.value.color!
     this.auxiliarCar.plate = this.carForm.value.plate!
 
@@ -300,7 +300,7 @@ export class MyCarsComponent implements OnInit {
 
   getMyCars(): void {
     this.myCarService
-      .getCarByUsername(this.authService.getUser()!)
+      .getCarByUsername(this.authService.getUserName()!)
       .pipe(
         catchError((error) => {
           this.toastr.error(

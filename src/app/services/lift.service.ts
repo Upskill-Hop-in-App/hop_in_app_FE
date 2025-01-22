@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Lift } from '../models/lift.model';
 import { MyCar } from '../models/my-car.model';
+import { AuthService } from './auth.service';
 
 interface DistrictResponse {
   distrito: string;
@@ -28,75 +29,97 @@ export class LiftService {
   private districtsUrl = 'https://json.geoapi.pt/distritos';
   private parishUrl = 'https://json.geoapi.pt/municipio';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
   getLifts(): Observable<Lift[]> {
+    const headers = this.authService.getHeaders();
     return this.http
-      .get<{ message: string; data: Lift[] }>(this.apiUrl)
+      .get<{ message: string; data: Lift[] }>(this.apiUrl, { headers })
       .pipe(map((response) => response.data));
   }
 
   getLiftByCode(cl: string): Observable<{ message: string; data: Lift }> {
+    const headers = this.authService.getHeaders();
     const localURL = this.apiUrl + '/cl/' + cl;
-    return this.http.get<{ message: string; data: Lift }>(localURL);
+    return this.http.get<{ message: string; data: Lift }>(localURL, {
+      headers,
+    });
   }
 
   filterLift(query: string): Observable<{ message: string; data: Lift[] }> {
+    const headers = this.authService.getHeaders();
     const localURL = this.apiUrl + '/filter/' + query;
-    return this.http.get<{ message: string; data: Lift[] }>(localURL);
+    return this.http.get<{ message: string; data: Lift[] }>(localURL, {
+      headers,
+    });
   }
 
   createLift(lift: Lift): Observable<Lift> {
-    return this.http.post<Lift>(this.apiUrl, {
-      driver: lift.driver.username,
-      car: lift.car.cc,
-      startPoint: {
-        district: lift.startPoint.district,
-        municipality: lift.startPoint.municipality,
-        parish: lift.startPoint.parish,
+    const headers = this.authService.getHeaders();
+    return this.http.post<Lift>(
+      this.apiUrl,
+      {
+        driver: lift.driver.username,
+        car: lift.car.cc,
+        startPoint: {
+          district: lift.startPoint.district,
+          municipality: lift.startPoint.municipality,
+          parish: lift.startPoint.parish,
+        },
+        endPoint: {
+          district: lift.endPoint.district,
+          municipality: lift.endPoint.municipality,
+          parish: lift.endPoint.parish,
+        },
+        schedule: lift.schedule,
+        price: lift.price,
+        providedSeats: lift.providedSeats,
       },
-      endPoint: {
-        district: lift.endPoint.district,
-        municipality: lift.endPoint.municipality,
-        parish: lift.endPoint.parish,
-      },
-      schedule: lift.schedule,
-      price: lift.price,
-      providedSeats: lift.providedSeats,
-    });
+      { headers },
+    );
   }
 
   updateLift(oldLift: Lift, updatedLift: Lift): Observable<Lift> {
+    const headers = this.authService.getHeaders();
     const localURL = this.apiUrl + '/' + oldLift.cl;
-    return this.http.put<Lift>(localURL, {
-      driver: updatedLift.driver.username,
-      car: updatedLift.car.cc,
-      startPoint: {
-        district: updatedLift.startPoint.district,
-        municipality: updatedLift.startPoint.municipality,
-        parish: updatedLift.startPoint.parish,
+    return this.http.put<Lift>(
+      localURL,
+      {
+        driver: updatedLift.driver.username,
+        car: updatedLift.car.cc,
+        startPoint: {
+          district: updatedLift.startPoint.district,
+          municipality: updatedLift.startPoint.municipality,
+          parish: updatedLift.startPoint.parish,
+        },
+        endPoint: {
+          district: updatedLift.endPoint.district,
+          municipality: updatedLift.endPoint.municipality,
+          parish: updatedLift.endPoint.parish,
+        },
+        schedule: updatedLift.schedule,
+        price: updatedLift.price,
+        providedSeats: updatedLift.providedSeats,
       },
-      endPoint: {
-        district: updatedLift.endPoint.district,
-        municipality: updatedLift.endPoint.municipality,
-        parish: updatedLift.endPoint.parish,
-      },
-      schedule: updatedLift.schedule,
-      price: updatedLift.price,
-      providedSeats: updatedLift.providedSeats,
-    });
+      { headers },
+    );
   }
 
   getAllDistricts(): Observable<string[]> {
+    const headers = this.authService.getHeaders();
     return this.http
-      .get<any[]>(this.districtsUrl)
+      .get<any[]>(this.districtsUrl, { headers })
       .pipe(map((response) => response.map((district) => district.distrito)));
   }
 
   getMunicipalitiesByDistrict(district: string): Observable<string[]> {
+    const headers = this.authService.getHeaders();
     const url = `${this.districtsUrl}/${district}/municipios`;
     return this.http
-      .get<DistrictResponse>(url)
+      .get<DistrictResponse>(url, { headers })
       .pipe(
         map((response) =>
           response.municipios.map((municipio) => municipio.nome),
@@ -105,29 +128,30 @@ export class LiftService {
   }
 
   getParishesByMunicipalities(municipio: string | null): Observable<string[]> {
+    const headers = this.authService.getHeaders();
     const url = `${this.parishUrl}/${municipio}/freguesias`;
     return this.http
-      .get<MunicipioFreguesiaResponse>(url)
+      .get<MunicipioFreguesiaResponse>(url, { headers })
       .pipe(map((response) => response.freguesias));
   }
 
-  //TODO MUDAR ISTO PARA GET CARS BY USERNAME QUE ESTIVER LOGGED IN
   getCarsByUsername(username: string): Observable<MyCar[]> {
+    const headers = this.authService.getHeaders();
     return this.http
       .get<{
         message: string;
         data: MyCar[];
-      }>(this.carsUrl + '/username/' + username)
+      }>(this.carsUrl + '/username/' + username, { headers })
       .pipe(map((response) => response.data));
   }
 
-  //TODO MUDAR ISTO PARA GET CARS BY USERNAME QUE ESTIVER LOGGED IN
   getLiftsByUsername(username: string): Observable<Lift[]> {
+    const headers = this.authService.getHeaders();
     return this.http
       .get<{
         message: string;
         data: Lift[];
-      }>(this.apiUrl + '/username/' + username)
+      }>(this.apiUrl + '/username/' + username, { headers })
       .pipe(map((response) => response.data));
   }
 }
