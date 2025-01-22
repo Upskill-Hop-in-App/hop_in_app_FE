@@ -1,0 +1,266 @@
+<div class="table-container">
+  <table>
+    <th scope="col" colspan="2">My Profile</th>
+    <div
+      class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
+    >
+      <a (click)="toggleEditProfile()"
+        ><span [innerHTML]="'faUserPen' | attachedIcon"></span
+      ></a>
+    </div>
+    <tr>
+      <td>Name</td>
+      <td>{{ user.name }}</td>
+    </tr>
+    <tr>
+      <td>Username</td>
+      <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+      <td>Email</td>
+      <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+      <td>Contact</td>
+      <td>{{ user.contact }}</td>
+    </tr>
+    <tr>
+      <td>Rating as driver</td>
+      <td>
+        {{ user.driverRating }}
+        <span [innerHTML]="'faStar' | attachedIcon"></span>
+      </td>
+    </tr>
+    <tr>
+      <td>Rating as passenger</td>
+      <td>
+        {{ user.passengerRating }}
+        <span [innerHTML]="'faStar' | attachedIcon"></span>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div>
+  <div
+    class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
+  >
+    <a (click)="toggleEditPassword()"
+      ><span [innerHTML]="'faUnlock' | attachedIcon"></span>Change password</a
+    >
+  </div>
+</div>
+
+<div>
+  <div
+    class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
+  >
+    <a (click)="toggleDelete()"
+      ><span [innerHTML]="'faTrashCan' | attachedIcon"></span>Delete account</a
+    >
+  </div>
+</div>
+
+<app-modal modalTitle="{{ currentModalTitle }}">
+  <div content>
+    <!-- ------------------------- Toggle Edit Profile Form -------------------------- -->
+    @if (showProfileForm) {
+      <form
+        [formGroup]="profileForm"
+        (ngSubmit)="confirmEditProfile()"
+        #form="ngForm"
+        class="bg-white px-8 pt-6 pb-8 mb-4"
+      >
+        <!-- Name -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Name
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="name"
+            name="name"
+            type="text"
+            required
+            placeholder="Name..."
+            formControlName="name"
+          />
+        </div>
+
+        <!-- Username -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Username
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="username"
+            name="username"
+            type="text"
+            required
+            placeholder="New username..."
+            formControlName="username"
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Email
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="email"
+            name="email"
+            type="text"
+            required
+            placeholder="New email..."
+            formControlName="email"
+          />
+        </div>
+
+        <!-- Contact -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Contact
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="contact"
+            name="contact"
+            type="text"
+            required
+            placeholder="New contact..."
+            formControlName="contact"
+          />
+        </div>
+
+        <!-- Botoes -->
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Confirm
+          </button>
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+        <div></div>
+      </form>
+    }
+
+    <!-- ------------------------- Toggle Edit Password Form -------------------------- -->
+    @if (showPasswordForm) {
+      <form
+        [formGroup]="passwordForm"
+        (ngSubmit)="confirmEditPassword()"
+        #form="ngForm"
+        class="bg-white px-8 pt-6 pb-8 mb-4"
+      >
+        <!-- Password -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            New Password
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="password"
+            name="password"
+            type="password"
+            required
+            placeholder="New password..."
+            formControlName="password"
+          />
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Confirm Password
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            required
+            placeholder="Rewrite new password..."
+            formControlName="confirmPassword"
+          />
+        </div>
+
+        <!-- Botoes -->
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Confirm
+          </button>
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    }
+
+    <!-- ------------------------- Toggle Delete Form -------------------------- -->
+    @if (showDeleteForm) {
+      <form
+        [formGroup]="deleteForm"
+        (ngSubmit)="confirmDelete()"
+        #form="ngForm"
+        class="bg-white px-8 pt-6 pb-8 mb-4"
+      >
+        <p>Email</p>
+        <p>{{ backupUser.email }}</p>
+        <!-- Confirm Email -->
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+            Confirm your email
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            id="confirmationEmail"
+            name="confirmationEmail"
+            type="text"
+            required
+            placeholder="insert your email here..."
+            formControlName="confirmationEmail"
+          />
+        </div>
+        <p class="mt-4 text-gray-700">
+          You are about to delete your account. This process is irreversible.
+          Are you sure?
+        </p>
+
+        <!-- Botoes -->
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Delete
+          </button>
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    }
+  </div></app-modal
+>

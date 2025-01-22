@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from '../../services/application.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-myLifts',
@@ -54,7 +55,7 @@ export class MyLiftsComponent implements OnInit {
   currentModalTitle: string = '';
 
   //TODO mudar aqui para ir busca-lo ao token
-  clientUsername: string = 'admin';
+  clientUsername: string = 'admin1_user';
 
   liftForm = new FormGroup({
     driver: new FormControl('', [Validators.required]),
@@ -81,22 +82,28 @@ export class MyLiftsComponent implements OnInit {
     private router: Router,
     private LiftService: LiftService,
     private ApplicationService: ApplicationService,
+    private AuthService: AuthService,
     @Inject(DOCUMENT) private document: Document,
     private toastr: ToastrService,
   ) {}
 
   ngOnInit() {
+    this.getUsername();
     this.getLiftsByUsername(this.clientUsername);
     this.loadStartDistricts();
     this.loadEndDistricts();
     this.getCars();
   }
 
+  getUsername() {
+    this.clientUsername = this.AuthService.getUserName();
+  }
+
   getLiftsByUsername(username: string): void {
     this.LiftService.getLiftsByUsername(this.clientUsername)
       .pipe(
         catchError((err) => {
-          this.toastr.error('No lift found', err?.error?.message);
+          this.toastr.info('No lift found', err?.error?.message);
           return of([]);
         }),
       )
@@ -109,7 +116,7 @@ export class MyLiftsComponent implements OnInit {
     this.LiftService.getCarsByUsername(this.clientUsername)
       .pipe(
         catchError((err) => {
-          this.toastr.error('No car found', err?.error?.message);
+          this.toastr.info('No car found', err?.error?.message);
           return of([]);
         }),
       )

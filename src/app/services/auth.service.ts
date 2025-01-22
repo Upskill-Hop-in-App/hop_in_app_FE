@@ -46,6 +46,11 @@ export class AuthService {
     return user ? JSON.parse(user).username : null;
   }
 
+  getUserEmail(): string {
+    const user = localStorage.getItem('decodedUser');
+    return user ? JSON.parse(user).email : null;
+  }
+
   getUserRole(): UserRoles | null {
     const user = localStorage.getItem('decodedUser');
     return user ? JSON.parse(user).role : null;

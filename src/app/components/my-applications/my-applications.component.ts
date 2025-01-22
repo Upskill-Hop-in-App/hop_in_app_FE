@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from '../../services/application.service';
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-my-applications',
   imports: [
@@ -31,7 +32,7 @@ import { ApplicationService } from '../../services/application.service';
   styleUrl: './my-applications.component.css',
 })
 export class MyApplicationsComponent implements OnInit {
-  clientUsername: string = 'client';
+  clientUsername: string = '';
   applications: Application[] = [];
   auxiliarApplication: Application = this.reset();
   currentModalTitle: string = '';
@@ -44,19 +45,25 @@ export class MyApplicationsComponent implements OnInit {
     private router: Router,
     private LiftService: LiftService,
     private ApplicationService: ApplicationService,
+    private AuthService: AuthService,
     @Inject(DOCUMENT) private document: Document,
     private toastr: ToastrService,
   ) {}
 
   ngOnInit() {
+    this.getUsername();
     this.getApplicationsByUsername(this.clientUsername);
+  }
+
+  getUsername() {
+    this.clientUsername = this.AuthService.getUserName();
   }
 
   getApplicationsByUsername(username: string): void {
     this.ApplicationService.getApplicationsByUsername(this.clientUsername)
       .pipe(
         catchError((err) => {
-          this.toastr.error('No application found', err?.error?.message);
+          this.toastr.info('No application found', err?.error?.message);
           return of([]);
         }),
       )
