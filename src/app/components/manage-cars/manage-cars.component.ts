@@ -47,6 +47,7 @@ import { catchError, of } from 'rxjs';
 })
 export class ManageCarsComponent implements OnInit {
   cars: Car[] = [];
+  filteredCars: Car[] = [];
   title: string = 'Manage Cars';
   currentModalTitle: string = '';
   //showCreateButton: boolean = false;
@@ -56,10 +57,18 @@ export class ManageCarsComponent implements OnInit {
   showEditForm: boolean = false;
   showDeleteForm: boolean = false;
   carForm: FormGroup;
+  filterForm: FormGroup;
   auxiliarCar: Partial<Car> = {};
 
   @ViewChild(AppModalComponent) modalComponent!: AppModalComponent;
 
+  get brandControl(): FormControl {
+    return this.filterForm.get('brand') as FormControl;
+  }
+
+  get modelControl(): FormControl {
+    return this.filterForm.get('model') as FormControl;
+  }
   constructor(
     private carService: CarService,
     private toastr: ToastrService,
@@ -82,6 +91,11 @@ export class ManageCarsComponent implements OnInit {
       startYear: new FormControl('', [Validators.required]),
       endYear: new FormControl('', [Validators.required]),
       confirmationCc: new FormControl(''),
+    });
+
+    this.filterForm = new FormGroup({
+      brand: new FormControl(''),
+      model: new FormControl(''),
     });
   }
 
@@ -146,15 +160,29 @@ export class ManageCarsComponent implements OnInit {
       .getAll()
       .pipe(
         catchError((err) => {
-          console.error('Failed to fetch cars:', err);
           this.toastr.error('Failed to fetch cars.', err?.error?.error);
           return of([]);
         }),
       )
       .subscribe((data: Car[]) => {
-        console.log('Cars loaded:', data);
         this.cars = data;
+        this.filteredCars = data;
       });
+  }
+  filterCars(): void {
+    const brand = this.filterForm.get('brand')?.value?.toLowerCase() || '';
+    const model = this.filterForm.get('model')?.value?.toLowerCase() || '';
+
+    this.cars = this.cars.filter(
+      (car) =>
+        car.brand.toLowerCase().includes(brand) &&
+        car.model.toLowerCase().includes(model),
+    );
+  }
+
+  clearFilter(): void {
+    this.filterForm.reset();
+    this.loadCars()
   }
 
   confirmCreate(): void {
@@ -164,7 +192,7 @@ export class ManageCarsComponent implements OnInit {
       startYear: this.carForm.value.startYear!,
       endYear: this.carForm.value.endYear!,
     };
-  
+
     this.carService.create(newCar).subscribe({
       next: () => {
         this.toastr.success('Car added successfully');
@@ -184,24 +212,26 @@ export class ManageCarsComponent implements OnInit {
       startYear: this.carForm.value.startYear!,
       endYear: this.carForm.value.endYear!,
     };
-  
-    this.carService.update(this.auxiliarCar.brand!, this.auxiliarCar.model!, updatedCar).subscribe({
-      next: () => {
-        this.toastr.success('Car updated successfully');
-        this.closeModal();
-        this.loadCars();
-      },
-      error: (err) => {
-        console.error('Update failed:', err);
-        this.toastr.error(err.error?.error || 'Failed to update car');
-      },
-    });
+
+    this.carService
+      .update(this.auxiliarCar.brand!, this.auxiliarCar.model!, updatedCar)
+      .subscribe({
+        next: () => {
+          this.toastr.success('Car updated successfully');
+          this.closeModal();
+          this.loadCars();
+        },
+        error: (err) => {
+          console.error('Update failed:', err);
+          this.toastr.error(err.error?.error || 'Failed to update car');
+        },
+      });
   }
 
   confirmDelete(): void {
     console.log('Delete attempted');
-  console.log('Form value:', this.carForm.value);
-  console.log('Auxiliar car:', this.auxiliarCar);
+    console.log('Form value:', this.carForm.value);
+    console.log('Auxiliar car:', this.auxiliarCar);
     if (
       this.carForm.value.confirmationCc?.toUpperCase() !==
       this.auxiliarCar.brand?.toUpperCase()
@@ -211,7 +241,11 @@ export class ManageCarsComponent implements OnInit {
       return;
     }
 
-    console.log('Deleting car:', this.auxiliarCar.brand, this.auxiliarCar.model);
+    console.log(
+      'Deleting car:',
+      this.auxiliarCar.brand,
+      this.auxiliarCar.model,
+    );
     this.carService
       .delete(this.auxiliarCar.brand!, this.auxiliarCar.model!)
       .subscribe({

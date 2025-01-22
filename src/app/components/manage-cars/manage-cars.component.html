@@ -1,3 +1,35 @@
+<!-- Filter -->
+<div class="filter-container mb-4 flex gap-4">
+  <div class="flex flex-col">
+    <label for="filterBrand" class="font-semibold">Filter by Brand:</label>
+    <input
+      type="text"
+      id="filterBrand"
+      class="input-standard"
+      [formControl]="brandControl"
+    />
+  </div>
+  <div class="flex flex-col">
+    <label for="filterModel" class="font-semibold">Filter by Model:</label>
+    <input
+      type="text"
+      id="filterModel"
+      class="input-standard"
+      [formControl]="modelControl"
+    />
+  </div>
+  <div class="flex items-end gap-2">
+    <button class="btn-primary" (click)="filterCars()">Filter</button>
+    <button
+      class="btn-gray"
+      (click)="clearFilter()"
+    >
+      <fa-icon [icon]="['fas', 'filter-circle-xmark']"></fa-icon>
+      Clear
+    </button>
+  </div>
+</div>
+
 <!-- Show Info -->
 <div class="table-container">
   <button (click)="openCreateModal()" class="mb-4 flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
