@@ -1,3 +1,173 @@
+<!-- Filter Form -->
+<div class="py-6">
+  <div class="flex flex-col justify-end gap-4 lg:flex-row">
+    <button
+      class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
+      (click)="applyFilters()">
+      <span>Apply Filters</span>
+    </button>
+    <button
+      class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
+      (click)="clearFilters()">
+      <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
+    </button>
+  </div>
+
+  <form (ngSubmit)="applyFilters()" class="mt-6 space-y-6">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Start Point District -->
+      <div>
+        <label
+          for="startPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point District</label
+        >
+        <input
+          id="startPointDistrict"
+          type="text"
+          [(ngModel)]="filters.startPointDistrict"
+          name="startPointDistrict"
+          class="input-standard" />
+      </div>
+
+      <!-- Start Point Municipality -->
+      <div>
+        <label
+          for="startPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Municipality</label
+        >
+        <input
+          id="startPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.startPointMunicipality"
+          name="startPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- Start Point Parish -->
+      <div>
+        <label
+          for="startPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Parish</label
+        >
+        <input
+          id="startPointParish"
+          type="text"
+          [(ngModel)]="filters.startPointParish"
+          name="startPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point District -->
+      <div>
+        <label
+          for="endPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point District</label
+        >
+        <input
+          id="endPointDistrict"
+          type="text"
+          [(ngModel)]="filters.endPointDistrict"
+          name="endPointDistrict"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Municipality -->
+      <div>
+        <label
+          for="endPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Municipality</label
+        >
+        <input
+          id="endPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.endPointMunicipality"
+          name="endPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Parish -->
+      <div>
+        <label
+          for="endPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Parish</label
+        >
+        <input
+          id="endPointParish"
+          type="text"
+          [(ngModel)]="filters.endPointParish"
+          name="endPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Year -->
+      <div>
+        <label
+          for="scheduleYear"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Year</label
+        >
+        <input
+          id="scheduleYear"
+          type="number"
+          [(ngModel)]="filters.scheduleYear"
+          name="scheduleYear"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Month -->
+      <div>
+        <label
+          for="scheduleMonth"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Month</label
+        >
+        <input
+          id="scheduleMonth"
+          type="number"
+          [(ngModel)]="filters.scheduleMonth"
+          name="scheduleMonth"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Day -->
+      <div>
+        <label
+          for="scheduleDay"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Day</label
+        >
+        <input
+          id="scheduleDay"
+          type="number"
+          [(ngModel)]="filters.scheduleDay"
+          name="scheduleDay"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Hour -->
+      <div>
+        <label
+          for="scheduleHour"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Hour</label
+        >
+        <input
+          id="scheduleHour"
+          type="number"
+          [(ngModel)]="filters.scheduleHour"
+          name="scheduleHour"
+          class="input-standard" />
+      </div>
+    </div>
+  </form>
+</div>
+
 <div class="table-container">
   <table>
     <thead>
@@ -45,13 +215,11 @@
           <td>{{ lift.createdAt | date: "short" }}</td>
           <td>
             <div
-              class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
-            >
+              class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
               <a (click)="toggleApplication(lift)">
                 <span>Apply</span
                 ><span
-                  [innerHTML]="'faCircleChevronRight' | attachedIcon"
-                ></span
+                  [innerHTML]="'faCircleChevronRight' | attachedIcon"></span
               ></a>
             </div>
           </td>
@@ -62,8 +230,7 @@
 </div>
 
 <div
-  class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
->
+  class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
   <a (click)="toggleCreate()"
     ><span [innerHTML]="'faPlus' | attachedIcon"></span
   ></a>
@@ -77,8 +244,7 @@
         [formGroup]="liftForm"
         (ngSubmit)="confirmCreate()"
         #form="ngForm"
-        class="bg-white px-8 pt-6 pb-8 mb-4"
-      >
+        class="bg-white px-8 pt-6 pb-8 mb-4">
         <!-- STARTPOINT -->
         <div>
           <!-- District Select -->
@@ -87,12 +253,10 @@
             <select
               id="startDistrict"
               formControlName="startDistrict"
-              (change)="onStartDistrictChange($event)"
-            >
+              (change)="onStartDistrictChange($event)">
               <option
                 *ngFor="let startDistrict of startDistricts"
-                [value]="startDistrict"
-              >
+                [value]="startDistrict">
                 {{ startDistrict }}
               </option>
             </select>
@@ -105,12 +269,10 @@
               id="startMunicipality"
               formControlName="startMunicipality"
               [disabled]="!selectedStartDistrict"
-              (change)="onStartMunicipalityChange($event)"
-            >
+              (change)="onStartMunicipalityChange($event)">
               <option
                 *ngFor="let startMunicipality of startMunicipalities"
-                [value]="startMunicipality"
-              >
+                [value]="startMunicipality">
                 {{ startMunicipality }}
               </option>
             </select>
@@ -122,12 +284,10 @@
             <select
               id="startParish"
               formControlName="startParish"
-              [disabled]="!selectedStartMunicipality"
-            >
+              [disabled]="!selectedStartMunicipality">
               <option
                 *ngFor="let startParish of startParishes"
-                [value]="startParish"
-              >
+                [value]="startParish">
                 {{ startParish }}
               </option>
             </select>
@@ -142,12 +302,10 @@
             <select
               id="endDistrict"
               formControlName="endDistrict"
-              (change)="onEndDistrictChange($event)"
-            >
+              (change)="onEndDistrictChange($event)">
               <option
                 *ngFor="let endDistrict of endDistricts"
-                [value]="endDistrict"
-              >
+                [value]="endDistrict">
                 {{ endDistrict }}
               </option>
             </select>
@@ -160,12 +318,10 @@
               id="endMunicipality"
               formControlName="endMunicipality"
               [disabled]="!selectedEndDistrict"
-              (change)="onEndMunicipalityChange($event)"
-            >
+              (change)="onEndMunicipalityChange($event)">
               <option
                 *ngFor="let endMunicipality of endMunicipalities"
-                [value]="endMunicipality"
-              >
+                [value]="endMunicipality">
                 {{ endMunicipality }}
               </option>
             </select>
@@ -177,8 +333,7 @@
             <select
               id="endParish"
               formControlName="endParish"
-              [disabled]="!selectedEndMunicipality"
-            >
+              [disabled]="!selectedEndMunicipality">
               <option *ngFor="let endParish of endParishes" [value]="endParish">
                 {{ endParish }}
               </option>
@@ -200,8 +355,7 @@
         <div class="mb-6">
           <label
             class="block text-gray-700 text-sm font-bold mb-2"
-            for="cschedule"
-          >
+            for="cschedule">
             Schedule
           </label>
           <input
@@ -210,8 +364,7 @@
             name="schedule"
             type="datetime-local"
             required
-            formControlName="schedule"
-          />
+            formControlName="schedule" />
         </div>
 
         <!-- Price -->
@@ -226,8 +379,7 @@
             type="number"
             required
             placeholder="Example: 20"
-            formControlName="price"
-          />
+            formControlName="price" />
         </div>
 
         <!-- Provided Seats -->
@@ -242,23 +394,20 @@
             type="number"
             required
             placeholder="Example: 4"
-            formControlName="providedSeats"
-          />
+            formControlName="providedSeats" />
         </div>
 
         <!-- Botoes -->
         <div class="flex items-center justify-between">
           <button
             class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
+            type="submit">
             Confirm
           </button>
           <button
             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="button"
-            (click)="cancel()"
-          >
+            (click)="cancel()">
             Cancel
           </button>
         </div>
@@ -271,8 +420,7 @@
       <form
         (ngSubmit)="confirmApplication()"
         #applicationForm="ngForm"
-        class="mt-4"
-      >
+        class="mt-4">
         <div class="modal-header">
           <h5 class="text-lg font-bold text-emerald-600">Confirmation</h5>
         </div>
@@ -326,14 +474,12 @@
           <button
             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             (click)="cancel()"
-            type="button"
-          >
+            type="button">
             Cancel
           </button>
           <button
             class="bg-primary-700 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
+            type="submit">
             Confirm
           </button>
         </div>

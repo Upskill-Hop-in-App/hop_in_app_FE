@@ -1,24 +1,25 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { Lift } from '../../models/lift.model';
-import { MyCar } from '../../models/my-car.model';
-import { Application } from '../../models/application.model';
-import { LiftService } from '../../services/lift.service';
-import { FormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core'
+import { Lift } from '../../models/lift.model'
+import { MyCar } from '../../models/my-car.model'
+import { Application } from '../../models/application.model'
+import { LiftService } from '../../services/lift.service'
+import { FormsModule, Validators } from '@angular/forms'
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   FormArray,
-} from '@angular/forms';
-import { catchError, of } from 'rxjs';
-import { ModalComponent } from '../modal/modal.component';
-import { DOCUMENT } from '@angular/common';
-import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
-import { CommonModule } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationService } from '../../services/application.service';
-import { AuthService } from '../../services/auth.service';
+} from '@angular/forms'
+import { catchError, of } from 'rxjs'
+import { ModalComponent } from '../modal/modal.component'
+import { DOCUMENT } from '@angular/common'
+import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
+import { CommonModule } from '@angular/common'
+import { ToastrService } from 'ngx-toastr'
+import { ActivatedRoute, Router } from '@angular/router'
+import { ApplicationService } from '../../services/application.service'
+import { AuthService } from '../../services/auth.service'
+import { MyCarService } from '../../services/my-car/my-car.service'
 
 @Component({
   selector: 'app-lifts',
@@ -34,29 +35,25 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './lift.component.css',
 })
 export class LiftComponent implements OnInit {
-  lifts: Lift[] = [];
-  cars: MyCar[] = [];
-  startDistricts: string[] = [];
-  startMunicipalities: string[] = [];
-  startParishes: string[] = [];
-  endDistricts: string[] = [];
-  endMunicipalities: string[] = [];
-  endParishes: string[] = [];
-  selectedStartDistrict: string | null = null;
-  selectedStartMunicipality: string | null = null;
-  selectedEndDistrict: string | null = null;
-  selectedEndMunicipality: string | null = null;
-  auxiliarLift: Lift = this.reset();
-  showCreateForm: boolean = false;
-  showApplicationForm: boolean = false;
-  showEditForm: boolean = false;
-  // backupLift: Lift = this.reset();
-  showDeleteForm: boolean = false;
-  currentModalTitle: string = '';
-
-  //TODO mudar aqui para ir busca-lo ao token
-  clientUsername: string = '';
-
+  lifts: Lift[] = []
+  cars: MyCar[] = []
+  startDistricts: string[] = []
+  startMunicipalities: string[] = []
+  startParishes: string[] = []
+  endDistricts: string[] = []
+  endMunicipalities: string[] = []
+  endParishes: string[] = []
+  selectedStartDistrict: string | null = null
+  selectedStartMunicipality: string | null = null
+  selectedEndDistrict: string | null = null
+  selectedEndMunicipality: string | null = null
+  auxiliarLift: Lift = this.reset()
+  showCreateForm: boolean = false
+  showApplicationForm: boolean = false
+  showEditForm: boolean = false
+  showDeleteForm: boolean = false
+  currentModalTitle: string = ''
+  clientUsername: string = ''
   liftForm = new FormGroup({
     driver: new FormControl('', [Validators.required]),
     car: new FormControl('', [Validators.required]),
@@ -73,14 +70,31 @@ export class LiftComponent implements OnInit {
       Validators.min(1),
     ]),
     occupiedSeats: new FormControl(0, [Validators.min(0)]),
-  });
-
+  })
   applicationForm = new FormGroup({
     passenger: new FormControl('', [Validators.required]),
     lift: new FormControl('', [Validators.required]),
-  });
+  })
+  filters: any = {
+    cl: '',
+    status: '',
+    startPointDistrict: '',
+    startPointMunicipality: '',
+    startPointParish: '',
+    endPointDistrict: '',
+    endPointMunicipality: '',
+    endPointParish: '',
+    providedSeats: '',
+    scheduleYear: '',
+    scheduleMonth: '',
+    scheduleDay: '',
+    scheduleHour: '',
+    driver: '',
+    car: '',
+  }
+  filtersApplied = false
 
-  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
   constructor(
     private route: ActivatedRoute,
@@ -88,76 +102,130 @@ export class LiftComponent implements OnInit {
     private LiftService: LiftService,
     private ApplicationService: ApplicationService,
     private AuthService: AuthService,
+    private MyCarService: MyCarService,
     @Inject(DOCUMENT) private document: Document,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
-    this.getUsername();
-    this.getLifts();
-    this.loadStartDistricts();
-    this.loadEndDistricts();
+    this.getUsername()
+    this.getLifts()
+    this.loadStartDistricts()
+    this.loadEndDistricts()
   }
 
   getUsername() {
-    this.clientUsername = this.AuthService.getUserName();
+    this.clientUsername = this.AuthService.getUserName()
   }
 
   getLifts(): void {
     this.LiftService.getLifts()
       .pipe(
         catchError((err) => {
-          this.toastr.info('No lift found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.info('No lift found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((data: Lift[]) => {
-        this.lifts = data;
-      });
+        this.lifts = data.filter((lift) => lift.status === 'open')
+      })
   }
 
   getCars(): void {
-    this.LiftService.getCarsByUsername(this.clientUsername)
+    this.MyCarService.getCarByUsername(this.clientUsername)
       .pipe(
         catchError((err) => {
-          this.toastr.info('No car found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.info('No car found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((data: MyCar[]) => {
-        this.cars = data;
-      });
+        this.cars = data
+      })
+  }
+
+  cleanFilters(filters: any): any {
+    return Object.entries(filters)
+      .filter(
+        ([key, value]) => value !== '' && value !== null && value !== undefined
+      )
+      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
+  }
+
+  applyFilters() {
+    const query = this.buildQueryString(this.cleanFilters(this.filters))
+    this.LiftService.filterLift(query).subscribe(
+      (response) => {
+        this.lifts = response.data.filter((lift) => lift.status === 'open')
+        this.filtersApplied = true
+      },
+      (error) => {
+        console.error(error)
+        this.getLifts()
+        this.filtersApplied = true
+      }
+    )
+  }
+
+  buildQueryString(filters: Record<string, string | number | boolean>): string {
+    return Object.entries(filters)
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&')
+  }
+
+  clearFilters() {
+    this.getLifts()
+    this.filters = {
+      cl: '',
+      status: '',
+      startPointDistrict: '',
+      startPointMunicipality: '',
+      startPointParish: '',
+      endPointDistrict: '',
+      endPointMunicipality: '',
+      endPointParish: '',
+      providedSeats: '',
+      scheduleYear: '',
+      scheduleMonth: '',
+      scheduleDay: '',
+      scheduleHour: '',
+      driver: '',
+      car: '',
+    }
   }
 
   loadStartDistricts(): void {
     this.LiftService.getAllDistricts()
       .pipe(
         catchError((err) => {
-          this.toastr.error('No district found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.error('No district found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((districts: string[]) => {
-        this.startDistricts = districts;
-      });
+        this.startDistricts = districts
+      })
   }
 
   loadEndDistricts(): void {
     this.LiftService.getAllDistricts()
       .pipe(
         catchError((err) => {
-          this.toastr.error('No district found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.error('No district found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((districts: string[]) => {
-        this.endDistricts = districts;
-      });
+        this.endDistricts = districts
+      })
   }
 
   onStartDistrictChange(event: any) {
-    this.selectedStartDistrict = event.target.value;
-    this.loadStartMunicipalities();
+    this.selectedStartDistrict = event.target.value
+    this.loadStartMunicipalities()
   }
 
   loadStartMunicipalities(): void {
@@ -167,21 +235,21 @@ export class LiftComponent implements OnInit {
           catchError((err) => {
             this.toastr.error(
               'Failed to load municipalities',
-              err?.error?.message,
-            );
-            return of([]);
-          }),
+              err?.error?.message
+            )
+            return of([])
+          })
         )
         .subscribe((municipalities: string[]) => {
-          this.startMunicipalities = municipalities;
-          this.liftForm.get('startPoint.municipality')?.enable();
-        });
+          this.startMunicipalities = municipalities
+          this.liftForm.get('startPoint.municipality')?.enable()
+        })
     }
   }
 
   onEndDistrictChange(event: any) {
-    this.selectedEndDistrict = event.target.value;
-    this.loadEndMunicipalities();
+    this.selectedEndDistrict = event.target.value
+    this.loadEndMunicipalities()
   }
 
   loadEndMunicipalities(): void {
@@ -191,44 +259,44 @@ export class LiftComponent implements OnInit {
           catchError((err) => {
             this.toastr.error(
               'Failed to load municipalities',
-              err?.error?.message,
-            );
-            return of([]);
-          }),
+              err?.error?.message
+            )
+            return of([])
+          })
         )
         .subscribe((municipalities: string[]) => {
-          this.endMunicipalities = municipalities;
-          this.liftForm.get('endPoint.municipality')?.enable();
-        });
+          this.endMunicipalities = municipalities
+          this.liftForm.get('endPoint.municipality')?.enable()
+        })
     }
   }
 
   onStartMunicipalityChange(event: any) {
-    this.selectedStartMunicipality = event.target.value;
-    this.loadStartParishes();
+    this.selectedStartMunicipality = event.target.value
+    this.loadStartParishes()
   }
 
   loadStartParishes() {
     if (this.selectedStartMunicipality) {
       this.LiftService.getParishesByMunicipalities(
-        this.selectedStartMunicipality,
+        this.selectedStartMunicipality
       )
         .pipe(
           catchError((err) => {
-            this.toastr.error('Failed to load parishes', err?.error?.message);
-            return of([]);
-          }),
+            this.toastr.error('Failed to load parishes', err?.error?.message)
+            return of([])
+          })
         )
         .subscribe((parishes: string[]) => {
-          this.startParishes = parishes;
-          this.liftForm.get('startPoint.parish')?.enable();
-        });
+          this.startParishes = parishes
+          this.liftForm.get('startPoint.parish')?.enable()
+        })
     }
   }
 
   onEndMunicipalityChange(event: any) {
-    this.selectedEndMunicipality = event.target.value;
-    this.loadEndParishes();
+    this.selectedEndMunicipality = event.target.value
+    this.loadEndParishes()
   }
 
   loadEndParishes() {
@@ -236,30 +304,30 @@ export class LiftComponent implements OnInit {
       this.LiftService.getParishesByMunicipalities(this.selectedEndMunicipality)
         .pipe(
           catchError((err) => {
-            this.toastr.error('Failed to load parishes', err?.error?.message);
-            return of([]);
-          }),
+            this.toastr.error('Failed to load parishes', err?.error?.message)
+            return of([])
+          })
         )
         .subscribe((parishes: string[]) => {
-          this.endParishes = parishes;
-          this.liftForm.get('endPoint.parish')?.enable();
-        });
+          this.endParishes = parishes
+          this.liftForm.get('endPoint.parish')?.enable()
+        })
     }
   }
 
   openModal(): void {
-    this.modalComponent.openModal();
+    this.modalComponent.openModal()
   }
 
   toggleCreate(): void {
-    this.currentModalTitle = 'Add lift';
-    this.showEditForm = false;
-    this.showDeleteForm = false;
-    this.showCreateForm = true;
-    this.showApplicationForm = false;
-    this.getCars();
-    this.resetForm();
-    this.openModal();
+    this.currentModalTitle = 'Add lift'
+    this.showEditForm = false
+    this.showDeleteForm = false
+    this.showCreateForm = true
+    this.showApplicationForm = false
+    this.getCars()
+    this.resetForm()
+    this.openModal()
   }
 
   reset(): Lift {
@@ -284,12 +352,12 @@ export class LiftComponent implements OnInit {
       createdAt: '',
       updatedAt: '',
       __v: '',
-    };
+    }
   }
 
   resetForm() {
-    this.liftForm.reset();
-    this.applicationForm.reset();
+    this.liftForm.reset()
+    this.applicationForm.reset()
   }
 
   confirmCreate(): void {
@@ -311,53 +379,53 @@ export class LiftComponent implements OnInit {
       schedule: new Date(this.liftForm.value.schedule!),
       price: this.liftForm.value.price!,
       providedSeats: this.liftForm.value.providedSeats!,
-    };
+    }
     this.LiftService.createLift(newLift).subscribe({
       next: () => {
-        this.toastr.success('Lift created successfully.');
-        this.cancel();
-        this.getLifts();
+        this.toastr.success('Lift created successfully.')
+        this.cancel()
+        this.getLifts()
       },
       error: (err) => {
-        this.toastr.error('Failed to create new lift.', err.error.error);
+        this.toastr.error('Failed to create new lift.', err.error.error)
       },
-    });
+    })
   }
 
   cancel(): void {
-    this.modalComponent.closeModal();
-    this.resetForm();
+    this.modalComponent.closeModal()
+    this.resetForm()
   }
 
   toggleApplication(lift: Lift) {
-    this.currentModalTitle = 'Applying to lift';
-    this.showEditForm = false;
-    this.showDeleteForm = false;
-    this.showCreateForm = false;
-    this.showApplicationForm = true;
-    this.auxiliarLift = { ...lift };
+    this.currentModalTitle = 'Applying to lift'
+    this.showEditForm = false
+    this.showDeleteForm = false
+    this.showCreateForm = false
+    this.showApplicationForm = true
+    this.auxiliarLift = { ...lift }
     this.applicationForm.setValue({
       passenger: this.clientUsername!,
       lift: lift.cl!,
-    });
-    this.openModal();
+    })
+    this.openModal()
   }
 
   confirmApplication(): void {
     const application: Application = {
       passenger: { username: this.applicationForm.value.passenger! },
       lift: { cl: this.applicationForm.value.lift! },
-    };
+    }
     this.ApplicationService.createApplication(application).subscribe({
       next: () => {
-        this.toastr.success('Application created successfully.');
-        this.cancel();
-        this.getLifts();
+        this.toastr.success('Application created successfully.')
+        this.cancel()
+        this.getLifts()
       },
       error: (err) => {
-        this.toastr.error('Failed to create application.', err.error.error);
+        this.toastr.error('Failed to create application.', err.error.error)
       },
-    });
+    })
   }
 
   // toggleEdit(booking: Booking) {
