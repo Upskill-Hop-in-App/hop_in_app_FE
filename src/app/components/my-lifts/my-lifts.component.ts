@@ -50,13 +50,8 @@ export class MyLiftsComponent implements OnInit {
   auxiliarLift: Lift = this.reset()
   showCreateForm: boolean = false
   showApplicationForm: boolean = false
-  showEditForm: boolean = false
-  // backupLift: Lift = this.reset();
-  showDeleteForm: boolean = false
   currentModalTitle: string = ''
-
-  //TODO mudar aqui para ir busca-lo ao token
-  clientUsername: string = 'admin1_user'
+  clientUsername: string = ''
 
   liftForm = new FormGroup({
     driver: new FormControl('', [Validators.required]),
@@ -75,6 +70,24 @@ export class MyLiftsComponent implements OnInit {
     ]),
     occupiedSeats: new FormControl(0, [Validators.min(0)]),
   })
+  filters: any = {
+    cl: '',
+    status: '',
+    startPointDistrict: '',
+    startPointMunicipality: '',
+    startPointParish: '',
+    endPointDistrict: '',
+    endPointMunicipality: '',
+    endPointParish: '',
+    providedSeats: '',
+    scheduleYear: '',
+    scheduleMonth: '',
+    scheduleDay: '',
+    scheduleHour: '',
+    driver: '',
+    car: '',
+  }
+  filtersApplied = false
 
   @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
@@ -125,6 +138,59 @@ export class MyLiftsComponent implements OnInit {
       .subscribe((data: MyCar[]) => {
         this.cars = data
       })
+  }
+
+  cleanFilters(filters: any): any {
+    return Object.entries(filters)
+      .filter(
+        ([key, value]) => value !== '' && value !== null && value !== undefined
+      )
+      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
+  }
+
+  applyFilters() {
+    const query = this.buildQueryString(this.cleanFilters(this.filters))
+    this.LiftService.filterLift(query).subscribe(
+      (response) => {
+        this.lifts = response.data.filter(
+          (lift) => lift.driver.username === this.clientUsername
+        )
+        this.filtersApplied = true
+      },
+      (error) => {
+        console.error(error)
+        this.getLiftsByUsername(this.clientUsername)
+        this.filtersApplied = true
+      }
+    )
+  }
+
+  buildQueryString(filters: Record<string, string | number | boolean>): string {
+    return Object.entries(filters)
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&')
+  }
+
+  clearFilters() {
+    this.getLiftsByUsername(this.clientUsername)
+    this.filters = {
+      status: '',
+      startPointDistrict: '',
+      startPointMunicipality: '',
+      startPointParish: '',
+      endPointDistrict: '',
+      endPointMunicipality: '',
+      endPointParish: '',
+      providedSeats: '',
+      scheduleYear: '',
+      scheduleMonth: '',
+      scheduleDay: '',
+      scheduleHour: '',
+      car: '',
+    }
   }
 
   loadStartDistricts(): void {
@@ -251,8 +317,6 @@ export class MyLiftsComponent implements OnInit {
 
   toggleCreate(): void {
     this.currentModalTitle = 'Add lift'
-    this.showEditForm = false
-    this.showDeleteForm = false
     this.showCreateForm = true
     this.showApplicationForm = false
     this.resetForm()
@@ -287,8 +351,6 @@ export class MyLiftsComponent implements OnInit {
   toggleApplication(lift: Lift) {
     this.auxiliarLift = { ...lift }
     this.currentModalTitle = 'List of applications'
-    this.showEditForm = false
-    this.showDeleteForm = false
     this.showCreateForm = false
     this.showApplicationForm = true
     this.openModal()

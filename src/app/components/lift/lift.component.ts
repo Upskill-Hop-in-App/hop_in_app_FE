@@ -43,21 +43,16 @@ export class LiftComponent implements OnInit {
     lift: new FormControl('', [Validators.required]),
   })
   filters: any = {
-    cl: '',
-    status: '',
     startPointDistrict: '',
     startPointMunicipality: '',
     startPointParish: '',
     endPointDistrict: '',
     endPointMunicipality: '',
     endPointParish: '',
-    providedSeats: '',
     scheduleYear: '',
     scheduleMonth: '',
     scheduleDay: '',
     scheduleHour: '',
-    driver: '',
-    car: '',
   }
   filtersApplied = false
 
@@ -130,21 +125,16 @@ export class LiftComponent implements OnInit {
   clearFilters() {
     this.getLifts()
     this.filters = {
-      cl: '',
-      status: '',
       startPointDistrict: '',
       startPointMunicipality: '',
       startPointParish: '',
       endPointDistrict: '',
       endPointMunicipality: '',
       endPointParish: '',
-      providedSeats: '',
       scheduleYear: '',
       scheduleMonth: '',
       scheduleDay: '',
       scheduleHour: '',
-      driver: '',
-      car: '',
     }
   }
 
