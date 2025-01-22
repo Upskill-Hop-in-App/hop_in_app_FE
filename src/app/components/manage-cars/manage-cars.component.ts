@@ -1,6 +1,12 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { CarService } from '../../services/car.service';
 import { CarFormComponent } from '../car-form/car-form.component';
 import { Car } from '../../models/car.model';
@@ -15,8 +21,14 @@ import {
   faPenToSquare as faPenToSquareSolid,
   faTrashCan as faTrashCanSolid,
 } from '@fortawesome/free-solid-svg-icons';
-import { faPenToSquare, faTrashCan as faTrashCanRegular } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import {
+  faPenToSquare,
+  faTrashCan as faTrashCanRegular,
+} from '@fortawesome/free-regular-svg-icons';
+import {
+  FontAwesomeModule,
+  FaIconLibrary,
+} from '@fortawesome/angular-fontawesome';
 import { catchError, of } from 'rxjs';
 
 @Component({
@@ -24,11 +36,11 @@ import { catchError, of } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    CarFormComponent,
+    //CarFormComponent,
     FormsModule,
     ReactiveFormsModule,
     AppModalComponent,
-    FontAwesomeModule
+    FontAwesomeModule,
   ],
   templateUrl: './manage-cars.component.html',
   styleUrls: ['./manage-cars.component.css'],
@@ -41,8 +53,8 @@ export class ManageCarsComponent implements OnInit {
   showUpdateButton: boolean = false;
   showDeleteButton: boolean = false;
   showCreateForm: boolean = false;
-  showEditForm: boolean = false
-  showDeleteForm: boolean = false
+  showEditForm: boolean = false;
+  showDeleteForm: boolean = false;
   carForm: FormGroup;
   auxiliarCar: Partial<Car> = {};
 
@@ -52,7 +64,7 @@ export class ManageCarsComponent implements OnInit {
     private carService: CarService,
     private toastr: ToastrService,
     @Inject(DOCUMENT) private document: Document,
-    library: FaIconLibrary
+    library: FaIconLibrary,
   ) {
     library.addIcons(
       faHome,
@@ -62,7 +74,7 @@ export class ManageCarsComponent implements OnInit {
       faPenToSquareSolid,
       faTrashCanSolid,
       faPlus,
-      faMagnifyingGlass
+      faMagnifyingGlass,
     );
     this.carForm = new FormGroup({
       brand: new FormControl('', [Validators.required]),
@@ -87,11 +99,14 @@ export class ManageCarsComponent implements OnInit {
     this.showUpdateButton = false;
     this.showDeleteButton = false;
     this.carForm.reset();
+    this.carForm.get('confirmationCc')?.clearValidators();
+    this.carForm.get('confirmationCc')?.updateValueAndValidity();
     this.openModal();
   }
 
   openUpdateModal(car: Car): void {
     this.currentModalTitle = 'Update Car';
+    this.showCreateForm = false;
     this.showUpdateButton = true;
     this.showDeleteButton = false;
     this.carForm.setValue({
@@ -107,16 +122,18 @@ export class ManageCarsComponent implements OnInit {
 
   openDeleteModal(car: Car): void {
     this.currentModalTitle = 'Delete Car';
+    this.showCreateForm = false;
     this.showUpdateButton = false;
     this.showDeleteButton = true;
+    this.showDeleteForm;
     this.auxiliarCar = { ...car };
     this.carForm.patchValue({
       brand: car.brand,
       model: car.model,
       startYear: car.startYear,
       endYear: car.endYear,
-      confirmationCc: '', 
-    })
+      confirmationCc: '',
+    });
     this.openModal();
   }
 
@@ -132,7 +149,7 @@ export class ManageCarsComponent implements OnInit {
           console.error('Failed to fetch cars:', err);
           this.toastr.error('Failed to fetch cars.', err?.error?.error);
           return of([]);
-        })
+        }),
       )
       .subscribe((data: Car[]) => {
         console.log('Cars loaded:', data);
@@ -142,13 +159,12 @@ export class ManageCarsComponent implements OnInit {
 
   confirmCreate(): void {
     const newCar: Car = {
-      id: '0',
       brand: this.carForm.value.brand!,
       model: this.carForm.value.model!,
       startYear: this.carForm.value.startYear!,
       endYear: this.carForm.value.endYear!,
     };
-
+  
     this.carService.create(newCar).subscribe({
       next: () => {
         this.toastr.success('Car added successfully');
@@ -156,46 +172,58 @@ export class ManageCarsComponent implements OnInit {
         this.loadCars();
       },
       error: (err) => {
-        this.toastr.error(err.error.error, 'Failed to add new car');
+        console.error('Create failed:', err);
+        this.toastr.error(err.error?.error || 'Failed to add new car');
       },
     });
   }
-
   confirmEdit(): void {
-    const updatedCar: Partial<Car> = {
+    const updatedCar: Car = {
       brand: this.carForm.value.brand!,
       model: this.carForm.value.model!,
       startYear: this.carForm.value.startYear!,
       endYear: this.carForm.value.endYear!,
     };
-
-    this.carService.update(Number(this.auxiliarCar.id!), updatedCar).subscribe({
+  
+    this.carService.update(this.auxiliarCar.brand!, this.auxiliarCar.model!, updatedCar).subscribe({
       next: () => {
         this.toastr.success('Car updated successfully');
         this.closeModal();
         this.loadCars();
       },
       error: (err) => {
-        this.toastr.error(err.error.error, 'Failed to update car');
+        console.error('Update failed:', err);
+        this.toastr.error(err.error?.error || 'Failed to update car');
       },
     });
   }
 
   confirmDelete(): void {
-    if (this.carForm.value.confirmationCc?.toUpperCase() !== this.auxiliarCar.brand?.toUpperCase()) {
+    console.log('Delete attempted');
+  console.log('Form value:', this.carForm.value);
+  console.log('Auxiliar car:', this.auxiliarCar);
+    if (
+      this.carForm.value.confirmationCc?.toUpperCase() !==
+      this.auxiliarCar.brand?.toUpperCase()
+    ) {
+      console.log('Brand confirmation failed');
       this.toastr.error('The confirmation does not match the car brand.');
       return;
     }
 
-    this.carService.delete(Number(this.auxiliarCar.id!)).subscribe({
-      next: () => {
-      this.toastr.success('Car deleted successfully');
-      this.closeModal();
-      this.loadCars();
-      },
-      error: (err) => {
-      this.toastr.error(err.error.error, 'Failed to delete car');
-      },
-    });
+    console.log('Deleting car:', this.auxiliarCar.brand, this.auxiliarCar.model);
+    this.carService
+      .delete(this.auxiliarCar.brand!, this.auxiliarCar.model!)
+      .subscribe({
+        next: () => {
+          this.toastr.success('Car deleted successfully');
+          this.closeModal();
+          this.loadCars();
+        },
+        error: (err) => {
+          console.log('Delete failed:', err);
+          this.toastr.error(err.error?.error || 'Failed to delete car');
+        },
+      });
   }
 }

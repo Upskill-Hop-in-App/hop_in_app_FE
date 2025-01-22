@@ -16,15 +16,15 @@ export class CarService {
     .get<{message: string; data: Car[]}>(this.carsUrl)
     .pipe(map((response) => response.data));
   }
-  create(car: any): Observable<any> {
-    return this.http.post(`${this.carsUrl}`, car);
+  create(car: Car): Observable<Car> {
+    return this.http.post<Car>(`${this.carsUrl}`, car);
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.carsUrl}/${id}`);
+  delete(brand: string, model: string): Observable<void> {
+    return this.http.delete<void>(`${this.carsUrl}/${brand}/${model}`);
   }
 
-  update(id: number, car: any): Observable<Car> {
-    return this.http.put<any>(`${this.carsUrl}/${id}`, car);
+  update(brand: string, model: string, car: Car): Observable<Car> {
+    return this.http.put<Car>(`${this.carsUrl}/${brand}/${model}`, car);
   }
 }

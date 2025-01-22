@@ -90,21 +90,6 @@
             formControlName="endYear"
             class="input-standard"
           />
-          <div class="space-y-2 border-t py-8 dark:border-gray-600">
-            <p class="font-semibold text-rose-500">
-              Please enter the car brand to
-              confirm:
-            </p>
-            <input
-              type="text"
-              name="confirmationCc"
-              id="confirmationCc"
-              class="input-standard"
-              formControlName="confirmationCc"
-              placeholder="Enter car brand"
-              required
-            />
-          </div>
         </div>
         <div class="buttons-modal-container">
           <button type="button" (click)="closeModal()" class="btn-gray">
@@ -141,7 +126,7 @@
         <div class="space-y-2">
           <label for="model" class="font-semibold">StartYear:</label>
           <input
-            type="text"
+            type="number"
             name="startYear"
             id="startYear"
             formControlName="startYear"
@@ -154,7 +139,7 @@
             type="number"
             name="endYear"
             id="endYear"
-            formControlName="End Year"
+            formControlName="endYear"
             class="input-standard"
           />
         </div>

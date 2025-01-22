@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { NgOptimizedImage } from '@angular/common';
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
 import {
   FontAwesomeModule,
@@ -17,7 +16,6 @@ import { faSun } from '@fortawesome/free-regular-svg-icons';
     CommonModule,
     FontAwesomeModule,
     RouterLink,
-    NgOptimizedImage,
     AttachedIconPipe,
   ],
   templateUrl: './navbar.component.html',
