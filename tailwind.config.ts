@@ -18,7 +18,17 @@ const config: Config = {
       primary: colors.purple,
       secondary: colors.rose,
     },
-    extend: {},
+    extend: {
+      keyframes: {
+        bounceCar: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+      },
+      animation: {
+        bounceCar: 'bounceCar 0.6s ease-in-out infinite',
+      },
+    },
   },
   plugins: [],
 };

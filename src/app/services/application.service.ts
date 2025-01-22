@@ -25,4 +25,12 @@ export class ApplicationService {
   rejectApplication(ca: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/reject/${ca}`, {});
   }
+
+  readyApplication(ca: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/ready/${ca}`, {});
+  }
+
+  updatePassengerRating(ca: string, rating: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/ca/rating/${ca}/${rating}`, {});
+  }
 }

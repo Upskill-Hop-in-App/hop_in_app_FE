@@ -41,8 +41,9 @@ export class LiftService {
     return this.http.get<{ message: string; data: Lift }>(localURL);
   }
 
-  filterLift(query: string): Observable<{ message: string; data: Lift[] }> {
-    const localURL = this.apiUrl + '/filter/' + query;
+  filterLift(query: string, username: string): Observable<{ message: string; data: Lift[] }> {
+    const localURL = `${this.apiUrl}/filter/username/${username}?${query}`;
+    console.log(localURL)
     return this.http.get<{ message: string; data: Lift[] }>(localURL);
   }
 
@@ -129,5 +130,13 @@ export class LiftService {
         data: Lift[];
       }>(this.apiUrl + '/username/' + username)
       .pipe(map((response) => response.data));
+  }
+
+  updateStatusLift(code: string, status: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/cl/status/${code}/${status}`, {});
+  }
+
+  updateDriverRating(code: string, rating: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/cl/rating/${code}/${rating}`, {});
   }
 }

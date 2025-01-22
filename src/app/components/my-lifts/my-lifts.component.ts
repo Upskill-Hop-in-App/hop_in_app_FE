@@ -18,7 +18,9 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationService } from '../../services/application.service';
-
+import { RouterLink } from '@angular/router';
+import { QueryParamsHandling } from '@angular/router';
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-myLifts',
   standalone: true,
@@ -28,6 +30,7 @@ import { ApplicationService } from '../../services/application.service';
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
   templateUrl: './my-lifts.component.html',
   styleUrl: './my-lifts.component.css',
@@ -48,9 +51,12 @@ export class MyLiftsComponent implements OnInit {
   auxiliarLift: Lift = this.reset();
   showCreateForm: boolean = false;
   showApplicationForm: boolean = false;
-  showEditForm: boolean = false;
+  showCancelStatus: boolean = false;
+  currentLiftCode: string = "";
+  newStatus: string = "";
   // backupLift: Lift = this.reset();
   showDeleteForm: boolean = false;
+  showEditForm: boolean = false;
   currentModalTitle: string = '';
 
   //TODO mudar aqui para ir busca-lo ao token
@@ -351,6 +357,47 @@ export class MyLiftsComponent implements OnInit {
       },
     });
   }
+
+  toggleCancelStatus(lift: Lift, cl: string, status: string): void {
+    this.auxiliarLift = { ...lift };
+    this.currentModalTitle = "Cancel Lift";
+    this.currentLiftCode = cl;
+    this.newStatus = status;
+    this.showEditForm = false;
+    this.showDeleteForm = false;
+    this.showCreateForm = false;
+    this.showCancelStatus = true;
+    this.showApplicationForm = false;
+    this.resetForm();
+    this.openModal();
+  }
+
+  updateCancelStatus(): void {
+    this.LiftService.updateStatusLift(
+      this.currentLiftCode,
+      this.newStatus,
+    ).subscribe({
+      next: () => {
+        this.toastr.success('Updated lift status');
+        this.cancel();
+        this.getLiftsByUsername(this.clientUsername);
+      },
+      error: (err) => {
+        this.toastr.error('Failed to update lift status', err.error.error);
+      },
+    });
+  }
+
+  /* toggleStartLift(lift: Lift):void {
+    this.auxiliarLift = {... lift}
+    this.showEditForm = false;
+    this.showDeleteForm = false;
+    this.showCreateForm = false;
+    this.showCancelStatus = false;
+    this.showApplicationForm = false;
+    this.resetForm();
+    this.openModal();
+  } */
 
   // toggleEdit(booking: Booking) {
   //   this.showCreateForm = false;
