@@ -31,6 +31,8 @@ import {
   faAddressCard,
   faPhone,
   faAt,
+  faUserPen,
+  faUnlock,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faTrashCan as faSlimTrashCan,
@@ -73,6 +75,8 @@ export class AttachedIconPipe implements PipeTransform {
     faAddressCard,
     faPhone,
     faAt,
+    faUserPen,
+    faUnlock,
   };
 
   constructor(private sanitizer: DomSanitizer) {}

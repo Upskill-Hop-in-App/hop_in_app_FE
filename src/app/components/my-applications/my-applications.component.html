@@ -44,11 +44,17 @@
           <td>{{ application.status }}</td>
           <td>{{ application.createdAt | date: "short" }}</td>
           <td>
-            <div
-              class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-danger"
-            >
-              <a (click)="toggleCancel(application)"> <span>Cancel</span></a>
-            </div>
+            @if (
+              application.status === "pending" ||
+              application.status === "accepted" ||
+              application.status === "ready"
+            ) {
+              <div
+                class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-danger"
+              >
+                <a (click)="toggleCancel(application)"> <span>Cancel</span></a>
+              </div>
+            }
           </td>
         </tr>
       }
@@ -74,8 +80,8 @@
             <strong class="block text-gray-800">Starting Point:</strong>
             <span
               >{{ auxiliarApplication.lift.startPoint!.parish! }},
-              {{ (auxiliarApplication.lift.startPoint)!.municipality! }} ({{
-                (auxiliarApplication.lift.startPoint)!.district!
+              {{ auxiliarApplication.lift.startPoint!.municipality! }} ({{
+                auxiliarApplication.lift.startPoint!.district!
               }})
             </span>
           </div>
