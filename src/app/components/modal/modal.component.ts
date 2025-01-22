@@ -7,7 +7,7 @@ import { DOCUMENT } from '@angular/common';
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })
-export class AppModalComponent {
+export class ModalComponent {
   constructor(@Inject(DOCUMENT) private document: Document) {}
 
   openModal() {

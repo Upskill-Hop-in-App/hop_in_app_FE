@@ -1,0 +1,110 @@
+<div class="space-y-8">
+  <h2 class="main-title border-b">Register</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-6">
+    <div class="space-y-2">
+      <label for="email" class="font-semibold">Email: </label>
+      <input
+        data-cy="input-email"
+        type="text"
+        name="email"
+        id="email"
+        formControlName="email"
+        class="input-standard"
+      />
+    </div>
+    <div class="space-y-2">
+      <label for="name" class="font-semibold">Name: </label>
+      <input
+        data-cy="input-name"
+        type="text"
+        name="name"
+        id="name"
+        formControlName="name"
+        class="input-standard"
+      />
+    </div>
+    <div class="space-y-2">
+      <label for="username" class="font-semibold">Username: </label>
+      <input
+        data-cy="input-username"
+        type="text"
+        name="username"
+        id="username"
+        formControlName="username"
+        class="input-standard"
+        autocomplete="new-password"
+      />
+    </div>
+    <div class="space-y-2">
+      <label for="contact" class="font-semibold">Contact: </label>
+      <input
+        data-cy="input-contact"
+        type="text"
+        name="contact"
+        id="contact"
+        formControlName="contact"
+        class="input-standard"
+      />
+    </div>
+    @if (isAdminAuth()) {
+      <div class="space-y-2">
+        <label for="role" class="font-semibold">Role: </label>
+        <div class="flex w-full space-x-8 whitespace-nowrap">
+          <label class="flex items-center space-x-2">
+            <input
+              data-cy="radio-admin"
+              type="radio"
+              name="role"
+              value="admin"
+              formControlName="role"
+              class="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 dark:border-gray-600 dark:bg-gray-700"
+            />
+            <span> Admin </span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input
+              data-cy="radio-client"
+              type="radio"
+              name="role"
+              value="client"
+              formControlName="role"
+              class="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 dark:border-gray-600 dark:bg-gray-700"
+            />
+            <span> Client </span>
+          </label>
+        </div>
+      </div>
+    }
+    <div class="space-y-2">
+      <label for="password" class="font-semibold">Password: </label>
+      <input
+        data-cy="input-password"
+        type="password"
+        name="password"
+        id="password"
+        formControlName="password"
+        class="input-standard"
+        autocomplete="new-password"
+      />
+    </div>
+    <div class="space-y-2">
+      <label for="confirmPassword" class="font-semibold"
+        >Confirm Password:
+      </label>
+      <input
+        data-cy="input-password-confirmation"
+        type="password"
+        name="confirmPassword"
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        class="input-standard"
+        autocomplete="new-password"
+      />
+    </div>
+    <div class="flex items-center justify-between gap-x-4">
+      <button data-cy="submit-btn" type="submit" class="btn-primary">
+        Register
+      </button>
+    </div>
+  </form>
+</div>

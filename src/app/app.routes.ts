@@ -1,9 +1,28 @@
 import { Routes } from '@angular/router';
+import { LiftComponent } from './components/lift/lift.component';
+import { MyLiftsComponent } from './components/my-lifts/my-lifts.component';
+import { MyApplicationsComponent } from './components/my-applications/my-applications.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { AdminGuard } from './guards/admin.guard';
+import { UserGuard } from './guards/user.guard';
+import { RegisterComponent } from './components/register/register.component';
+import { LoginComponent } from './components/login/login.component';
+import { MyCarsComponent } from './components/my-cars/my-cars.component';
 import * as cars from './components/cars/cars.component';
 import { ManageCarsComponent } from './components/manage-cars/manage-cars.component';
 
 
 export const routes: Routes = [
-    { path: 'cars', component: cars.CarComponent },
-    { path: 'manage-cars', component: ManageCarsComponent }
+  { path: 'manage-cars', component: ManageCarsComponent, canActivate: [AdminGuard] }
+  { path: 'my-cars', component: MyCarsComponent, canActivate: [UserGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'lifts', component: LiftComponent, canActivate: [UserGuard] },
+  { path: 'my-lifts', component: MyLiftsComponent, canActivate: [UserGuard] },
+  {
+    path: 'my-applications',
+    component: MyApplicationsComponent,
+    canActivate: [UserGuard],
+  },
+  { path: 'profile', component: ProfileComponent },
 ];
