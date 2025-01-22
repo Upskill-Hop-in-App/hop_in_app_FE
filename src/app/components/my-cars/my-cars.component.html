@@ -57,7 +57,7 @@
                 ></span>
               </div>
             </td>
-            
+
             <td>
               <div class="group relative">
                 <span
@@ -67,7 +67,7 @@
                 ></span>
                 <span
                   (click)="openDeleteModal(car)"
-                  class="absolute left-0 top-0 cursor-pointer text-primary-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                  class="absolute left-0 top-0 cursor-pointer text-rose-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
                   [innerHTML]="'faTrashCan' | attachedIcon: ''"
                 ></span>
               </div>
@@ -92,7 +92,7 @@
             <select
               formControlName="brand"
               (ngModelChange)="onBrandChange()"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
+              class="input-standard"
             >
               <option
                 value=""
@@ -113,7 +113,7 @@
             <select
               formControlName="model"
               (ngModelChange)="onModelChange()"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
+              class="input-standard"
             >
               <option
                 value=""
@@ -133,7 +133,7 @@
             <label for="yearName" class="font-semibold">Year: </label>
             <select
               formControlName="year"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
+              class="input-standard"
             >
               <option
                 value=""
@@ -192,7 +192,7 @@
             <label for="brandName" class="font-semibold">Brand: </label>
             <select
               formControlName="brand"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
+              class="input-standard"
             >
               <option
                 [value]="backupCar.brand"
@@ -212,7 +212,7 @@
             <label for="modelName" class="font-semibold">Model: </label>
             <select
               formControlName="model"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
+              class="input-standard"
             >
               <option
                 [value]="backupCar.model"
@@ -232,7 +232,7 @@
             <label for="yearName" class="font-semibold">Year: </label>
             <select
               formControlName="year"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
+              class="input-standard"
             >
               <option
                 [value]="backupCar.year"

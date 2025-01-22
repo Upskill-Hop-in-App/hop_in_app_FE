@@ -1,5 +1,5 @@
-import colors from 'tailwindcss/colors';
-import type { Config } from 'tailwindcss';
+import colors from 'tailwindcss/colors'
+import type { Config } from 'tailwindcss'
 
 const config: Config = {
   darkMode: 'selector',
@@ -18,9 +18,17 @@ const config: Config = {
       primary: colors.purple,
       secondary: colors.rose,
     },
+    screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+      '3xl': '1920px',
+    },
     extend: {},
   },
   plugins: [],
-};
+}
 
-export default config;
+export default config
