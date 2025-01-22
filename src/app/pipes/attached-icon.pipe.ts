@@ -28,6 +28,9 @@ import {
   faFileSignature,
   faCircleChevronRight,
   faCoins,
+  faAddressCard,
+  faPhone,
+  faAt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faTrashCan as faSlimTrashCan,
@@ -67,6 +70,9 @@ export class AttachedIconPipe implements PipeTransform {
     faFileSignature,
     faCircleChevronRight,
     faCoins,
+    faAddressCard,
+    faPhone,
+    faAt,
   };
 
   constructor(private sanitizer: DomSanitizer) {}
