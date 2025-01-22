@@ -1,36 +1,84 @@
+/* -------------------------------------------------------------------------- */
+/* -------------------------------- REGISTER -------------------------------- */
+/* -------------------------------------------------------------------------- */
 Cypress.Commands.add('register', (email, name, username, contact, password) => {
-  cy.intercept('POST', '/api/auth/register/client').as('registerRequest');
+  cy.intercept('POST', '/api/auth/register/client').as('registerRequest')
 
-  cy.visit('/register');
+  cy.visit('/register')
 
-  cy.get('[data-cy=input-email]').type(email);
-  cy.get('[data-cy=input-name]').type(name);
-  cy.get('[data-cy=input-username]').type(username);
-  cy.get('[data-cy=input-contact]').type(contact);
-  cy.get('[data-cy=input-password]').type(password);
-  cy.get('[data-cy=input-password-confirmation]').type(password);
-  cy.get('[data-cy=submit-btn]').click();
+  cy.getByDataCy('input-email').type(email)
+  cy.getByDataCy('input-name').type(name)
+  cy.getByDataCy('input-username').type(username)
+  cy.getByDataCy('input-contact').type(contact)
+  cy.getByDataCy('input-password').type(password)
+  cy.getByDataCy('input-password-confirmation').type(password)
+  cy.highlight('submit-btn')
+  cy.getByDataCy('submit-btn').click()
 
-  /* --------------------------- Assert status code --------------------------- */
   cy.wait('@registerRequest').then((interception) => {
-    expect(interception.response?.statusCode).to.eq(201);
-  });
-});
+    expect(interception.response?.statusCode).to.eq(201)
+  })
+  cy.demoWait(5000)
+})
 
+/* -------------------------------------------------------------------------- */
+/* ----------------------------- LOGIN & LOGOUT ----------------------------- */
+/* -------------------------------------------------------------------------- */
 Cypress.Commands.add('login', (email, password) => {
-  cy.intercept('POST', '/api/auth/login').as('loginRequest');
+  cy.intercept('POST', '/api/auth/login').as('loginRequest')
 
-  cy.visit('/login');
+  cy.visit('/login')
 
-  /* -------------------------- Fill and submit form -------------------------- */
-  cy.get('[data-cy=input-email]').type(email);
-  cy.get('[data-cy=input-password]').type(password);
-  cy.get('[data-cy=submit-btn]').click();
-  cy.get('.toast-message').should('be.visible');
+  cy.getByDataCy('input-email').type(email)
+  cy.getByDataCy('input-password').type(password)
+  cy.getByDataCy('submit-btn').click()
+  cy.get('.toast-message').should('be.visible')
 
-  /* ---------------------- Assert status code and token ---------------------- */
   cy.wait('@loginRequest').then((interception) => {
-    expect(interception.response?.statusCode).to.eq(200);
-    cy.window().its('localStorage.userToken').should('exist');
-  });
-});
+    expect(interception.response?.statusCode).to.eq(200)
+    cy.window().its('localStorage.userToken').should('exist')
+  })
+  cy.demoWait(5000)
+})
+
+Cypress.Commands.add('logout', () => {
+  cy.intercept('POST', '/api/auth/logout').as('logoutRequest')
+
+  cy.getByDataCy('logout-btn').click()
+  cy.wait('@logoutRequest').then((interception) => {
+    expect(interception.response?.statusCode).to.eq(200)
+    cy.window().its('localStorage.userToken').should('not.exist')
+  })
+})
+
+/* -------------------------------------------------------------------------- */
+/* --------------------------------- DATA CY -------------------------------- */
+/* -------------------------------------------------------------------------- */
+Cypress.Commands.add('getByDataCy', (selector, ...args) => {
+  cy.demoWait()
+  return cy.get(`[data-cy=${selector}]`, ...args)
+})
+
+/* -------------------------------------------------------------------------- */
+/* ------------------------------ DEMO FEATURES ----------------------------- */
+/* -------------------------------------------------------------------------- */
+Cypress.Commands.add('demoWait', (time = 500) => {
+  cy.wait(time)
+})
+
+// Highlight elements
+Cypress.Commands.add('highlight', (selector) => {
+  cy.getByDataCy(selector).then(($el) => {
+    // Add a temporary highlight effect (e.g., border)
+    $el.css({
+      border: '3px solid red', // Set a red border to show the clicked element
+      transition: 'border 0.3s ease-in-out', // Make it smoothly appear
+    })
+
+    // Remove the highlight after a short delay
+    setTimeout(() => {
+      $el.css('border', '') // Remove the border after 300ms
+    }, 2000)
+    cy.demoWait()
+  })
+})
