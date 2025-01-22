@@ -4,7 +4,7 @@
     <button
       class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
       (click)="applyFilters()">
-      <span>Apply Filters</span>
+      <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span><span>Search </span>
     </button>
     <button
       class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"

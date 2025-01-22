@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core'
 import { Lift } from '../../models/lift.model'
-import { MyCar } from '../../models/my-car.model'
 import { Application } from '../../models/application.model'
 import { LiftService } from '../../services/lift.service'
 import { FormsModule, Validators } from '@angular/forms'
@@ -19,7 +18,6 @@ import { ToastrService } from 'ngx-toastr'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ApplicationService } from '../../services/application.service'
 import { AuthService } from '../../services/auth.service'
-import { MyCarService } from '../../services/my-car/my-car.service'
 
 @Component({
   selector: 'app-lifts',

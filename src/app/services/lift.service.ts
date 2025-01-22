@@ -4,21 +4,11 @@ import { Observable, map } from 'rxjs'
 import { Lift } from '../models/lift.model'
 import { MyCar } from '../models/my-car.model'
 import { AuthService } from './auth.service'
-
-interface DistrictResponse {
-  distrito: string
-  municipios: Municipio[]
-}
-
-interface Municipio {
-  nome: string
-  codigoine: string
-}
-
-interface MunicipioFreguesiaResponse {
-  nome: string
-  freguesias: string[]
-}
+import {
+  DistrictResponse,
+  Municipio,
+  MunicipioFreguesiaResponse,
+} from '../models/location.model'
 
 @Injectable({
   providedIn: 'root',
