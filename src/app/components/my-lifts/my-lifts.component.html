@@ -228,19 +228,22 @@
       @for (lift of lifts; track lift.cl) {
         <tr>
           <td>
-            {{ lift.startPoint.parish }}, {{ lift.startPoint.municipality }} ({{
-              lift.startPoint.district
+            {{ lift.startPoint.parish | titlecase }},
+            {{ lift.startPoint.municipality | titlecase }} ({{
+              lift.startPoint.district | titlecase
             }})
           </td>
           <td>
-            {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }} ({{
-              lift.endPoint.district
+            {{ lift.endPoint.parish | titlecase }},
+            {{ lift.endPoint.municipality | titlecase }} ({{
+              lift.endPoint.district | titlecase
             }})
           </td>
           <td>{{ lift.schedule | date: "short" }}</td>
           <td>{{ lift.price }}€</td>
           <td>
-            {{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }}
+            {{ lift.car.brand | titlecase }} {{ lift.car.model | titlecase }}
+            {{ lift.car.color }}
             {{ lift.car.plate }}
           </td>
           <td>

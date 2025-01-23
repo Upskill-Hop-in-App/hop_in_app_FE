@@ -48,8 +48,8 @@
     <tbody>
       @for (car of cars; track car.id) {
         <tr>
-          <td>{{ car.brand }}</td>
-          <td>{{ car.model }}</td>
+          <td>{{ car.brand | titlecase }}</td>
+          <td>{{ car.model | titlecase }}</td>
           <td>{{ car.startYear }}</td>
           <td>{{ car.endYear }}</td>
           <td>{{ car.createdAt }}</td>
