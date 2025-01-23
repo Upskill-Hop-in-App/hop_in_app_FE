@@ -101,6 +101,15 @@
         autocomplete="new-password"
       />
     </div>
+    <div class="col-md-8 space-y-2">
+      <label class="block text-sm font-bold" for="rgpd">
+        <input type="checkbox" id="rgpd" formControlName="rgpd" required />
+        I agree with the
+        <a href="/rgpd" class="text-blue-700 underline">
+          RGPD terms and conditions
+        </a>
+      </label>
+    </div>
     <div class="flex items-center justify-between gap-x-4">
       <button data-cy="submit-btn" type="submit" class="btn-primary">
         Register
