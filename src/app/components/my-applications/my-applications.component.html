@@ -17,15 +17,15 @@
       @for (application of applications; track application.ca) {
         <tr>
           <td>
-            {{ application.lift.startPoint?.parish! }},
-            {{ application.lift.startPoint?.municipality! }} ({{
-              application.lift.startPoint?.district!
+            {{ application.lift.startPoint?.parish! | titlecase }},
+            {{ application.lift.startPoint?.municipality! | titlecase }} ({{
+              application.lift.startPoint?.district! | titlecase
             }})
           </td>
           <td>
-            {{ application.lift.endPoint?.parish! }},
-            {{ application.lift.endPoint?.municipality! }} ({{
-              application.lift.endPoint?.district!
+            {{ application.lift.endPoint?.parish! | titlecase }},
+            {{ application.lift.endPoint?.municipality! | titlecase }} ({{
+              application.lift.endPoint?.district! | titlecase
             }})
           </td>
           <td>{{ application.lift.schedule | date: "short" }}</td>
@@ -36,8 +36,8 @@
             }}<span [innerHTML]="'faStar' | attachedIcon"></span>
           </td>
           <td>
-            {{ application.lift.car?.brand! }}
-            {{ application.lift.car?.model! }}
+            {{ application.lift.car?.brand! | titlecase }}
+            {{ application.lift.car?.model! | titlecase }}
             {{ application.lift.car?.color! }}
             {{ application.lift.car?.plate! }}
           </td>
@@ -50,8 +50,7 @@
               application.status === "ready"
             ) {
               <div
-                class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-danger"
-              >
+                class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-danger">
                 <a (click)="toggleCancel(application)"> <span>Cancel</span></a>
               </div>
             }
@@ -64,13 +63,12 @@
 
 <app-modal modalTitle="{{ currentModalTitle }}">
   <div content>
-    <!-- ------------------------- Toggle Create Form -------------------------- -->
+    <!-- ------------------------- Toggle Cancel Form -------------------------- -->
     @if (showCancelForm) {
       <form
         (ngSubmit)="cancelApplication()"
         #applicationForm="ngForm"
-        class="mt-4"
-      >
+        class="mt-4">
         <div class="modal-header">
           <h5 class="text-lg font-bold text-red-600">Confirmation</h5>
         </div>
@@ -79,18 +77,22 @@
           <div class="mt-2">
             <strong class="block text-gray-800">Starting Point:</strong>
             <span
-              >{{ auxiliarApplication.lift.startPoint!.parish! }},
-              {{ auxiliarApplication.lift.startPoint!.municipality! }} ({{
-                auxiliarApplication.lift.startPoint!.district!
-              }})
+              >{{ auxiliarApplication.lift.startPoint!.parish! | titlecase }},
+              {{
+                auxiliarApplication.lift.startPoint!.municipality! | titlecase
+              }}
+              ({{ auxiliarApplication.lift.startPoint!.district! | titlecase }})
             </span>
           </div>
           <div class="mt-1">
             <strong class="block text-gray-800">Destination:</strong>
             <span
-              >{{ auxiliarApplication.lift.endPoint!.parish! }},
-              {{ auxiliarApplication.lift.endPoint!.municipality! }} ({{
-                auxiliarApplication.lift.endPoint!.district!
+              >{{ auxiliarApplication.lift.endPoint!.parish! | titlecase }},
+              {{
+                auxiliarApplication.lift.endPoint!.municipality! | titlecase
+              }}
+              ({{
+                auxiliarApplication.lift.endPoint!.district! | titlecase
               }})</span
             >
           </div>
@@ -125,14 +127,12 @@
           <button
             class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             (click)="cancel()"
-            type="button"
-          >
+            type="button">
             Back
           </button>
           <button
             class="bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
+            type="submit">
             Confirm
           </button>
         </div>

@@ -10,8 +10,7 @@
         <span
           (click)="openCreateModal()"
           class="btn-primary relative flex h-8 w-8 cursor-pointer items-center justify-center p-0"
-          [innerHTML]="'faPlus' | attachedIcon: ''"
-        ></span>
+          [innerHTML]="'faPlus' | attachedIcon: ''"></span>
       </div>
     </div>
   </div>
@@ -37,8 +36,8 @@
       <tbody>
         @for (car of cars; track [car.brand, car.model]) {
           <tr>
-            <td>{{ car.brand }}</td>
-            <td>{{ car.model }}</td>
+            <td>{{ car.brand | titlecase }}</td>
+            <td>{{ car.model | titlecase }}</td>
             <td>{{ car.year }}</td>
             <td>{{ car.color }}</td>
             <td>{{ car.plate }}</td>
@@ -48,28 +47,24 @@
                 <span
                   (click)="openEditModal(car)"
                   class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
-                  [innerHTML]="'faPenToSquare' | attachedIcon: ''"
-                ></span>
+                  [innerHTML]="'faPenToSquare' | attachedIcon: ''"></span>
                 <span
                   (click)="openEditModal(car)"
                   class="absolute left-0 top-0 cursor-pointer text-primary-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
-                  [innerHTML]="'faPenToSquare' | attachedIcon: ''"
-                ></span>
+                  [innerHTML]="'faPenToSquare' | attachedIcon: ''"></span>
               </div>
             </td>
-            
+
             <td>
               <div class="group relative">
                 <span
                   (click)="openDeleteModal(car)"
                   class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
-                  [innerHTML]="'faTrashCan' | attachedIcon: ''"
-                ></span>
+                  [innerHTML]="'faTrashCan' | attachedIcon: ''"></span>
                 <span
                   (click)="openDeleteModal(car)"
                   class="absolute left-0 top-0 cursor-pointer text-primary-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
-                  [innerHTML]="'faTrashCan' | attachedIcon: ''"
-                ></span>
+                  [innerHTML]="'faTrashCan' | attachedIcon: ''"></span>
               </div>
             </td>
           </tr>
@@ -85,21 +80,18 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmCreate()"
-          class="space-y-8"
-        >
+          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
             <select
               formControlName="brand"
               (ngModelChange)="onBrandChange()"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
-            >
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 Select Brand
               </option>
               @for (brand of brands; track brand) {
@@ -113,14 +105,12 @@
             <select
               formControlName="model"
               (ngModelChange)="onModelChange()"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
-            >
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 Select Model
               </option>
               @for (model of models; track model) {
@@ -133,14 +123,12 @@
             <label for="yearName" class="font-semibold">Year: </label>
             <select
               formControlName="year"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
-            >
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 Select Year
               </option>
               @for (year of years; track year) {
@@ -157,8 +145,7 @@
               id="colorName"
               placeholder="ex: Blue"
               formControlName="color"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
@@ -169,8 +156,7 @@
               id="plateNumber"
               placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="buttons-modal-container">
@@ -186,20 +172,17 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmEdit()"
-          class="space-y-8"
-        >
+          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
             <select
               formControlName="brand"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
-            >
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 [value]="backupCar.brand"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 {{ backupCar.brand }}
               </option>
               @for (brand of brands; track brand) {
@@ -212,14 +195,12 @@
             <label for="modelName" class="font-semibold">Model: </label>
             <select
               formControlName="model"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
-            >
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 [value]="backupCar.model"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 {{ backupCar.model }}
               </option>
               @for (model of models; track model) {
@@ -232,14 +213,12 @@
             <label for="yearName" class="font-semibold">Year: </label>
             <select
               formControlName="year"
-              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600"
-            >
+              class="h-8 w-full rounded-lg border border-gray-300 px-3 py-0.5 text-sm leading-tight focus:border-primary-300 focus:outline-none focus:ring dark:border-transparent dark:bg-gray-600">
               <option
                 [value]="backupCar.year"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 {{ backupCar.year }}
               </option>
               @for (year of years; track year) {
@@ -256,8 +235,7 @@
               id="colorName"
               placeholder="ex: Blue"
               formControlName="color"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
@@ -268,8 +246,7 @@
               id="plateNumber"
               placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="buttons-modal-container">
@@ -285,8 +262,7 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmDelete()"
-          #deleteForm="ngForm"
-        >
+          #deleteForm="ngForm">
           <div class="space-y-8">
             <div class="space-y-2">
               <label for="brandName" class="font-semibold">Brand: </label>
@@ -296,8 +272,7 @@
                 id="brandName"
                 formControlName="brand"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -308,8 +283,7 @@
                 id="modelName"
                 formControlName="model"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -320,8 +294,7 @@
                 id="yearName"
                 formControlName="year"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -332,8 +305,7 @@
                 id="colorName"
                 formControlName="color"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -344,8 +316,7 @@
                 id="plateNumber"
                 formControlName="plate"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
             <div class="space-y-2 border-t py-8 dark:border-gray-600">
               <p class="font-semibold text-rose-500">
@@ -359,8 +330,7 @@
                 class="input-standard"
                 formControlName="confirmationPlate"
                 placeholder="Enter car plate number"
-                required
-              />
+                required />
             </div>
           </div>
           <div class="buttons-modal-container">
