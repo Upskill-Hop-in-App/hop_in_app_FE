@@ -61,4 +61,10 @@ export class ApplicationService {
     const headers = this.authService.getHeaders();
     return this.http.put(`${this.apiUrl}/ca/rating/${ca}/${rating}`, {}, { headers });
   }
+
+  filterApplicationsByUsername(username: string, query: string): Observable<{ message: string; data: Application[] }> {
+    const headers = this.authService.getHeaders();
+    const localURL = `${this.apiUrl}/filter/username/${username}?${query}`;
+    return this.http.get<{ message: string; data: Application[] }>(localURL, { headers });
+  }
 }

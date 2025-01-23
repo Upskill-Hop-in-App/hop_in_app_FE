@@ -1,61 +1,242 @@
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">From</th>
-        <th scope="col">To</th>
-        <th scope="col">Schedule</th>
-        <th scope="col">Price</th>
-        <th scope="col">Driver</th>
-        <th scope="col">Car</th>
-        <th scope="col">Status</th>
-        <th scope="col">Created at</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (application of applications; track application.ca) {
+<!-- Filter Form -->
+<div class="py-6">
+  <div class="flex flex-col justify-end gap-4 lg:flex-row">
+    <button
+      class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
+      (click)="applyFilters()">
+      <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span
+      ><span>Search </span>
+    </button>
+    <button
+      class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
+      (click)="clearFilters()">
+      <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
+    </button>
+  </div>
+
+  <form (ngSubmit)="applyFilters()" class="mt-6 space-y-6">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Status -->
+      <div>
+        <label
+          for="status"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Status</label
+        >
+        <select
+          id="status"
+          [(ngModel)]="filters.status"
+          name="status"
+          class="input-standard">
+          <option value="">--Select Status--</option>
+          <option value="pending">Pending</option>
+          <option value="accepted">Accepted</option>
+          <option value="ready">Ready</option>
+          <option value="rejected">Rejected</option>
+          <option value="canceled">Canceled</option>
+        </select>
+      </div>
+
+      <!-- Start Point District -->
+      <div>
+        <label
+          for="startPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point District</label
+        >
+        <input
+          id="startPointDistrict"
+          type="text"
+          [(ngModel)]="filters.startPointDistrict"
+          name="startPointDistrict"
+          class="input-standard" />
+      </div>
+
+      <!-- Start Point Municipality -->
+      <div>
+        <label
+          for="startPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Municipality</label
+        >
+        <input
+          id="startPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.startPointMunicipality"
+          name="startPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- Start Point Parish -->
+      <div>
+        <label
+          for="startPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Parish</label
+        >
+        <input
+          id="startPointParish"
+          type="text"
+          [(ngModel)]="filters.startPointParish"
+          name="startPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point District -->
+      <div>
+        <label
+          for="endPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point District</label
+        >
+        <input
+          id="endPointDistrict"
+          type="text"
+          [(ngModel)]="filters.endPointDistrict"
+          name="endPointDistrict"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Municipality -->
+      <div>
+        <label
+          for="endPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Municipality</label
+        >
+        <input
+          id="endPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.endPointMunicipality"
+          name="endPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Parish -->
+      <div>
+        <label
+          for="endPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Parish</label
+        >
+        <input
+          id="endPointParish"
+          type="text"
+          [(ngModel)]="filters.endPointParish"
+          name="endPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- Provided Seats -->
+      <div>
+        <label
+          for="providedSeats"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Provided Seats</label
+        >
+        <input
+          id="providedSeats"
+          type="number"
+          [(ngModel)]="filters.providedSeats"
+          name="providedSeats"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Date -->
+      <div>
+        <label
+          for="scheduleDate"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Date</label
+        >
+        <input
+          id="scheduleDate"
+          type="date"
+          [(ngModel)]="filters.scheduleDate"
+          name="scheduleDate"
+          class="input-standard" />
+      </div>
+      <div>
+        <label
+          for="scheduleTime"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Time</label
+        >
+        <input
+          id="scheduleDate"
+          type="time"
+          [(ngModel)]="filters.scheduleTime"
+          name="scheduleTime"
+          class="input-standard" />
+      </div>
+    </div>
+  </form>
+
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
-          <td>
-            {{ application.lift.startPoint?.parish! | titlecase }},
-            {{ application.lift.startPoint?.municipality! | titlecase }} ({{
-              application.lift.startPoint?.district! | titlecase
-            }})
-          </td>
-          <td>
-            {{ application.lift.endPoint?.parish! | titlecase }},
-            {{ application.lift.endPoint?.municipality! | titlecase }} ({{
-              application.lift.endPoint?.district! | titlecase
-            }})
-          </td>
-          <td>{{ application.lift.schedule | date: "short" }}</td>
-          <td>{{ application.lift.price }}€</td>
-          <td>
-            {{ application.lift.driver?.username! }} <br />{{
-              application.lift.driver?.driverRating!
-            }}<span [innerHTML]="'faStar' | attachedIcon"></span>
-          </td>
-          <td>
-            {{ application.lift.car?.brand! | titlecase }}
-            {{ application.lift.car?.model! | titlecase }}
-            {{ application.lift.car?.color! }}
-            {{ application.lift.car?.plate! }}
-          </td>
-          <td>{{ application.status }}</td>
-          <td>{{ application.createdAt | date: "short" }}</td>
-          <td>
-            @if (
-              application.status === "pending" ||
-              application.status === "accepted" ||
-              application.status === "ready"
-            ) {
-              <div
-                class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-danger">
-                <a (click)="toggleCancel(application)"> <span>Cancel</span></a>
-              </div>
-            }
-          </td>
-          <td>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Schedule</th>
+          <th scope="col">Price</th>
+          <th scope="col">Driver</th>
+          <th scope="col">Car</th>
+          <th scope="col">Status</th>
+          <th scope="col">Created at</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (applications.length === 0) {
+          <tr>
+            <td colspan="9" class="text-center">No applications found</td>
+          </tr>
+        } @else {
+          @for (application of applications; track application.ca) {
+            <tr>
+              <td>
+                {{ application.lift.startPoint.parish | titlecase }},
+                {{ application.lift.startPoint.municipality | titlecase }} ({{
+                  application.lift.startPoint.district | titlecase
+                }})
+              </td>
+              <td>
+                {{ application.lift.endPoint?.parish! | titlecase  }},
+                {{ application.lift.endPoint?.municipality! | titlecase  }} ({{
+                  application.lift.endPoint?.district! | titlecase 
+                }})
+              </td>
+              <td>{{ application.lift.schedule | date: "short" }}</td>
+              <td>{{ application.lift.price }}€</td>
+              <td>
+                {{ application.lift.driver?.username! }} <br />{{
+                  application.lift.driver?.driverRating!
+                }}<span [innerHTML]="'faStar' | attachedIcon"></span>
+              </td>
+              <td>
+                {{ application.lift.car?.brand! | titlecase }}
+                {{ application.lift.car?.model! | titlecase }}
+                {{ application.lift.car?.color! }}
+                {{ application.lift.car?.plate! }}
+              </td>
+              <td>{{ application.status }}</td>
+              <td>{{ application.createdAt | date: "short" }}</td>
+              <td>
+                @if (
+                  application.status === "pending" ||
+                  application.status === "accepted" ||
+                  application.status === "ready"
+                ) {
+                  <div
+                    class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-danger">
+                    <a (click)="toggleCancel(application)">
+                      <span>Cancel</span></a
+                    >
+                  </div>
+                }
+              </td>
+              <td>
             <button *ngIf="applicationFlags[application.lift.cl]"
               class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               routerLink="/current-lift"
@@ -65,88 +246,88 @@
             </button>
           </td>
         </tr>
-      }
-    </tbody>
-  </table>
-</div>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
 
-<app-modal modalTitle="{{ currentModalTitle }}">
-  <div content>
-    <!-- ------------------------- Toggle Cancel Form -------------------------- -->
-    @if (showCancelForm) {
-      <form
-        (ngSubmit)="cancelApplication()"
-        #applicationForm="ngForm"
-        class="mt-4">
-        <div class="modal-header">
-          <h5 class="text-lg font-bold text-red-600">Confirmation</h5>
-        </div>
-        <div class="modal-body">
-          <p class="text-gray-700">You are about to cancel this application:</p>
-          <div class="mt-2">
-            <strong class="block text-gray-800">Starting Point:</strong>
-            <span
-              >{{ auxiliarApplication.lift.startPoint!.parish! | titlecase }},
-              {{
-                auxiliarApplication.lift.startPoint!.municipality! | titlecase
-              }}
-              ({{ auxiliarApplication.lift.startPoint!.district! | titlecase }})
-            </span>
+  <app-modal modalTitle="{{ currentModalTitle }}">
+    <div content>
+      <!-- ------------------------- Toggle Create Form -------------------------- -->
+      @if (showCancelForm) {
+        <form
+          (ngSubmit)="cancelApplication()"
+          #applicationForm="ngForm"
+          class="mt-4">
+          <div class="modal-header">
+            <h5 class="text-lg font-bold text-red-600">Confirmation</h5>
           </div>
-          <div class="mt-1">
-            <strong class="block text-gray-800">Destination:</strong>
-            <span
-              >{{ auxiliarApplication.lift.endPoint!.parish! | titlecase }},
-              {{
-                auxiliarApplication.lift.endPoint!.municipality! | titlecase
-              }}
-              ({{
-                auxiliarApplication.lift.endPoint!.district! | titlecase
-              }})</span
-            >
-          </div>
-          <div class="mt-1">
-            <strong class="block text-gray-800">Departure time:</strong>
-            <span>{{ auxiliarApplication.lift.schedule }}</span>
-          </div>
-          <div class="mt-1">
-            <strong class="block text-gray-800">Driver:</strong>
-            {{ auxiliarApplication.lift.driver!.username!
-            }}<span [innerHTML]="'faStar' | attachedIcon"></span
-            ><span>{{ auxiliarApplication.lift.driver!.driverRating! }}</span>
-          </div>
-          <div class="mt-1">
-            <div>
-              <strong class="block text-gray-800">Contacts:</strong>
-              <span [innerHTML]="'faPhone' | attachedIcon"></span>
-              {{ auxiliarApplication.lift.driver!.contact!
-              }}<span [innerHTML]="'faAt' | attachedIcon"></span
-              ><span>{{ auxiliarApplication.lift.driver!.email! }}</span>
+          <div class="modal-body">
+            <p class="text-gray-700">
+              You are about to cancel this application:
+            </p>
+            <div class="mt-2">
+              <strong class="block text-gray-800">Starting Point:</strong>
+              <span
+                >{{ auxiliarApplication.lift.startPoint!.parish! | titlecase }},
+                {{ auxiliarApplication.lift.startPoint!.municipality! | titlecase }} ({{
+                  auxiliarApplication.lift.startPoint!.district! | titlecase
+                }})
+              </span>
             </div>
-            <div></div>
+            <div class="mt-1">
+              <strong class="block text-gray-800">Destination:</strong>
+              <span
+                >{{ auxiliarApplication.lift.endPoint!.parish | titlecase }},
+                {{ auxiliarApplication.lift.endPoint!.municipality! | titlecase }} ({{
+                  auxiliarApplication.lift.endPoint!.district! | titlecase
+                }})</span
+              >
+            </div>
+            <div class="mt-1">
+              <strong class="block text-gray-800">Departure time:</strong>
+              <span>{{ auxiliarApplication.lift.schedule }}</span>
+            </div>
+            <div class="mt-1">
+              <strong class="block text-gray-800">Driver:</strong>
+              {{ auxiliarApplication.lift.driver!.username!
+              }}<span [innerHTML]="'faStar' | attachedIcon"></span
+              ><span>{{ auxiliarApplication.lift.driver!.driverRating! }}</span>
+            </div>
+            <div class="mt-1">
+              <div>
+                <strong class="block text-gray-800">Contacts:</strong>
+                <span [innerHTML]="'faPhone' | attachedIcon"></span>
+                {{ auxiliarApplication.lift.driver!.contact!
+                }}<span [innerHTML]="'faAt' | attachedIcon"></span
+                ><span>{{ auxiliarApplication.lift.driver!.email! }}</span>
+              </div>
+              <div></div>
+            </div>
+            <div class="mt-1">
+              <span [innerHTML]="'faCoins' | attachedIcon"></span
+              ><strong class="block text-gray-800">Shared price:</strong>
+              {{ auxiliarApplication.lift.price }}€
+            </div>
+            <p class="mt-4 text-gray-700">Are you sure?</p>
           </div>
-          <div class="mt-1">
-            <span [innerHTML]="'faCoins' | attachedIcon"></span
-            ><strong class="block text-gray-800">Shared price:</strong>
-            {{ auxiliarApplication.lift.price }}€
+          <div class="modal-footer mt-4 flex justify-between">
+            <button
+              class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              (click)="cancel()"
+              type="button">
+              Back
+            </button>
+            <button
+              class="bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit">
+              Confirm
+            </button>
           </div>
-          <p class="mt-4 text-gray-700">Are you sure?</p>
-        </div>
-        <div class="modal-footer mt-4 flex justify-between">
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            (click)="cancel()"
-            type="button">
-            Back
-          </button>
-          <button
-            class="bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit">
-            Confirm
-          </button>
-        </div>
-      </form>
-    }
-  </div></app-modal
->
-<!-- ----------------------------------------------------------------------- -->
+        </form>
+      }
+    </div></app-modal
+  >
+  <!-- ----------------------------------------------------------------------- -->
+</div>
