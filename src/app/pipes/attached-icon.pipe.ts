@@ -1,11 +1,12 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { icon } from '@fortawesome/fontawesome-svg-core';
+import { Pipe, PipeTransform } from '@angular/core'
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
+import { icon } from '@fortawesome/fontawesome-svg-core'
 import {
   faHome,
   faBars,
   faCar,
   faCarOn,
+  faCarSide,
   faCircleUser,
   faCalendarCheck,
   faCircleExclamation,
@@ -32,11 +33,11 @@ import {
   faAt,
   faUserPen,
   faUnlock,
-} from '@fortawesome/free-solid-svg-icons';
+} from '@fortawesome/free-solid-svg-icons'
 import {
   faTrashCan as faSlimTrashCan,
   faPenToSquare as faSlimPenToSquare,
-} from '@fortawesome/free-regular-svg-icons';
+} from '@fortawesome/free-regular-svg-icons'
 
 @Pipe({
   name: 'attachedIcon',
@@ -47,6 +48,7 @@ export class AttachedIconPipe implements PipeTransform {
     faBars,
     faCar,
     faCarOn,
+    faCarSide,
     faCircleUser,
     faCalendarCheck,
     faCircleCheck,
@@ -75,23 +77,23 @@ export class AttachedIconPipe implements PipeTransform {
     faAt,
     faUserPen,
     faUnlock,
-  };
+  }
 
   constructor(private sanitizer: DomSanitizer) {}
 
   transform(value: string, size: string = ''): SafeHtml {
-    const faIcon = this.iconMap[value as keyof typeof this.iconMap];
+    const faIcon = this.iconMap[value as keyof typeof this.iconMap]
     if (!faIcon) {
-      return value;
+      return value
     }
 
-    let iconClass = '';
+    let iconClass = ''
     if (size) {
-      iconClass = `fa-${size}`;
+      iconClass = `fa-${size}`
     }
 
-    const iconHtml = icon(faIcon).html.join('');
-    const iconWithSize = `<span class="${iconClass}">${iconHtml}</span>`;
-    return this.sanitizer.bypassSecurityTrustHtml(iconWithSize);
+    const iconHtml = icon(faIcon).html.join('')
+    const iconWithSize = `<span class="${iconClass}">${iconHtml}</span>`
+    return this.sanitizer.bypassSecurityTrustHtml(iconWithSize)
   }
 }

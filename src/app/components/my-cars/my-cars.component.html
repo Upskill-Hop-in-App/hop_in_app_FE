@@ -1,81 +1,78 @@
-<!-- ------------------------------- Upper Bar -------------------------------- -->
-<div class="flex flex-col justify-between py-4 md:flex-row">
-  <div>
-    <span class="main-title">{{ title }}</span>
-  </div>
-  <div class="flex flex-col justify-between gap-1 md:flex-row">
-    <div class="flex flex-row items-end gap-1"></div>
-    <div class="flex flex-row items-end justify-between gap-1">
-      <div class="flex w-fit flex-row justify-end gap-1">
-        <span
-          (click)="openCreateModal()"
-          class="btn-primary relative flex h-8 w-8 cursor-pointer items-center justify-center p-0"
-          [innerHTML]="'faPlus' | attachedIcon: ''"
-        ></span>
+<div class="main-container">
+  <!-- ------------------------------- Upper Bar -------------------------------- -->
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <div>
+      <span class="main-title">{{ title }}</span>
+    </div>
+    <div class="flex flex-col justify-between gap-1 md:flex-row">
+      <div class="flex flex-row items-end gap-1"></div>
+      <div class="flex flex-row items-end justify-between gap-1">
+        <div class="flex w-fit flex-row justify-end gap-1">
+          <span
+            (click)="openCreateModal()"
+            class="btn-primary relative flex h-10 w-10 cursor-pointer items-center justify-center p-0"
+            [innerHTML]="'faPlus' | attachedIcon: ''"></span>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ----------------------------------------------------------------------- -->
+  <!-- ----------------------------------------------------------------------- -->
 
-<!-- ------------------------------ Show Info ------------------------------ -->
-<div>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Brand</th>
-          <th scope="col">Model</th>
-          <th scope="col">Year</th>
-          <th scope="col">Color</th>
-          <th scope="col">Plate</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (car of cars; track [car.brand, car.model]) {
+  <!-- ------------------------------ Show Info ------------------------------ -->
+  <div>
+    <div class="table-container">
+      <table>
+        <thead>
           <tr>
-            <td>{{ car.brand }}</td>
-            <td>{{ car.model }}</td>
-            <td>{{ car.year }}</td>
-            <td>{{ car.color }}</td>
-            <td>{{ car.plate }}</td>
-
-            <td>
-              <div class="group relative">
-                <span
-                  (click)="openEditModal(car)"
-                  class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
-                  [innerHTML]="'faPenToSquare' | attachedIcon: ''"
-                ></span>
-                <span
-                  (click)="openEditModal(car)"
-                  class="absolute left-0 top-0 cursor-pointer text-primary-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
-                  [innerHTML]="'faPenToSquare' | attachedIcon: ''"
-                ></span>
-              </div>
-            </td>
-
-            <td>
-              <div class="group relative">
-                <span
-                  (click)="openDeleteModal(car)"
-                  class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
-                  [innerHTML]="'faTrashCan' | attachedIcon: ''"
-                ></span>
-                <span
-                  (click)="openDeleteModal(car)"
-                  class="absolute left-0 top-0 cursor-pointer text-rose-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
-                  [innerHTML]="'faTrashCan' | attachedIcon: ''"
-                ></span>
-              </div>
-            </td>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col">Year</th>
+            <th scope="col">Color</th>
+            <th scope="col">Plate</th>
+            <th></th>
+            <th></th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (car of cars; track [car.brand, car.model]) {
+            <tr>
+              <td>{{ car.brand }}</td>
+              <td>{{ car.model }}</td>
+              <td>{{ car.year }}</td>
+              <td>{{ car.color }}</td>
+              <td>{{ car.plate }}</td>
+
+              <td>
+                <div class="group relative">
+                  <span
+                    (click)="openEditModal(car)"
+                    class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
+                    [innerHTML]="'faPenToSquare' | attachedIcon: ''"></span>
+                  <span
+                    (click)="openEditModal(car)"
+                    class="absolute left-0 top-0 cursor-pointer text-primary-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                    [innerHTML]="'faPenToSquare' | attachedIcon: ''"></span>
+                </div>
+              </td>
+
+              <td>
+                <div class="group relative">
+                  <span
+                    (click)="openDeleteModal(car)"
+                    class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
+                    [innerHTML]="'faTrashCan' | attachedIcon: ''"></span>
+                  <span
+                    (click)="openDeleteModal(car)"
+                    class="absolute left-0 top-0 cursor-pointer text-rose-500 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
+                    [innerHTML]="'faTrashCan' | attachedIcon: ''"></span>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <app-modal modalTitle="{{ curentModalTitle }}">
@@ -85,21 +82,18 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmCreate()"
-          class="space-y-8"
-        >
+          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
             <select
               formControlName="brand"
               (ngModelChange)="onBrandChange()"
-              class="input-standard"
-            >
+              class="input-standard">
               <option
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 Select Brand
               </option>
               @for (brand of brands; track brand) {
@@ -113,14 +107,12 @@
             <select
               formControlName="model"
               (ngModelChange)="onModelChange()"
-              class="input-standard"
-            >
+              class="input-standard">
               <option
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 Select Model
               </option>
               @for (model of models; track model) {
@@ -131,16 +123,12 @@
 
           <div class="space-y-2">
             <label for="yearName" class="font-semibold">Year: </label>
-            <select
-              formControlName="year"
-              class="input-standard"
-            >
+            <select formControlName="year" class="input-standard">
               <option
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 Select Year
               </option>
               @for (year of years; track year) {
@@ -157,8 +145,7 @@
               id="colorName"
               placeholder="ex: Blue"
               formControlName="color"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
@@ -169,8 +156,7 @@
               id="plateNumber"
               placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="buttons-modal-container">
@@ -186,20 +172,15 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmEdit()"
-          class="space-y-8"
-        >
+          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
-            <select
-              formControlName="brand"
-              class="input-standard"
-            >
+            <select formControlName="brand" class="input-standard">
               <option
                 [value]="backupCar.brand"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 {{ backupCar.brand }}
               </option>
               @for (brand of brands; track brand) {
@@ -210,16 +191,12 @@
 
           <div class="space-y-2">
             <label for="modelName" class="font-semibold">Model: </label>
-            <select
-              formControlName="model"
-              class="input-standard"
-            >
+            <select formControlName="model" class="input-standard">
               <option
                 [value]="backupCar.model"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 {{ backupCar.model }}
               </option>
               @for (model of models; track model) {
@@ -230,16 +207,12 @@
 
           <div class="space-y-2">
             <label for="yearName" class="font-semibold">Year: </label>
-            <select
-              formControlName="year"
-              class="input-standard"
-            >
+            <select formControlName="year" class="input-standard">
               <option
                 [value]="backupCar.year"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400"
-              >
+                class="h-8 w-full text-gray-400">
                 {{ backupCar.year }}
               </option>
               @for (year of years; track year) {
@@ -256,8 +229,7 @@
               id="colorName"
               placeholder="ex: Blue"
               formControlName="color"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="space-y-2">
@@ -268,8 +240,7 @@
               id="plateNumber"
               placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <div class="buttons-modal-container">
@@ -285,8 +256,7 @@
         <form
           [formGroup]="carForm"
           (ngSubmit)="confirmDelete()"
-          #deleteForm="ngForm"
-        >
+          #deleteForm="ngForm">
           <div class="space-y-8">
             <div class="space-y-2">
               <label for="brandName" class="font-semibold">Brand: </label>
@@ -296,8 +266,7 @@
                 id="brandName"
                 formControlName="brand"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -308,8 +277,7 @@
                 id="modelName"
                 formControlName="model"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -320,8 +288,7 @@
                 id="yearName"
                 formControlName="year"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -332,8 +299,7 @@
                 id="colorName"
                 formControlName="color"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -344,8 +310,7 @@
                 id="plateNumber"
                 formControlName="plate"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null"
-              />
+                [readonly]="showDeleteForm ? true : null" />
             </div>
             <div class="space-y-2 border-t py-8 dark:border-gray-600">
               <p class="font-semibold text-rose-500">
@@ -359,8 +324,7 @@
                 class="input-standard"
                 formControlName="confirmationPlate"
                 placeholder="Enter car plate number"
-                required
-              />
+                required />
             </div>
           </div>
           <div class="buttons-modal-container">

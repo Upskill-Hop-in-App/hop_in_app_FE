@@ -1,82 +1,101 @@
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">From</th>
-        <th scope="col">To</th>
-        <th scope="col">Schedule</th>
-        <th scope="col">Price</th>
-        <th scope="col">Car</th>
-        <th scope="col">Available seats</th>
-        <th scope="col">Status</th>
-        <th scope="col">Created at</th>
-        <th scope="col">Applications</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (lift of lifts; track lift.cl) {
-        <tr>
-          <td>
-            {{ lift.startPoint.parish }}, {{ lift.startPoint.municipality }} ({{
-              lift.startPoint.district
-            }})
-          </td>
-          <td>
-            {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }} ({{
-              lift.endPoint.district
-            }})
-          </td>
-          <td>{{ lift.schedule | date: "short" }}</td>
-          <td>{{ lift.price }}€</td>
-          <td>
-            {{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }}
-            {{ lift.car.plate }}
-          </td>
-          <td>
-            {{ lift.providedSeats - lift.occupiedSeats! }} /
-            {{ lift.providedSeats }}
-          </td>
-          <td>{{ lift.status }}</td>
-          <td>{{ lift.createdAt | date: "short" }}</td>
-          <td>
-            <div>
-              @if (lift.applications?.length === 0) {
-                <div
-                  class="rtl relative flex h-8 w-full items-center cursor-default justify-center btn-gray"
-                >
-                  <p>No applications yet</p>
-                </div>
-              } @else if (lift.applications?.length === 1) {
-                <div
-                  class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary"
-                >
-                  <a (click)="toggleApplication(lift)">Inspect application</a>
-                </div>
-              } @else {
-                <div
-                  class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary"
-                >
-                  <a (click)="toggleApplication(lift)"
-                    >Inspect all {{ lift.applications?.length }} applications</a
-                  >
-                </div>
-              }
-            </div>
-          </td>
-          <td>CANCEL LIFT</td>
-        </tr>
-      }
-    </tbody>
-  </table>
-</div>
+<div class="main-container">
+  <!-- ------------------------------- Upper Bar -------------------------------- -->
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <div>
+      <span class="main-title">My Lifts</span>
+    </div>
+    <div class="flex flex-col justify-between gap-1 md:flex-row">
+      <div class="flex flex-row items-end gap-1"></div>
+      <div class="flex flex-row items-end justify-between gap-1">
+        <div class="flex w-fit flex-row justify-end gap-1">
+          <button
+            (click)="toggleCreate()"
+            class="btn-primary relative flex h-10 w-10 cursor-pointer items-center justify-center p-0"
+            [innerHTML]="'faPlus' | attachedIcon: ''"></button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div
-  class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary"
->
-  <a (click)="toggleCreate()"
-    ><span [innerHTML]="'faPlus' | attachedIcon"></span
-  ></a>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Schedule</th>
+          <th scope="col">Price</th>
+          <th scope="col">Car</th>
+          <th scope="col">Available seats</th>
+          <th scope="col">Status</th>
+          <th scope="col">Created at</th>
+          <th scope="col">Applications</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (lift of lifts; track lift.cl) {
+          <tr>
+            <td>
+              {{ lift.startPoint.parish }},
+              {{ lift.startPoint.municipality }} ({{
+                lift.startPoint.district
+              }})
+            </td>
+            <td>
+              {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }} ({{
+                lift.endPoint.district
+              }})
+            </td>
+            <td>{{ lift.schedule | date: "short" }}</td>
+            <td>{{ lift.price }} €</td>
+            <td>
+              {{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }}
+              {{ lift.car.plate }}
+            </td>
+            <td>
+              {{ lift.providedSeats - lift.occupiedSeats! }} /
+              {{ lift.providedSeats }}
+            </td>
+            <td>{{ lift.status }}</td>
+            <td>{{ lift.createdAt | date: "short" }}</td>
+            <td>
+              <div>
+                @if (lift.applications?.length === 0) {
+                  <div
+                    class="rtl relative flex h-8 w-full items-center cursor-default justify-center btn-gray">
+                    <p>No applications yet</p>
+                  </div>
+                } @else if (lift.applications?.length === 1) {
+                  <a (click)="toggleApplication(lift)"
+                    ><div
+                      class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary">
+                      See 1 application
+                    </div></a
+                  >
+                } @else {
+                  <div
+                    class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary">
+                    <a (click)="toggleApplication(lift)"
+                      >See {{ lift.applications?.length }} applications</a
+                    >
+                  </div>
+                }
+              </div>
+            </td>
+            <td>
+              <a
+                ><div
+                  class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-danger">
+                  Cancel
+                </div></a
+              >
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <app-modal modalTitle="{{ currentModalTitle }}">
@@ -87,57 +106,55 @@
         [formGroup]="liftForm"
         (ngSubmit)="confirmCreate()"
         #form="ngForm"
-        class="bg-white px-8 pt-6 pb-8 mb-4"
-      >
+        class="px-8 pb-4 space-y-2 text-sm">
         <!-- STARTPOINT -->
-        <div>
+        <div
+          class="flex space-x-4 w-full border dark:border-gray-600 p-2 rounded-lg">
+          <h3 class="font-bold w-14">From:</h3>
           <!-- District Select -->
-          <div>
-            <label for="startDistrict">Select District</label>
+          <div class="w-1/3">
+            <label for="startDistrict">District</label>
             <select
               id="startDistrict"
+              class="input-small"
               formControlName="startDistrict"
-              (change)="onStartDistrictChange($event)"
-            >
+              (change)="onStartDistrictChange($event)">
               <option
                 *ngFor="let startDistrict of startDistricts"
-                [value]="startDistrict"
-              >
+                [value]="startDistrict">
                 {{ startDistrict }}
               </option>
             </select>
           </div>
 
           <!-- Municipality Select -->
-          <div>
-            <label for="startMunicipality">Select Municipality</label>
+          <div class="w-1/3">
+            <label for="startMunicipality">Municipality</label>
             <select
               id="startMunicipality"
+              class="input-small"
               formControlName="startMunicipality"
               [disabled]="!selectedStartDistrict"
-              (change)="onStartMunicipalityChange($event)"
-            >
+              (change)="onStartMunicipalityChange($event)">
               <option
                 *ngFor="let startMunicipality of startMunicipalities"
-                [value]="startMunicipality"
-              >
+                [value]="startMunicipality">
                 {{ startMunicipality }}
               </option>
             </select>
           </div>
 
           <!-- Parish Select -->
-          <div>
-            <label for="startParish">Select Parish</label>
+          <div class="w-1/3">
+            <label for="startParish">Parish</label>
             <select
               id="startParish"
+              class="input-small"
               formControlName="startParish"
-              [disabled]="!selectedStartMunicipality"
-            >
+              [disabled]="!selectedStartMunicipality">
               <option
                 *ngFor="let startParish of startParishes"
-                [value]="startParish"
-              >
+                [value]="startParish">
                 {{ startParish }}
               </option>
             </select>
@@ -145,50 +162,51 @@
         </div>
 
         <!-- ENDPOINT -->
-        <div>
+
+        <div
+          class="flex space-x-4 w-full border dark:border-gray-600 p-2 rounded-lg">
+          <h3 class="font-bold w-14">To:</h3>
           <!-- District Select -->
-          <div>
-            <label for="endDistrict">Select District</label>
+          <div class="w-1/3">
+            <label for="endDistrict">District</label>
             <select
               id="endDistrict"
+              class="input-small"
               formControlName="endDistrict"
-              (change)="onEndDistrictChange($event)"
-            >
+              (change)="onEndDistrictChange($event)">
               <option
                 *ngFor="let endDistrict of endDistricts"
-                [value]="endDistrict"
-              >
+                [value]="endDistrict">
                 {{ endDistrict }}
               </option>
             </select>
           </div>
 
           <!-- Municipality Select -->
-          <div>
-            <label for="endMunicipality">Select Municipality</label>
+          <div class="w-1/3">
+            <label for="endMunicipality">Municipality</label>
             <select
               id="endMunicipality"
+              class="input-small"
               formControlName="endMunicipality"
               [disabled]="!selectedEndDistrict"
-              (change)="onEndMunicipalityChange($event)"
-            >
+              (change)="onEndMunicipalityChange($event)">
               <option
                 *ngFor="let endMunicipality of endMunicipalities"
-                [value]="endMunicipality"
-              >
+                [value]="endMunicipality">
                 {{ endMunicipality }}
               </option>
             </select>
           </div>
 
           <!-- Parish Select -->
-          <div>
-            <label for="endParish">Select Parish</label>
+          <div class="w-1/3">
+            <label for="endParish">Parish</label>
             <select
               id="endParish"
+              class="input-small"
               formControlName="endParish"
-              [disabled]="!selectedEndMunicipality"
-            >
+              [disabled]="!selectedEndMunicipality">
               <option *ngFor="let endParish of endParishes" [value]="endParish">
                 {{ endParish }}
               </option>
@@ -198,8 +216,8 @@
 
         <!-- Car -->
         <div>
-          <label for="car">Select Car</label>
-          <select id="car" formControlName="car">
+          <label for="car" class="font-bold">Car</label>
+          <select id="car" class="input-small" formControlName="car">
             <option *ngFor="let car of cars" [value]="car.cc">
               {{ car.plate }}
             </option>
@@ -208,69 +226,50 @@
 
         <!-- Schedule -->
         <div class="mb-6">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="cschedule"
-          >
-            Schedule
-          </label>
+          <label class="block font-bold mb-2" for="cschedule"> Schedule </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            class="input-standard"
             id="schedule"
             name="schedule"
             type="datetime-local"
             required
-            formControlName="schedule"
-          />
+            formControlName="schedule" />
         </div>
 
         <!-- Price -->
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
-            Price
-          </label>
+          <label class="block font-bold mb-2" for="cd"> Price </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            class="input-standard"
             id="price"
             name="price"
             type="number"
             required
             placeholder="Example: 20"
-            formControlName="price"
-          />
+            formControlName="price" />
         </div>
 
         <!-- Provided Seats -->
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+          <label class="block font-bold mb-2" for="cd">
             Number of passengers <span class="italic">(max.)</span>
           </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            class="input-standard"
             id="providedSeats"
             name="providedSeats"
             type="number"
             required
             placeholder="Example: 4"
-            formControlName="providedSeats"
-          />
+            formControlName="providedSeats" />
         </div>
 
         <!-- Botoes -->
-        <div class="flex items-center justify-between">
-          <button
-            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Confirm
-          </button>
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-            (click)="cancel()"
-          >
+        <div class="flex items-center justify-end space-x-4 pt-8">
+          <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
           </button>
+          <button class="btn-primary" type="submit">Confirm</button>
         </div>
         <div></div>
       </form>
@@ -278,44 +277,59 @@
     <!-- ----------------------------------------------------------------------- -->
     <!-- ------------------------- Toogle Application -------------------------- -->
     @if (showApplicationForm) {
-      @for (application of auxiliarLift.applications; track application.ca) {
-        <div>
-          <p>Passenger</p>
-          <p>{{ application.passenger?.username }}</p>
-          <p>Contact</p>
-          <p>{{ application.passenger?.contact }}</p>
-          <p>Rating</p>
-          <p>{{ application.passenger?.passengerRating }}</p>
-        </div>
-        @if (application.status === "pending") {
-          <div class="flex items-center justify-between">
-            <button
-              class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              (click)="acceptApplication(application.ca!)"
-            >
-              Accept
-            </button>
-            <button
-              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-              (click)="rejectApplication(application.ca!)"
-            >
-              Reject
-            </button>
+      <div class="space-y-8">
+        @for (application of auxiliarLift.applications; track application.ca) {
+          <div
+            class="border p-4 rounded-lg dark:border-gray-500 shadow-md flex space-x-4 text-nowrap">
+            <div
+              class="min-h-[72px] min-w-[72px] rounded-lg bg-gray-300 dark:bg-gray-600 text-gray-50 dark:text-gray-400 flex items-center justify-center align-middle">
+              <div [innerHTML]="'faUser' | attachedIcon: '2x'"></div>
+            </div>
+            <div class="w-full ms:auto">
+              <p>
+                <span class="font-bold"> Passenger: </span>
+                <span>{{ application.passenger?.username }}</span>
+              </p>
+              <p>
+                <span class="font-bold"> Contact: </span>
+                <span>{{ application.passenger?.contact }}</span>
+              </p>
+              <p>
+                <span class="font-bold"> Rating: </span>
+                <span
+                  >{{ application.passenger?.passengerRating }}
+                  <span
+                    class="text-yellow-500"
+                    [innerHTML]="'faStar' | attachedIcon"></span
+                ></span>
+              </p>
+            </div>
+            <div class="flex items-end justify-end space-x-4">
+              @if (application.status === "pending") {
+                <button
+                  class="btn-danger"
+                  type="button"
+                  (click)="rejectApplication(application.ca!)">
+                  Reject
+                </button>
+                <button
+                  class="btn-primary"
+                  (click)="acceptApplication(application.ca!)">
+                  Accept
+                </button>
+              } @else {
+                <div class="btn-gray">
+                  <span>{{ application.status }}</span>
+                </div>
+              }
+            </div>
           </div>
-        } @else {
-          <p>Status</p>
-          <p>{{ application.status }}</p>
         }
-      }
-      <div>
-        <button
-          class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="button"
-          (click)="cancel()"
-        >
-          Cancel
-        </button>
+        <div class="flex justify-end pt-4">
+          <button class="btn-gray" type="button" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
       </div>
     }
   </div></app-modal
