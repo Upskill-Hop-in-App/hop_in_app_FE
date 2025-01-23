@@ -1,60 +1,63 @@
-<div class="table-container">
-  <table>
-    <th scope="col" colspan="2">My Profile</th>
+<div class="main-container">
+  <div class="table-container">
+    <table>
+      <th scope="col" colspan="2">My Profile</th>
+      <div
+        class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
+        <a (click)="toggleEditProfile()"
+          ><span [innerHTML]="'faUserPen' | attachedIcon"></span
+        ></a>
+      </div>
+      <tr>
+        <td>Name</td>
+        <td>{{ user.name }}</td>
+      </tr>
+      <tr>
+        <td>Username</td>
+        <td>{{ user.username | titlecase }}</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>{{ user.email }}</td>
+      </tr>
+      <tr>
+        <td>Contact</td>
+        <td>{{ user.contact }}</td>
+      </tr>
+      <tr>
+        <td>Rating as driver</td>
+        <td>
+          {{ user.driverRating }}
+          <span [innerHTML]="'faStar' | attachedIcon"></span>
+        </td>
+      </tr>
+      <tr>
+        <td>Rating as passenger</td>
+        <td>
+          {{ user.passengerRating }}
+          <span [innerHTML]="'faStar' | attachedIcon"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div>
     <div
       class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-      <a (click)="toggleEditProfile()"
-        ><span [innerHTML]="'faUserPen' | attachedIcon"></span
-      ></a>
+      <a (click)="toggleEditPassword()"
+        ><span [innerHTML]="'faUnlock' | attachedIcon"></span>Change password</a
+      >
     </div>
-    <tr>
-      <td>Name</td>
-      <td>{{ user.name | titlecase }}</td>
-    </tr>
-    <tr>
-      <td>Username</td>
-      <td>{{ user.username }}</td>
-    </tr>
-    <tr>
-      <td>Email</td>
-      <td>{{ user.email }}</td>
-    </tr>
-    <tr>
-      <td>Contact</td>
-      <td>{{ user.contact }}</td>
-    </tr>
-    <tr>
-      <td>Rating as driver</td>
-      <td>
-        {{ user.driverRating }}
-        <span [innerHTML]="'faStar' | attachedIcon"></span>
-      </td>
-    </tr>
-    <tr>
-      <td>Rating as passenger</td>
-      <td>
-        {{ user.passengerRating }}
-        <span [innerHTML]="'faStar' | attachedIcon"></span>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div>
-  <div
-    class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-    <a (click)="toggleEditPassword()"
-      ><span [innerHTML]="'faUnlock' | attachedIcon"></span>Change password</a
-    >
   </div>
-</div>
 
-<div>
-  <div
-    class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-    <a (click)="toggleDelete()"
-      ><span [innerHTML]="'faTrashCan' | attachedIcon"></span>Delete account</a
-    >
+  <div>
+    <div
+      class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
+      <a (click)="toggleDelete()"
+        ><span [innerHTML]="'faTrashCan' | attachedIcon"></span>Delete
+        account</a
+      >
+    </div>
   </div>
 </div>
 
@@ -66,7 +69,7 @@
         [formGroup]="profileForm"
         (ngSubmit)="confirmEditProfile()"
         #form="ngForm"
-        class="bg-white px-8 pt-6 pb-8 mb-4">
+        class="px-8 pt-6 pb-8 mb-4">
         <!-- Name -->
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
@@ -129,15 +132,8 @@
 
         <!-- Botoes -->
         <div class="flex items-center justify-between">
-          <button
-            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit">
-            Confirm
-          </button>
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-            (click)="cancel()">
+          <button class="btn-primary" type="submit">Confirm</button>
+          <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
           </button>
         </div>
@@ -151,7 +147,7 @@
         [formGroup]="passwordForm"
         (ngSubmit)="confirmEditPassword()"
         #form="ngForm"
-        class="bg-white px-8 pt-6 pb-8 mb-4">
+        class="px-8 pt-6 pb-8 mb-4">
         <!-- Password -->
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
@@ -184,15 +180,8 @@
 
         <!-- Botoes -->
         <div class="flex items-center justify-between">
-          <button
-            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit">
-            Confirm
-          </button>
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-            (click)="cancel()">
+          <button class="btn-primary" type="submit">Confirm</button>
+          <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
           </button>
         </div>
@@ -205,7 +194,7 @@
         [formGroup]="deleteForm"
         (ngSubmit)="confirmDelete()"
         #form="ngForm"
-        class="bg-white px-8 pt-6 pb-8 mb-4">
+        class="px-8 pt-6 pb-8 mb-4">
         <p>Email</p>
         <p>{{ backupUser.email }}</p>
         <!-- Confirm Email -->
@@ -229,15 +218,8 @@
 
         <!-- Botoes -->
         <div class="flex items-center justify-between">
-          <button
-            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit">
-            Delete
-          </button>
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-            (click)="cancel()">
+          <button class="btn-primary" type="submit">Delete</button>
+          <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
           </button>
         </div>

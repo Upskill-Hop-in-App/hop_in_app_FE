@@ -1,5 +1,9 @@
 <nav
-  class="fixed top-0 z-50 w-full border-b bg-white bg-opacity-60 p-3 text-gray-600 backdrop-blur-xl 2xl:px-5 2xl:pl-3 dark:border-gray-600 dark:bg-gray-900 dark:bg-opacity-60 dark:text-gray-300">
+  class="fixed top-0 z-50 w-full p-5 text-primary-50 shadow-sm xl:px-5 xl:pl-3 border-b border-gray-50 border-opacity-10"
+  [ngClass]="{
+    'bg-gradient-to-r from-primary-600 via-primary-700 to-primary-700 dark:bg-gradient-to-r dark:from-primary-600 dark:via-secondary-800 dark:to-secondary-800 backdrop-blur-2xl':
+      !isHomePage,
+  }">
   <div class="flex items-center justify-between">
     <div class="flex items-center justify-start rtl:justify-end">
       <button
@@ -7,18 +11,68 @@
         data-drawer-toggle="logo-navbar"
         aria-controls="logo-navbar"
         type="button"
-        class="inline-flex items-center rounded-lg p-2 text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 2xl:hidden dark:hover:bg-gray-900"
+        class="inline-flex items-center rounded-lg p-2 text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 xl:hidden dark:hover:bg-gray-900 hover:text-primary-700"
         (click)="toggleSidebar()">
         <span [innerHTML]="'faBars' | attachedIcon: '2x'"></span>
         <span class="sr-only">Open sidebar</span>
       </button>
-      <a routerLink="/" class="ms-3 flex 2xl:me-24">
+      <!-- ----------------------------------------------------------------------- -->
+      <!-- -------------------------------- LOGO --------------------------------- -->
+      <!-- ----------------------------------------------------------------------- -->
+      <a routerLink="/" class="ms-3 flex xl:me-24 group">
+        <div class="relative">
+          <!-- Default Image -->
+          <!-- <img
+            ngSrc="/logo2.png"
+            class="me-3 h-10 w-auto"
+            alt="logo"
+            width="486"
+            height="593" /> -->
+        </div>
         <span
-          class="self-center whitespace-nowrap text-xl font-semibold 2xl:text-2xl"
-          >LOGO APP</span
-        >
+          class="self-center border-white border-opacity-0 whitespace-nowrap text-xl font-semibold xl:text-2xl transition-all ease-in-out group-hover:border-primary-200 group-hover:border-opacity-60 group-hover:text-primary-300">
+          Hop in - App
+        </span>
       </a>
     </div>
+    <!-- ----------------------------------------------------------------------- -->
+
+    <!-- ----------------------------------------------------------------------- -->
+    <!-- ---------------------------- NAVBAR LINKS ----------------------------- -->
+    <!-- ----------------------------------------------------------------------- -->
+    <div class="hidden xl:flex space-x-6 justify-end grow mr-8">
+      <a
+        routerLink="/"
+        class="p-2 space-x-2 hover:text-primary-300 rounded-full font-medium">
+        <span [innerHTML]="'faHome' | attachedIcon: 'x'"></span>
+        <span> Home </span>
+      </a>
+      <a
+        routerLink="/my-lifts"
+        class="p-2 space-x-2 hover:text-primary-300 rounded-full font-medium">
+        <span [innerHTML]="'faCar' | attachedIcon: 'x'"></span>
+        <span> Offer a Lift </span>
+      </a>
+      <a
+        routerLink="/lifts"
+        class="p-2 space-x-2 hover:text-primary-300 rounded-full font-medium">
+        <span [innerHTML]="'faThumbsUp' | attachedIcon: 'x'"></span>
+        <span> Find a Lift </span>
+      </a>
+      <a
+        routerLink="/my-applications"
+        class="p-2 space-x-2 hover:text-primary-300 rounded-full font-medium">
+        <span [innerHTML]="'faAddressCard' | attachedIcon: 'x'"></span>
+        <span>My Applications</span>
+      </a>
+      <a
+        routerLink="/my-cars"
+        class="p-2 space-x-2 hover:text-primary-300 rounded-full font-medium">
+        <span [innerHTML]="'faCarSide' | attachedIcon: 'x'"></span>
+        <span>My Cars</span>
+      </a>
+    </div>
+    <!-- ----------------------------------------------------------------------- -->
     <label class="ms-auto inline-flex cursor-pointer items-center px-6">
       <span
         class="mx-3 text-lg"
@@ -61,7 +115,7 @@
           }
         </div>
         <div
-          class="fixed right-4 top-10 z-50 my-4 w-48 list-none divide-y divide-gray-100 rounded-lg border bg-white text-base shadow-lg dark:divide-gray-600 dark:border-gray-500 dark:bg-gray-700"
+          class="fixed right-4 top-16 z-50 my-4 w-48 list-none divide-y divide-gray-100 rounded-lg border bg-white text-gray-800 dark:text-gray-100 text-base shadow-lg dark:divide-gray-600 dark:border-gray-500 dark:bg-gray-700"
           id="dropdown-user"
           [ngClass]="{ hidden: !menuNavbarVisible }">
           <div class="px-4 py-3" role="none">
@@ -119,7 +173,7 @@
                   <span class="ms-4">My Applications</span>
                 </a>
               </li>
-              @if(userRole === "admin") {
+              @if (userRole === "admin") {
                 <li>
                   <a
                     href="/manage-cars"
@@ -164,15 +218,20 @@
   </div>
 </nav>
 
+<div
+  class="fixed bg-opacity-50 backdrop-blur-sm xl:backdrop-blur-none z-30"
+  *ngIf="sidebarVisible"
+  (click)="closeSidebar()"></div>
+
 <aside
   id="logo-sidebar"
-  class="@ fixed left-0 top-0 z-40 h-screen w-72 border-r border-gray-200 bg-white bg-opacity-60 pt-20 text-gray-600 backdrop-blur-xl transition-transform 2xl:translate-x-0 dark:border-gray-600 dark:bg-gray-900 dark:bg-opacity-60 dark:text-gray-300"
+  class="@ fixed top-0 z-50 h-full w-72 mt-[88px] transition-transform xl:hidden bg-white shadow-lg bg-opacity-70 border-r border-gray-200 pt-4 text-gray-600 backdrop-blur-2xl xl:translate-x-0 dark:border-gray-600 dark:bg-gray-900 dark:bg-opacity-60 dark:text-gray-300"
   [ngClass]="{
-    'translate-x-0': sidebarVisible,
     '-translate-x-full': !sidebarVisible,
+    '-translate-x-0': !sidebarVisible && !isSmallScreen,
   }"
   aria-label="Sidebar">
-  <div class="flex h-full flex-col justify-between overflow-y-auto p-3">
+  <div class="h-full overflow-y-auto px-3 pb-4 flex flex-col justify-between">
     <ul class="space-y-2 text-lg font-medium">
       <li>
         <a
@@ -186,10 +245,19 @@
       <li>
         <a
           (click)="closeSidebar()"
+          routerLink="/my-lifts"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20">
+          <span [innerHTML]="'faCar' | attachedIcon: 'x'"></span>
+          <span class="ms-4">Offer a lift</span>
+        </a>
+      </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
           routerLink="/lifts"
           class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20">
-          <span [innerHTML]="'faThumbsUp' | attachedIcon"></span>
-          <span class="ms-4">Need a lift?</span>
+          <span [innerHTML]="'faThumbsUp' | attachedIcon: 'x'"></span>
+          <span class="ms-4">Find a lift</span>
         </a>
       </li>
     </ul>

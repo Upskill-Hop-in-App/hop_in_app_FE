@@ -203,4 +203,17 @@ export class LiftComponent implements OnInit {
       },
     })
   }
+
+  isValidRating(rating: any): boolean {
+    return !isNaN(rating) && rating >= 0 && rating <= 5;
+  }
+
+  getStarsArray(rating: any): number[] {
+    if (typeof rating === 'number' && !isNaN(rating)) {
+      const wholeStars = Math.floor(rating); // Integer part
+      const hasPartialStar = rating % 1 !== 0; // Check if it's a float
+      return new Array(wholeStars).concat(hasPartialStar ? [0.5] : []); // Add partial star if necessary
+    }
+    return []; // Return empty array for invalid ratings
+  }
 }

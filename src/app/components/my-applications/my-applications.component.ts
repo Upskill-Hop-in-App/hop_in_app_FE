@@ -9,16 +9,16 @@ import {
   FormGroup,
   ReactiveFormsModule,
   FormArray,
-} from '@angular/forms';
-import { catchError, of } from 'rxjs';
-import { ModalComponent } from '../modal/modal.component';
-import { DOCUMENT } from '@angular/common';
-import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
-import { CommonModule } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ApplicationService } from '../../services/application.service';
-import { AuthService } from '../../services/auth.service';
+} from '@angular/forms'
+import { catchError, of } from 'rxjs'
+import { ModalComponent } from '../modal/modal.component'
+import { DOCUMENT } from '@angular/common'
+import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
+import { CommonModule } from '@angular/common'
+import { ToastrService } from 'ngx-toastr'
+import { ActivatedRoute, Router, RouterModule } from '@angular/router'
+import { ApplicationService } from '../../services/application.service'
+import { AuthService } from '../../services/auth.service'
 @Component({
   selector: 'app-my-applications',
   imports: [
@@ -27,7 +27,7 @@ import { AuthService } from '../../services/auth.service';
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
   ],
   templateUrl: './my-applications.component.html',
   styleUrl: './my-applications.component.css',
@@ -54,7 +54,7 @@ export class MyApplicationsComponent implements OnInit {
     car: '',
   }
   filtersApplied = false
-  applicationFlags: { [key: string]: boolean } = {};
+  applicationFlags: { [key: string]: boolean } = {}
 
   @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
@@ -74,15 +74,20 @@ export class MyApplicationsComponent implements OnInit {
   }
 
   updateApplicationFlags(applications: Application[]) {
-    applications.forEach(app => {
-      this.applicationFlags[app.lift.cl] = !["open", "ready", "canceled", "closed"].includes(app.lift.status!);
-    });
-  
-    return this.applicationFlags;
+    applications.forEach((app) => {
+      this.applicationFlags[app.lift.cl] = ![
+        'open',
+        'ready',
+        'canceled',
+        'closed',
+      ].includes(app.lift.status!)
+    })
+
+    return this.applicationFlags
   }
-  
+
   /* ------------------------------- FILTER FUNCS -------------------------------- */
-  
+
   clearFilters() {
     this.getApplicationsByUsername(this.clientUsername)
     this.filters = {
@@ -147,7 +152,7 @@ export class MyApplicationsComponent implements OnInit {
       )
       .subscribe((data: Application[]) => {
         this.applications = data
-        this.updateApplicationFlags(this.applications);
+        this.updateApplicationFlags(this.applications)
       })
   }
 
@@ -215,5 +220,18 @@ export class MyApplicationsComponent implements OnInit {
       },
       status: '',
     }
+  }
+
+  isValidRating(rating: any): boolean {
+    return !isNaN(rating) && rating >= 0 && rating <= 5
+  }
+
+  getStarsArray(rating: any): number[] {
+    if (typeof rating === 'number' && !isNaN(rating)) {
+      const wholeStars = Math.floor(rating) // Integer part
+      const hasPartialStar = rating % 1 !== 0 // Check if it's a float
+      return new Array(wholeStars).concat(hasPartialStar ? [0.5] : []) // Add partial star if necessary
+    }
+    return [] // Return empty array for invalid ratings
   }
 }

@@ -12,7 +12,7 @@ import {
 } from '@angular/forms'
 import { catchError, of } from 'rxjs'
 import { ModalComponent } from '../modal/modal.component'
-import { DOCUMENT } from '@angular/common'
+import { DOCUMENT, TitleCasePipe, UpperCasePipe } from '@angular/common'
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
 import { CommonModule } from '@angular/common'
 import { ToastrService } from 'ngx-toastr'
@@ -33,6 +33,8 @@ import { MyCarService } from '../../services/my-car/my-car.service'
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    TitleCasePipe,
+    UpperCasePipe,
     RouterModule,
   ],
   templateUrl: './my-lifts.component.html',
@@ -440,11 +442,11 @@ export class MyLiftsComponent implements OnInit {
   }
 
   updateLiftFlags(lifts: Lift[]) {
-  
+
     lifts.forEach(lift => {
       this.liftFlags[lift.cl!] = lift.applications ? lift.applications.some((app) => app.status === "accepted" || app.status === "ready") : false;
     });
-  
+
     return this.liftFlags;
   }
 

@@ -171,72 +171,128 @@
 
 <!-- ----------------------------------------------------------------------- -->
 
-<div class="table-container">
-  <table>
-    <thead>
+<div class="main-container">
+  <!-- ------------------------------- Upper Bar -------------------------------- -->
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <div>
+      <span class="main-title">Find a Lift</span>
+    </div>
+  </div>
+  <div class="space-y-6">
+    @if (lifts.length === 0) {
       <tr>
-        <th scope="col">From</th>
-        <th scope="col">To</th>
-        <th scope="col">Schedule</th>
-        <th scope="col">Price</th>
-        <th scope="col">Driver</th>
-        <th scope="col">Car</th>
-        <th scope="col">Available seats</th>
-        <th scope="col">Created at</th>
-        <th></th>
+        <td colspan="10" class="text-center">No lifts found</td>
       </tr>
-    </thead>
-    <tbody>
-      @if (lifts.length === 0) {
-        <tr>
-          <td colspan="10" class="text-center">No lifts found</td>
-        </tr>
-      } @else {
-        @for (lift of lifts; track lift.cl) {
-          <tr>
-            <td>
-              {{ lift.startPoint.parish | titlecase }},
-              {{ lift.startPoint.municipality | titlecase }} ({{
-                lift.startPoint.district | titlecase
-              }})
-            </td>
-            <td>
-              {{ lift.endPoint.parish | titlecase }},
-              {{ lift.endPoint.municipality | titlecase }} ({{
-                lift.endPoint.district | titlecase
-              }})
-            </td>
-            <td>{{ lift.schedule | date: "short" }}</td>
-            <td>{{ lift.price }}€</td>
-            <td>
-              {{ lift.driver.username }} <br />{{ lift.driver.driverRating
-              }}<span [innerHTML]="'faStar' | attachedIcon"></span>
-            </td>
-            <td>
-              {{ lift.car.brand | titlecase }} {{ lift.car.model | titlecase }}
-              {{ lift.car.color }}
-              {{ lift.car.plate }}
-            </td>
-            <td>
-              {{ lift.providedSeats - lift.occupiedSeats! }} /
-              {{ lift.providedSeats }}
-            </td>
-            <td>{{ lift.createdAt | date: "short" }}</td>
-            <td>
+    } @else {
+      @for (lift of lifts; track lift.cl) {
+        <div class="card-container">
+          <div
+            class="min-h-48 min-w-48 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-50 dark:text-gray-500 flex items-center justify-center align-middle flex-none">
+            <div [innerHTML]="'faCar' | attachedIcon: '5x'"></div>
+          </div>
+          <div class="flex-1 space-y-2 flex-col">
+            <div>
               <div
-                class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-                <a (click)="toggleApplication(lift)">
-                  <span>Apply</span
-                  ><span
+                class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+                <span class="pe-2"> FROM: </span>
+                <span class="">
+                  {{ lift.startPoint.parish | titlecase }},
+                  {{ lift.startPoint.municipality | titlecase }} -
+                  {{ lift.startPoint.district | uppercase }}
+                </span>
+              </div>
+              <div
+                class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+                <span class="pe-2"> TO: </span>
+                <span class="font-extrabold">
+                  {{ lift.endPoint.parish | titlecase }},
+                  {{ lift.endPoint.municipality | titlecase }} -
+                  {{ lift.endPoint.district | uppercase }}
+                </span>
+              </div>
+            </div>
+            <p class="text-sm font-semibold">
+              <span class=""> Schedule: </span>
+              {{ lift.schedule | date: "short" }}
+            </p>
+            <p
+              class="text-white w-fit px-4 py-1 rounded-full text-[14px]"
+              [ngClass]="{
+                'bg-sky-700': lift.status === 'open',
+                'bg-primary-700': lift.status === 'ready',
+                'bg-amber-600': lift.status === 'inProgress',
+                'bg-orange-500': lift.status === 'finished',
+                'bg-gray-600': lift.status === 'closed',
+                'bg-rose-700': lift.status === 'canceled',
+              }">
+              {{ lift.status | titlecase }}
+            </p>
+            <div
+              class="border-l-2 ps-3 text-gray-500 dark:text-gray-400 text-sm"
+              [ngClass]="{
+                'border-sky-300 dark:border-sky-800': lift.status === 'open',
+                'border-primary-300 dark:border-primary-800':
+                  lift.status === 'ready',
+                'border-amber-300 dark:border-amber-800':
+                  lift.status === 'inProgress',
+                'border-orange-300 dark:border-orange-800':
+                  lift.status === 'finished',
+                'border-gray-300 dark:border-gray-800':
+                  lift.status === 'closed',
+                'border-rose-300 dark:border-rose-800':
+                  lift.status === 'canceled',
+              }">
+              <p>Created at: {{ lift.createdAt | date: "short" }}</p>
+              <p>
+                Driver: {{ lift.driver.name | titlecase }}
+                <ng-container *ngIf="isValidRating(lift.driver.driverRating)">
+                  <ng-container
+                    *ngFor="
+                      let star of getStarsArray(lift.driver.driverRating);
+                      let i = index
+                    ">
+                    <span
+                      class="text-amber-400"
+                      [innerHTML]="'faStar' | attachedIcon"></span>
+                  </ng-container>
+                </ng-container>
+                <span *ngIf="!isValidRating(lift.driver.driverRating)"
+                  >Invalid Rating</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="text-end flex flex-col justify-between">
+            <div class="font-bold">
+              <p>
+                {{ lift.car.brand | titlecase }}
+                {{ lift.car.model | titlecase }} -
+                {{ lift.car.color | titlecase }}
+              </p>
+              <p>Plate: {{ lift.car.plate | uppercase }}</p>
+            </div>
+            <div>
+              <p class="font-semibold">
+                Available Seats:
+                {{ lift.providedSeats - lift.occupiedSeats! }} /
+                {{ lift.providedSeats }}
+              </p>
+              <p class="text-3xl font-extrabold pb-4">{{ lift.price }} €</p>
+              <div class="flex space-x-4 justify-end">
+                <a
+                  class="btn-primary space-x-2"
+                  (click)="toggleApplication(lift)">
+                  <span>Apply</span>
+                  <span
                     [innerHTML]="'faCircleChevronRight' | attachedIcon"></span
                 ></a>
               </div>
-            </td>
-          </tr>
-        }
+            </div>
+          </div>
+        </div>
       }
-    </tbody>
-  </table>
+    }
+  </div>
 </div>
 
 <app-modal modalTitle="{{ currentModalTitle }}">
@@ -246,62 +302,90 @@
       <form
         (ngSubmit)="confirmApplication()"
         #applicationForm="ngForm"
-        class="mt-4">
-        <div class="modal-header">
-          <h5 class="text-lg font-bold text-emerald-600">Confirmation</h5>
-        </div>
-        <div class="modal-body">
-          <p class="text-gray-700">You are about to apply to the lift:</p>
-          <div class="mt-2">
-            <strong class="block text-gray-800">Starting Point:</strong>
-            <span
-              >{{ auxiliarLift.startPoint.parish | titlecase }},
-              {{ auxiliarLift.startPoint.municipality | titlecase }} ({{
-                auxiliarLift.startPoint.district | titlecase
-              }})
-            </span>
-          </div>
-          <div class="mt-1">
-            <strong class="block text-gray-800">Destination:</strong>
-            <span
-              >{{ auxiliarLift.endPoint.parish | titlecase }},
-              {{ auxiliarLift.endPoint.municipality | titlecase }} ({{
-                auxiliarLift.endPoint.district | titlecase
-              }})</span
-            >
-          </div>
-          <div class="mt-1">
-            <strong class="block text-gray-800">Departure time:</strong>
-            <span>{{ auxiliarLift.schedule }}</span>
-          </div>
-          <div class="mt-1">
-            <div>
-              <strong class="block text-gray-800">Driver:</strong>
-              {{ auxiliarLift.driver.username
-              }}<span [innerHTML]="'faStar' | attachedIcon"></span
-              ><span>{{ auxiliarLift.driver.driverRating }}</span>
+        class="px-8 pb-4 space-y-2 text-sm">
+        <!-- Modal Body -->
+        <div class="p-4 rounded-lg space-y-4 bg-white dark:bg-gray-800">
+          <div class="flex space-x-4">
+            <!-- Starting Point -->
+            <div class="w-1/2">
+              <h3 class="font-bold text-gray-800 dark:text-gray-200">
+                Starting Point:
+              </h3>
+              <p class="input-disabled">
+                {{ auxiliarLift.startPoint.parish | titlecase }},
+                {{ auxiliarLift.startPoint.municipality | titlecase }} -
+                {{ auxiliarLift.startPoint.district | titlecase }}
+              </p>
             </div>
-            <div></div>
+            <!-- Destination -->
+            <div class="w-1/2">
+              <h3 class="font-bold text-gray-800 dark:text-gray-200">
+                Destination:
+              </h3>
+              <p class="input-disabled">
+                {{ auxiliarLift.endPoint.parish | titlecase }},
+                {{ auxiliarLift.endPoint.municipality | titlecase }} -
+                {{ auxiliarLift.endPoint.district | titlecase }}
+              </p>
+            </div>
           </div>
-          <div class="mt-1">
-            <span [innerHTML]="'faCoins' | attachedIcon"></span
-            ><strong class="block text-gray-800">Shared price:</strong>
-            {{ auxiliarLift.price }}€
+
+          <!-- Departure Time -->
+          <div>
+            <h3 class="font-bold text-gray-800 dark:text-gray-200">
+              Departure time:
+            </h3>
+            <p class="input-disabled">{{ auxiliarLift.schedule }}</p>
           </div>
-          <p class="mt-4 text-gray-700">Would you like to confirm?</p>
+
+          <!-- Driver -->
+          <div class="flex space-x-4">
+            <div class="w-1/2">
+              <h3 class="font-bold text-gray-800 dark:text-gray-200">
+                Driver:
+              </h3>
+              <p class="input-disabled">
+                {{ auxiliarLift.driver.name | titlecase }}
+              </p>
+            </div>
+            <div class="w-1/2">
+              <h3 class="font-bold text-gray-800 dark:text-gray-200">
+                Driver Rating:
+              </h3>
+              <div class="input-disabled">
+                <ng-container
+                  *ngIf="isValidRating(auxiliarLift.driver.driverRating)">
+                  <ng-container
+                    *ngFor="
+                      let star of getStarsArray(
+                        auxiliarLift.driver.driverRating
+                      );
+                      let i = index
+                    ">
+                    <span
+                      class="text-amber-400"
+                      [innerHTML]="'faStar' | attachedIcon"></span>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shared Price -->
+          <div>
+            <h3 class="font-bold text-gray-800 dark:text-gray-200">
+              Shared price:
+            </h3>
+            <p class="input-disabled space-x-2">€ {{ auxiliarLift.price }}</p>
+          </div>
         </div>
-        <div class="modal-footer mt-4 flex justify-between">
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            (click)="cancel()"
-            type="button">
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end space-x-4 pt-8">
+          <button class="btn-gray" (click)="cancel()" type="button">
             Cancel
           </button>
-          <button
-            class="bg-primary-700 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit">
-            Confirm
-          </button>
+          <button class="btn-primary" type="submit">Confirm</button>
         </div>
       </form>
     }
