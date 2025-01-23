@@ -30,7 +30,9 @@ export class SidebarComponent {
   isSmallScreen: boolean = false
   isLargeScreen: boolean = false
   isHomePage: boolean = false
-  userDropdownVisible: boolean = false
+  username: string | null = null
+  userRole: string | null = null
+  userToken: string | null = null
 
   constructor(
     private authService: AuthService,
@@ -41,6 +43,9 @@ export class SidebarComponent {
   }
 
   ngAfterViewInit(): void {
+    this.username = this.authService.getUserName()
+    this.userRole = this.authService.getUserRole()
+    this.userToken = this.authService.getToken()
     const theme = localStorage.getItem('theme')
     const themeToggleCheckbox = document.querySelector(
       'input[type="checkbox"]'
@@ -62,26 +67,6 @@ export class SidebarComponent {
     })
   }
 
-  @HostListener('window:click', ['$event'])
-  onDocumentClick(event?: MouseEvent) {
-    if (!event) {
-      return
-    }
-    const target = event.target as HTMLElement
-    const dropdownElement = document.getElementById('dropdown-user')
-    const toggleButton = document.querySelector(
-      '[data-dropdown-toggle="dropdown-user"]'
-    )
-
-    if (
-      dropdownElement &&
-      !dropdownElement.contains(target) &&
-      target !== toggleButton
-    ) {
-      this.closeUserDropdown()
-    }
-  }
-
   checkIfHomePage() {
     this.isHomePage = this.router.url === '/'
   }
@@ -94,12 +79,32 @@ export class SidebarComponent {
     this.sidebarVisible = !this.sidebarVisible
   }
 
-  closeUserDropdown() {
-    this.userDropdownVisible = false
+  toggleMenuNavbar() {
+    this.username = this.authService.getUserName()
+    this.userRole = this.authService.getUserRole()
+    this.userToken = this.authService.getToken()
+    this.menuNavbarVisible = !this.menuNavbarVisible
   }
 
-  toggleMenuNavbar() {
-    this.menuNavbarVisible = !this.menuNavbarVisible
+  @HostListener('window:click', ['$event'])
+  onDocumentClick(event?: MouseEvent) {
+    if (!event) {
+      return
+    }
+
+    const target = event.target as HTMLElement
+    const dropdownElement = document.getElementById('dropdown-user')
+    const toggleButton = document.querySelector(
+      '[data-dropdown-toggle="dropdown-user"]'
+    )
+
+    if (
+      dropdownElement &&
+      !dropdownElement.contains(target) &&
+      (!toggleButton || !toggleButton.contains(target))
+    ) {
+      this.closeMenuNavbar()
+    }
   }
 
   closeSidebar() {

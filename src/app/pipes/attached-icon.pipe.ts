@@ -9,8 +9,8 @@ import {
   faCarSide,
   faCircleUser,
   faCalendarCheck,
-  faCircleExclamation,
   faCircleCheck,
+  faCircleExclamation,
   faLocationDot,
   faMagnifyingGlass,
   faMoon,
@@ -34,6 +34,8 @@ import {
   faAt,
   faUserPen,
   faUnlock,
+  faGear,
+  faFilterCircleXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faTrashCan as faSlimTrashCan,
@@ -48,12 +50,13 @@ export class AttachedIconPipe implements PipeTransform {
     faHome,
     faBars,
     faCar,
-    faCarOn,
     faCarSide,
+    faCarOn,
     faCircleUser,
     faCalendarCheck,
     faCircleCheck,
     faCircleExclamation,
+    faFilterCircleXmark,
     faMagnifyingGlass,
     faMoon,
     faArrowUpRightFromSquare,
@@ -79,6 +82,7 @@ export class AttachedIconPipe implements PipeTransform {
     faAt,
     faUserPen,
     faUnlock,
+    faGear,
   }
 
   constructor(private sanitizer: DomSanitizer) {}

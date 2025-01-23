@@ -1,117 +1,302 @@
 <div class="main-container">
-  <div class="table-container">
-    @for (application of applications; track application.ca) {
-      <div class="card-container">
-        <div
-          class="min-h-48 min-w-48 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-50 dark:text-gray-500 flex items-center justify-center align-middle flex-none">
-          <span [innerHTML]="'faAddressCard' | attachedIcon: '5x'"></span>
-        </div>
-        <div class="flex-1 space-y-2 flex-col">
-          <div>
-            <div
-              class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-              <span class="pe-2"> FROM: </span>
-              <span class="">
-                {{ application.lift.startPoint?.parish! | titlecase }},
-                {{ application.lift.startPoint?.municipality! | titlecase }} -
-                {{ application.lift.startPoint?.district! | uppercase }}
-              </span>
-            </div>
-            <div
-              class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-              <span class="pe-2"> TO: </span>
-              <span class="font-extrabold">
-                {{ application.lift.endPoint?.parish! | titlecase }},
-                {{ application.lift.endPoint?.municipality! | titlecase }} -
-                {{ application.lift.endPoint?.district! | uppercase }}
-              </span>
-            </div>
-          </div>
-          <p class="text-sm font-semibold">
-            <span class=""> Schedule: </span>
-            {{ application.lift.schedule | date: "short" }}
-          </p>
-          <p
-            class="text-white w-fit px-4 py-1 rounded-full text-[14px]"
-            [ngClass]="{
-              'bg-sky-700': application.lift.status === 'open',
-              'bg-primary-700': application.lift.status === 'ready',
-              'bg-amber-600': application.lift.status === 'inProgress',
-              'bg-orange-500': application.lift.status === 'finished',
-              'bg-gray-600': application.lift.status === 'closed',
-              'bg-rose-700': application.lift.status === 'canceled',
-            }">
-            {{ application.lift.status | titlecase }}
-          </p>
-          <div
-            class="border-l-2 ps-3 text-gray-500 dark:text-gray-400 text-sm"
-            [ngClass]="{
-              'border-sky-300 dark:border-sky-800':
-                application.lift.status === 'open',
-              'border-primary-300 dark:border-primary-800':
-                application.lift.status === 'ready',
-              'border-amber-300 dark:border-amber-800':
-                application.lift.status === 'inProgress',
-              'border-orange-300 dark:border-orange-800':
-                application.lift.status === 'finished',
-              'border-gray-300 dark:border-gray-800':
-                application.lift.status === 'closed',
-              'border-rose-300 dark:border-rose-800':
-                application.lift.status === 'canceled',
-            }">
-            <p>Created at: {{ application.createdAt | date: "short" }}</p>
-            <p>
-              Driver: {{ application.lift.driver?.name | titlecase }}
-              <ng-container
-                *ngIf="isValidRating(application.lift.driver?.driverRating)">
-                <ng-container
-                  *ngFor="
-                    let star of getStarsArray(
-                      application.lift.driver?.driverRating
-                    );
-                    let i = index
-                  ">
-                  <span
-                    class="text-amber-400"
-                    [innerHTML]="'faStar' | attachedIcon"></span>
-                </ng-container>
-              </ng-container>
-              <span
-                *ngIf="!isValidRating(application.lift.driver?.driverRating)"
-                >Invalid Rating</span
-              >
-            </p>
-          </div>
-        </div>
-        <div class="text-end flex flex-col justify-between">
-          <div class="font-bold">
-            <p>
-              {{ application.lift.car?.brand | titlecase }}
-              {{ application.lift.car?.model | titlecase }} -
-              {{ application.lift.car?.color | titlecase }}
-            </p>
-            <p>Plate: {{ application.lift.car?.plate | uppercase }}</p>
-          </div>
-          <div>
-            <p class="text-3xl font-extrabold pb-4">
-              {{ application.lift.price }} €
-            </p>
-            <div class="flex space-x-4 justify-end">
-              @if (
-                application.status === "pending" ||
-                application.status === "accepted" ||
-                application.status === "ready"
-              ) {
-                <div class="btn-danger">
-                  <a (click)="toggleCancel(application)">
-                    <span>Cancel</span></a
-                  >
-                </div>
-              }
-            </div>
-          </div>
-        </div>
+  <!-- Filter Form -->
+  <div class="flex flex-col justify-end gap-4 lg:flex-row">
+    <button
+      class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
+      (click)="applyFilters()">
+      <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span
+      ><span>Search </span>
+    </button>
+    <button
+      class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
+      (click)="clearFilters()">
+      <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
+    </button>
+  </div>
+
+  <form (ngSubmit)="applyFilters()" class="mt-6 space-y-6">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <!-- Status -->
+      <div>
+        <label
+          for="status"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Status</label
+        >
+        <select
+          id="status"
+          [(ngModel)]="filters.status"
+          name="status"
+          class="input-standard">
+          <option value="">--Select Status--</option>
+          <option value="pending">Pending</option>
+          <option value="accepted">Accepted</option>
+          <option value="ready">Ready</option>
+          <option value="rejected">Rejected</option>
+          <option value="canceled">Canceled</option>
+        </select>
       </div>
+
+      <!-- Start Point District -->
+      <div>
+        <label
+          for="startPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point District</label
+        >
+        <input
+          id="startPointDistrict"
+          type="text"
+          [(ngModel)]="filters.startPointDistrict"
+          name="startPointDistrict"
+          class="input-standard" />
+      </div>
+
+      <!-- Start Point Municipality -->
+      <div>
+        <label
+          for="startPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Municipality</label
+        >
+        <input
+          id="startPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.startPointMunicipality"
+          name="startPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- Start Point Parish -->
+      <div>
+        <label
+          for="startPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Parish</label
+        >
+        <input
+          id="startPointParish"
+          type="text"
+          [(ngModel)]="filters.startPointParish"
+          name="startPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point District -->
+      <div>
+        <label
+          for="endPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point District</label
+        >
+        <input
+          id="endPointDistrict"
+          type="text"
+          [(ngModel)]="filters.endPointDistrict"
+          name="endPointDistrict"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Municipality -->
+      <div>
+        <label
+          for="endPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Municipality</label
+        >
+        <input
+          id="endPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.endPointMunicipality"
+          name="endPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Parish -->
+      <div>
+        <label
+          for="endPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Parish</label
+        >
+        <input
+          id="endPointParish"
+          type="text"
+          [(ngModel)]="filters.endPointParish"
+          name="endPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- Provided Seats -->
+      <div>
+        <label
+          for="providedSeats"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Provided Seats</label
+        >
+        <input
+          id="providedSeats"
+          type="number"
+          [(ngModel)]="filters.providedSeats"
+          name="providedSeats"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Date -->
+      <div>
+        <label
+          for="scheduleDate"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Date</label
+        >
+        <input
+          id="scheduleDate"
+          type="date"
+          [(ngModel)]="filters.scheduleDate"
+          name="scheduleDate"
+          class="input-standard" />
+      </div>
+      <div>
+        <label
+          for="scheduleTime"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Time</label
+        >
+        <input
+          id="scheduleDate"
+          type="time"
+          [(ngModel)]="filters.scheduleTime"
+          name="scheduleTime"
+          class="input-standard" />
+      </div>
+    </div>
+  </form>
+  <div>
+    @if (applications.length === 0) {
+      <tr>
+        <td colspan="9" class="text-center">No applications found</td>
+      </tr>
+    } @else {
+      @for (application of applications; track application.ca) {
+        <div class="card-container">
+          <div
+            class="min-h-48 min-w-48 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-50 dark:text-gray-500 flex items-center justify-center align-middle flex-none">
+            <span [innerHTML]="'faAddressCard' | attachedIcon: '5x'"></span>
+          </div>
+          <div class="flex-1 space-y-2 flex-col">
+            <div>
+              <div
+                class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+                <span class="pe-2"> FROM: </span>
+                <span class="">
+                  {{ application.lift.startPoint?.parish! | titlecase }},
+                  {{ application.lift.startPoint?.municipality! | titlecase }} -
+                  {{ application.lift.startPoint?.district! | uppercase }}
+                </span>
+              </div>
+              <div
+                class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+                <span class="pe-2"> TO: </span>
+                <span class="font-extrabold">
+                  {{ application.lift.endPoint?.parish! | titlecase }},
+                  {{ application.lift.endPoint?.municipality! | titlecase }} -
+                  {{ application.lift.endPoint?.district! | uppercase }}
+                </span>
+              </div>
+            </div>
+            <p class="text-sm font-semibold">
+              <span class=""> Schedule: </span>
+              {{ application.lift.schedule | date: "short" }}
+            </p>
+            <p
+              class="text-white w-fit px-4 py-1 rounded-full text-[14px]"
+              [ngClass]="{
+                'bg-sky-700': application.lift.status === 'open',
+                'bg-primary-700': application.lift.status === 'ready',
+                'bg-amber-600': application.lift.status === 'inProgress',
+                'bg-orange-500': application.lift.status === 'finished',
+                'bg-gray-600': application.lift.status === 'closed',
+                'bg-rose-700': application.lift.status === 'canceled',
+              }">
+              {{ application.lift.status | titlecase }}
+            </p>
+            <div
+              class="border-l-2 ps-3 text-gray-500 dark:text-gray-400 text-sm"
+              [ngClass]="{
+                'border-sky-300 dark:border-sky-800':
+                  application.lift.status === 'open',
+                'border-primary-300 dark:border-primary-800':
+                  application.lift.status === 'ready',
+                'border-amber-300 dark:border-amber-800':
+                  application.lift.status === 'inProgress',
+                'border-orange-300 dark:border-orange-800':
+                  application.lift.status === 'finished',
+                'border-gray-300 dark:border-gray-800':
+                  application.lift.status === 'closed',
+                'border-rose-300 dark:border-rose-800':
+                  application.lift.status === 'canceled',
+              }">
+              <p>Created at: {{ application.createdAt | date: "short" }}</p>
+              <p>
+                Driver: {{ application.lift.driver?.name | titlecase }}
+                <ng-container
+                  *ngIf="isValidRating(application.lift.driver?.driverRating)">
+                  <ng-container
+                    *ngFor="
+                      let star of getStarsArray(
+                        application.lift.driver?.driverRating
+                      );
+                      let i = index
+                    ">
+                    <span
+                      class="text-amber-400"
+                      [innerHTML]="'faStar' | attachedIcon"></span>
+                  </ng-container>
+                </ng-container>
+                <span
+                  *ngIf="!isValidRating(application.lift.driver?.driverRating)"
+                  >Invalid Rating</span
+                >
+              </p>
+            </div>
+          </div>
+          <div class="text-end flex flex-col justify-between">
+            <div class="font-bold">
+              <p>
+                {{ application.lift.car?.brand | titlecase }}
+                {{ application.lift.car?.model | titlecase }} -
+                {{ application.lift.car?.color | titlecase }}
+              </p>
+              <p>Plate: {{ application.lift.car?.plate | uppercase }}</p>
+            </div>
+            <div>
+              <p class="text-3xl font-extrabold pb-4">
+                {{ application.lift.price }} €
+              </p>
+              <div class="flex space-x-4 justify-end">
+                @if (
+                  application.status === "pending" ||
+                  application.status === "accepted" ||
+                  application.status === "ready"
+                ) {
+                  <div class="btn-danger">
+                    <a (click)="toggleCancel(application)">
+                      <span>Cancel</span></a
+                    >
+                  </div>
+                }
+                <button
+                  *ngIf="applicationFlags[application.lift.cl]"
+                  class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  routerLink="/current-lift"
+                  [queryParams]="{ lift: application.lift.cl }">
+                  Go to Lift
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
     }
   </div>
 </div>

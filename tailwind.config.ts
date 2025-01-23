@@ -41,7 +41,17 @@ const config: Config = {
       '2xl': '24px',
       '3xl': '40px',
     },
-    extend: {},
+    extend: {
+      keyframes: {
+        bounceCar: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+      },
+      animation: {
+        bounceCar: 'bounceCar 0.6s ease-in-out infinite',
+      },
+    },
   },
   plugins: [],
 }

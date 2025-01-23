@@ -16,7 +16,7 @@ import { DOCUMENT } from '@angular/common'
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
 import { CommonModule } from '@angular/common'
 import { ToastrService } from 'ngx-toastr'
-import { ActivatedRoute, Router } from '@angular/router'
+import { ActivatedRoute, Router, RouterModule } from '@angular/router'
 import { ApplicationService } from '../../services/application.service'
 import { AuthService } from '../../services/auth.service'
 @Component({
@@ -27,6 +27,7 @@ import { AuthService } from '../../services/auth.service'
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
   templateUrl: './my-applications.component.html',
   styleUrl: './my-applications.component.css',
@@ -37,6 +38,23 @@ export class MyApplicationsComponent implements OnInit {
   auxiliarApplication: Application = this.reset()
   currentModalTitle: string = ''
   showCancelForm: boolean = false
+  filters: any = {
+    cl: '',
+    status: '',
+    startPointDistrict: '',
+    startPointMunicipality: '',
+    startPointParish: '',
+    endPointDistrict: '',
+    endPointMunicipality: '',
+    endPointParish: '',
+    providedSeats: '',
+    scheduleDate: '',
+    scheduleTime: '',
+    driver: '',
+    car: '',
+  }
+  filtersApplied = false
+  applicationFlags: { [key: string]: boolean } = {}
 
   @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
@@ -55,8 +73,73 @@ export class MyApplicationsComponent implements OnInit {
     this.getApplicationsByUsername(this.clientUsername)
   }
 
+  updateApplicationFlags(applications: Application[]) {
+    applications.forEach((app) => {
+      this.applicationFlags[app.lift.cl] = ![
+        'open',
+        'ready',
+        'canceled',
+        'closed',
+      ].includes(app.lift.status!)
+    })
+
+    return this.applicationFlags
+  }
+
+  /* ------------------------------- FILTER FUNCS -------------------------------- */
+
+  clearFilters() {
+    this.getApplicationsByUsername(this.clientUsername)
+    this.filters = {
+      cl: '',
+      status: '',
+      startPointDistrict: '',
+      startPointMunicipality: '',
+      startPointParish: '',
+      endPointDistrict: '',
+      endPointMunicipality: '',
+      endPointParish: '',
+      providedSeats: '',
+      scheduleDate: '',
+      scheduleTime: '',
+      driver: '',
+      car: '',
+    }
+  }
+
+  cleanFilters(filters: any): any {
+    return Object.entries(filters)
+      .filter(
+        ([key, value]) => value !== '' && value !== null && value !== undefined
+      )
+      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
+  }
+
+  /* ------------------------------- AUTH FUNCS -------------------------------- */
+
   getUsername() {
     this.clientUsername = this.AuthService.getUserName()
+  }
+
+  /* ------------------------------- SERVICE FUNCS -------------------------------- */
+
+  applyFilters() {
+    const query = this.buildQueryString(this.cleanFilters(this.filters))
+    console.log(query)
+    this.ApplicationService.filterApplicationsByUsername(
+      this.AuthService.getUserName(),
+      query
+    ).subscribe(
+      (response) => {
+        this.applications = response.data
+        this.filtersApplied = true
+      },
+      (error) => {
+        console.error(error)
+        this.applications = []
+        this.filtersApplied = true
+      }
+    )
   }
 
   getApplicationsByUsername(username: string): void {
@@ -69,14 +152,8 @@ export class MyApplicationsComponent implements OnInit {
       )
       .subscribe((data: Application[]) => {
         this.applications = data
+        this.updateApplicationFlags(this.applications)
       })
-  }
-
-  toggleCancel(application: Application) {
-    this.auxiliarApplication = { ...application }
-    this.currentModalTitle = 'Cancel application'
-    this.showCancelForm = true
-    this.openModal()
   }
 
   cancelApplication(): void {
@@ -94,8 +171,32 @@ export class MyApplicationsComponent implements OnInit {
     })
   }
 
+  /* ------------------------------- MODAL FUNCS -------------------------------- */
+
+  toggleCancel(application: Application) {
+    this.auxiliarApplication = { ...application }
+    this.currentModalTitle = 'Cancel application'
+    this.showCancelForm = true
+    this.openModal()
+  }
+
   openModal(): void {
     this.modalComponent.openModal()
+  }
+
+  cancel(): void {
+    this.modalComponent.closeModal()
+  }
+
+  /* ------------------------------- HELPER FUNCS -------------------------------- */
+
+  buildQueryString(filters: Record<string, string | number | boolean>): string {
+    return Object.entries(filters)
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&')
   }
 
   reset(): Application {
@@ -119,10 +220,6 @@ export class MyApplicationsComponent implements OnInit {
       },
       status: '',
     }
-  }
-
-  cancel(): void {
-    this.modalComponent.closeModal()
   }
 
   isValidRating(rating: any): boolean {
