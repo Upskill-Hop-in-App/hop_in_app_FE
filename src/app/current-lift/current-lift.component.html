@@ -83,13 +83,15 @@
       <p><strong>Occupied Seats:</strong> {{ getOccupiedSeats() }}</p>
       <p><strong>Total Price:</strong> {{ lift.price }}</p>
     </div>
+    @if(isDriver) {
 
-    <button
+      <button
       (click)="finishLift()"
       class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105"
-    >
+      >
       Finish Lift
     </button>
+  }
   </div>
 }
 

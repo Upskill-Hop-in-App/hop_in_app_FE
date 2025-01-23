@@ -196,9 +196,9 @@
           @for (application of applications; track application.ca) {
             <tr>
               <td>
-                {{ application.lift.startPoint.parish | titlecase }},
-                {{ application.lift.startPoint.municipality | titlecase }} ({{
-                  application.lift.startPoint.district | titlecase
+                {{ application.lift.startPoint?.parish! | titlecase }},
+                {{ application.lift.startPoint?.municipality! | titlecase }} ({{
+                  application.lift.startPoint?.district! | titlecase
                 }})
               </td>
               <td>
