@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { catchError, of } from 'rxjs';
 import { ModalComponent } from '../modal/modal.component';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
@@ -29,6 +29,8 @@ import { AuthService } from '../../services/auth.service';
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    TitleCasePipe,
+    UpperCasePipe,
   ],
   templateUrl: './my-lifts.component.html',
   styleUrl: './my-lifts.component.css',

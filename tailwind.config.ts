@@ -1,4 +1,4 @@
-import colors from 'tailwindcss/colors'
+import colors, { amber } from 'tailwindcss/colors'
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -13,7 +13,12 @@ const config: Config = {
       gray: colors.stone,
       yellow: colors.yellow,
       blue: colors.blue,
+      indigo: colors.indigo,
+      sky: colors.sky,
+      amber: colors.amber,
+      orange: colors.orange,
       emerald: colors.emerald,
+      green: colors.green,
       rose: colors.rose,
       red: colors.red,
       primary: colors.green,

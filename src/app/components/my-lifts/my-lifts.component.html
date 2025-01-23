@@ -2,7 +2,7 @@
   <!-- ------------------------------- Upper Bar -------------------------------- -->
   <div class="flex flex-col justify-between py-4 md:flex-row">
     <div>
-      <span class="main-title">My Lifts</span>
+      <span class="main-title">My Offered Lifts</span>
     </div>
     <div class="flex flex-col justify-between gap-1 md:flex-row">
       <div class="flex flex-row items-end gap-1"></div>
@@ -16,86 +16,101 @@
       </div>
     </div>
   </div>
-
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">From</th>
-          <th scope="col">To</th>
-          <th scope="col">Schedule</th>
-          <th scope="col">Price</th>
-          <th scope="col">Car</th>
-          <th scope="col">Available seats</th>
-          <th scope="col">Status</th>
-          <th scope="col">Created at</th>
-          <th scope="col">Applications</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (lift of lifts; track lift.cl) {
-          <tr>
-            <td>
-              {{ lift.startPoint.parish }},
-              {{ lift.startPoint.municipality }} ({{
-                lift.startPoint.district
-              }})
-            </td>
-            <td>
-              {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }} ({{
-                lift.endPoint.district
-              }})
-            </td>
-            <td>{{ lift.schedule | date: "short" }}</td>
-            <td>{{ lift.price }} €</td>
-            <td>
-              {{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }}
-              {{ lift.car.plate }}
-            </td>
-            <td>
-              {{ lift.providedSeats - lift.occupiedSeats! }} /
-              {{ lift.providedSeats }}
-            </td>
-            <td>{{ lift.status }}</td>
-            <td>{{ lift.createdAt | date: "short" }}</td>
-            <td>
-              <div>
-                @if (lift.applications?.length === 0) {
-                  <div
-                    class="rtl relative flex h-8 w-full items-center cursor-default justify-center btn-gray">
-                    <p>No applications yet</p>
-                  </div>
-                } @else if (lift.applications?.length === 1) {
-                  <a (click)="toggleApplication(lift)"
-                    ><div
-                      class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary">
-                      See 1 application
-                    </div></a
-                  >
-                } @else {
-                  <div
-                    class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary">
-                    <a (click)="toggleApplication(lift)"
-                      >See {{ lift.applications?.length }} applications</a
-                    >
-                  </div>
-                }
+  @for (lift of lifts; track lift.cl) {
+    <div class="card-container">
+      <div
+        class="min-h-48 min-w-48 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-50 dark:text-gray-500 flex items-center justify-center align-middle flex-none">
+        <div [innerHTML]="'faCar' | attachedIcon: '5x'"></div>
+      </div>
+      <div class="flex-1 space-y-2 flex-col">
+        <div>
+          <div
+            class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+            <span class="pe-2"> FROM: </span>
+            <span class="">
+              {{ lift.startPoint.parish | titlecase }},
+              {{ lift.startPoint.municipality | titlecase }} -
+              {{ lift.startPoint.district | uppercase }}
+            </span>
+          </div>
+          <div
+            class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+            <span class="pe-2"> TO: </span>
+            <span class="font-extrabold">
+              {{ lift.endPoint.parish | titlecase }},
+              {{ lift.endPoint.municipality | titlecase }} -
+              {{ lift.endPoint.district | uppercase }}
+            </span>
+          </div>
+        </div>
+        <p class="text-sm font-semibold">
+          <span class=""> Schedule: </span> {{ lift.schedule | date: "short" }}
+        </p>
+        <p
+          class="text-white w-fit px-4 py-1 rounded-full text-[14px]"
+          [ngClass]="{
+            'bg-sky-700': lift.status === 'open',
+            'bg-primary-700': lift.status === 'ready',
+            'bg-amber-600': lift.status === 'inProgress',
+            'bg-orange-500': lift.status === 'finished',
+            'bg-gray-600': lift.status === 'closed',
+            'bg-rose-700': lift.status === 'canceled',
+          }">
+          {{ lift.status | titlecase }}
+        </p>
+        <div
+          class="border-l-2 ps-3 text-gray-500 dark:text-gray-400 text-sm"
+          [ngClass]="{
+            'border-sky-300 dark:border-sky-800': lift.status === 'open',
+            'border-primary-300 dark:border-primary-800':
+              lift.status === 'ready',
+            'border-amber-300 dark:border-amber-800':
+              lift.status === 'inProgress',
+            'border-orange-300 dark:border-orange-800':
+              lift.status === 'finished',
+            'border-gray-300 dark:border-gray-800': lift.status === 'closed',
+            'border-rose-300 dark:border-rose-800': lift.status === 'canceled',
+          }">
+          <p>Created at: {{ lift.createdAt | date: "short" }}</p>
+          <p>By: Yourself</p>
+        </div>
+      </div>
+      <div class="text-end flex flex-col justify-between">
+        <div class="font-bold">
+          <p>
+            {{ lift.car.brand | titlecase }} {{ lift.car.model | titlecase }} -
+            {{ lift.car.color | titlecase }}
+          </p>
+          <p>Plate: {{ lift.car.plate | uppercase }}</p>
+        </div>
+        <div>
+          <p class="font-semibold">
+            Available Seats: {{ lift.providedSeats - lift.occupiedSeats! }} /
+            {{ lift.providedSeats }}
+          </p>
+          <p class="text-3xl font-extrabold pb-4">{{ lift.price }} €</p>
+          <div class="flex space-x-4 justify-end">
+            <a><div class="btn-danger">Cancel</div></a>
+            @if (lift.applications?.length === 0) {
+              <div class="btn-gray">
+                <p>No applications yet</p>
               </div>
-            </td>
-            <td>
-              <a
-                ><div
-                  class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-danger">
-                  Cancel
-                </div></a
+            } @else if (lift.applications?.length === 1) {
+              <a (click)="toggleApplication(lift)"
+                ><div class="btn-primary">See 1 application</div></a
               >
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+            } @else {
+              <a (click)="toggleApplication(lift)">
+                <div class="btn-primary">
+                  See {{ lift.applications?.length }} applications
+                </div>
+              </a>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </div>
 
 <app-modal modalTitle="{{ currentModalTitle }}">

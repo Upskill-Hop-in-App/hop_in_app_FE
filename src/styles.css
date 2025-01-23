@@ -7,7 +7,7 @@
     @apply my-[90px] pt-16 mx-auto max-w-screen-xl 3xl:max-w-screen-2xl px-4 sm:px-6 lg:px-8 space-y-4;
   }
   .main-title {
-    @apply pb-2 text-2xl 3xl:text-3xl font-bold text-gray-800 dark:text-gray-300;
+    @apply pb-2 text-2xl 3xl:text-3xl font-extrabold text-gray-800 dark:text-gray-300;
   }
   .input-standard {
     @apply block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500;
@@ -32,6 +32,9 @@
   }
   .table-container {
     @apply relative overflow-x-auto shadow-md sm:rounded-lg;
+  }
+  .card-container {
+    @apply flex flex-nowrap text-nowrap overflow-x-auto w-full justify-between border p-4 rounded-lg dark:border-gray-500 shadow-md space-x-4 text-gray-700 dark:text-gray-300;
   }
   .buttons-modal-container {
     @apply flex justify-end gap-x-4 border-t pt-8 pb-4 dark:border-gray-600;
