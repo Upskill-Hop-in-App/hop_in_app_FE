@@ -211,7 +211,6 @@ export class ProfileComponent {
   }
 
   confirmDelete() {
-    console.log('oi', this.deleteForm.value.confirmationEmail);
     if (this.deleteForm.value.confirmationEmail! === this.backupUser.email) {
       this.UserService.deleteUser(this.backupUser.username).subscribe({
         next: () => {
