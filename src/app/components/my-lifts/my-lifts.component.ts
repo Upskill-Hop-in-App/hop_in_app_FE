@@ -39,6 +39,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class MyLiftsComponent implements OnInit {
   lifts: Lift[] = [];
+  lift: Lift = this.reset()
   cars: MyCar[] = [];
   startDistricts: string[] = [];
   startMunicipalities: string[] = [];
@@ -60,6 +61,8 @@ export class MyLiftsComponent implements OnInit {
   showDeleteForm: boolean = false;
   showEditForm: boolean = false;
   currentModalTitle: string = '';
+  flagStart: boolean = false;
+  liftFlags: { [key: string]: boolean } = {};
 
   //TODO mudar aqui para ir busca-lo ao token
   clientUsername: string = 'admin1_user';
@@ -116,6 +119,7 @@ export class MyLiftsComponent implements OnInit {
       )
       .subscribe((data: Lift[]) => {
         this.lifts = data;
+        this.updateLiftFlags(this.lifts);
       });
   }
 
@@ -364,6 +368,15 @@ export class MyLiftsComponent implements OnInit {
         this.toastr.error('Failed to reject application.', err.error.error);
       },
     });
+  }
+
+  updateLiftFlags(lifts: Lift[]) {
+  
+    lifts.forEach(lift => {
+      this.liftFlags[lift.cl!] = lift.applications ? lift.applications.some((app) => app.status === "accepted" || app.status === "ready") : false;
+    });
+  
+    return this.liftFlags;
   }
 
   toggleCancelStatus(lift: Lift, cl: string, status: string): void {

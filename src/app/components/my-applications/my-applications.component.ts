@@ -16,7 +16,7 @@ import { DOCUMENT } from '@angular/common';
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApplicationService } from '../../services/application.service';
 import { AuthService } from '../../services/auth.service';
 @Component({
@@ -27,6 +27,7 @@ import { AuthService } from '../../services/auth.service';
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    RouterModule
   ],
   templateUrl: './my-applications.component.html',
   styleUrl: './my-applications.component.css',
@@ -37,6 +38,7 @@ export class MyApplicationsComponent implements OnInit {
   auxiliarApplication: Application = this.reset();
   currentModalTitle: string = '';
   showCancelForm: boolean = false;
+  applicationFlags: { [key: string]: boolean } = {};
 
   @ViewChild(ModalComponent) modalComponent!: ModalComponent;
 
@@ -55,6 +57,14 @@ export class MyApplicationsComponent implements OnInit {
     this.getApplicationsByUsername(this.clientUsername);
   }
 
+  updateApplicationFlags(applications: Application[]) {
+    applications.forEach(app => {
+      this.applicationFlags[app.lift.cl] = !["open", "ready", "canceled", "closed"].includes(app.lift.status!);
+    });
+  
+    return this.applicationFlags;
+  }
+
   getUsername() {
     this.clientUsername = this.AuthService.getUserName();
   }
@@ -69,6 +79,7 @@ export class MyApplicationsComponent implements OnInit {
       )
       .subscribe((data: Application[]) => {
         this.applications = data;
+        this.updateApplicationFlags(this.applications);
       });
   }
 

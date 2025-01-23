@@ -52,7 +52,6 @@ export class LiftService {
   filterLifts(query: string): Observable<{ message: string; data: Lift[] }> {
     const headers = this.authService.getHeaders();
     const localURL = `${this.apiUrl}/filter?${query}`;
-    console.log(localURL)
     return this.http.get<{ message: string; data: Lift[] }>(localURL, {
       headers,
     });
@@ -61,7 +60,6 @@ export class LiftService {
   filterLiftByUsername(query: string, username: string): Observable<{ message: string; data: Lift[] }> {
     const headers = this.authService.getHeaders();
     const localURL = `${this.apiUrl}/filter/username/${username}?${query}`;
-    console.log(localURL)
     return this.http.get<{ message: string; data: Lift[] }>(localURL, {
       headers,
     });

@@ -47,7 +47,7 @@ export class CurrentLiftComponent implements OnInit {
   showDriverRatingModal: boolean = false;
   currentModalTitle: string = '';
   userRole: string | null = '';
-  user: string | null = '';
+  user: string = '';
   isDriver: boolean = false;
   isPassenger: boolean = false;
   driverSubmited: boolean = false;
@@ -87,14 +87,12 @@ export class CurrentLiftComponent implements OnInit {
     });
     if (this.liftCode) {
       this.getLiftByCode(`cl=${this.liftCode}`, this.user);
-      
-      console.log(this.liftCode);
     } else {
       this.getLiftInProgress(``, this.user);
     }
   }
 
-  getLiftByCode(query: string, role: string): void {
+  getLiftByCode(query: string, user: string): void {
     this.LiftService.filterLifts(query)
       .pipe(
         catchError((err) => {
@@ -107,6 +105,20 @@ export class CurrentLiftComponent implements OnInit {
       )
       .subscribe((response: { message: string; data: Lift[] }) => {
         this.lift = response.data[0] || null;
+
+        if(this.lift) {
+          this.isDriver = this.lift.driver.username === user
+          this.isPassenger = this.lift.applications!.some((app) => app.passenger!.username === user)
+        }
+
+        if (this.lift && this.lift.status === 'finished' && this.isDriver) {
+          this.driverSubmited = this.lift.applications!.every(
+            (app) =>
+              app.status === 'ready' &&
+              app.receivedPassengerRating &&
+              app.receivedPassengerRating > 0,
+          );
+        }
         this.ratingsForm = this.createRatingsForm();
       });
   }
@@ -141,7 +153,6 @@ export class CurrentLiftComponent implements OnInit {
 
         this.LiftService.getRole(user).subscribe((response: string) => {
           this.role = response;
-          console.log(this.role);
         });
         this.isDriver = this.lifts.some(
           (lift) => lift.driver.username === user,
@@ -252,18 +263,7 @@ export class CurrentLiftComponent implements OnInit {
       next: () => {
         this.toastr.success('Lift started successfully');
         this.liftStarted = true;
-        this.router.events.subscribe((event) => {
-          if (this.router.url === '/current-lift') {
-            this.resetView();
-          }
-        });
-        this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: { lift: null },
-          queryParamsHandling: 'merge', // Keeps other query params, if any
-        });
-       
-          this.getLiftInProgress(``, this.user!);
+          this.getLiftByCode(`cl=${this.liftCode}`, this.user);
       },
       error: (err) => {
         this.toastr.error('Failed to start lift', err.error.message);
@@ -274,14 +274,15 @@ export class CurrentLiftComponent implements OnInit {
   finishLift(): void {
     this.LiftService.updateStatusLift(this.lift.cl!, 'finished').subscribe({
       next: () => {
-        this.toastr.success('Lift started successfully');
+        this.toastr.success('Lift finished successfully');
         this.liftStarted = false;
         this.liftFinished = true;
         this.liftClosed = false;
-        this.getLiftInProgress(``, this.user!);
+        /* this.getLiftInProgress(``, this.user!); */
+        this.getLiftByCode(`cl=${this.liftCode}`, this.user);
       },
       error: (err) => {
-        this.toastr.error('Failed to start lift', err.error.message);
+        this.toastr.error('Failed to finish lift', err.error.message);
       },
     });
   }
@@ -289,14 +290,15 @@ export class CurrentLiftComponent implements OnInit {
   closeLift(): void {
     this.LiftService.updateStatusLift(this.lift.cl!, 'closed').subscribe({
       next: () => {
-        this.toastr.success('Lift started successfully');
+        this.toastr.success('Lift closed successfully');
         this.liftStarted = false;
         this.liftFinished = false;
         this.liftClosed = true;
-        this.getClosedLift(``, this.user!);
+        /* this.getClosedLift(``, this.user!); */
+        this.getLiftByCode(`cl=${this.liftCode}`, this.user);
       },
       error: (err) => {
-        this.toastr.error('Failed to start lift', err.error.message);
+        this.toastr.error('Failed to close lift', err.error.message);
       },
     });
   }
@@ -307,12 +309,6 @@ export class CurrentLiftComponent implements OnInit {
       this.auxiliarLift = { ...lift };
     }
     this.showRatingModal = true;
-    console.log(
-      this.liftFinished,
-      this.liftStarted,
-      this.liftClosed,
-      this.liftCode,
-    );
     this.resetForm();
     this.openModal();
   }

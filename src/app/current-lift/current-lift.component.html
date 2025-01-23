@@ -32,7 +32,7 @@
   </button>
 }
 
-@if (lift.status === "inProgress") {
+@if (liftCode && lift.status === "inProgress") {
   <div
     class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg"
   >
@@ -93,7 +93,7 @@
   </div>
 }
 
-@if (lift.status === "finished") {
+@if (liftCode && lift.status === "finished") {
   <div
     class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg"
   >
@@ -173,7 +173,7 @@
   </div>
 }
 
-@if (lift.status === "closed") {
+@if (liftCode && lift.status === "closed") {
   <div
     class="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-lg"
   >
