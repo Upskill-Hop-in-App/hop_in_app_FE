@@ -107,7 +107,6 @@ export class MyLiftsComponent implements OnInit {
     this.getLiftsByUsername(this.clientUsername)
     this.loadStartDistricts()
     this.loadEndDistricts()
-    this.getCars()
   }
 
   getUsername() {
@@ -319,6 +318,7 @@ export class MyLiftsComponent implements OnInit {
     this.currentModalTitle = 'Add lift'
     this.showCreateForm = true
     this.showApplicationForm = false
+    this.getCars()
     this.resetForm()
     this.openModal()
   }
