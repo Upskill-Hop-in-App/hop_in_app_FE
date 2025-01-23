@@ -1,6 +1,5 @@
 <nav
-  class="fixed top-0 z-50 w-full border-b bg-white bg-opacity-60 p-3 text-gray-600 backdrop-blur-xl 2xl:px-5 2xl:pl-3 dark:border-gray-600 dark:bg-gray-900 dark:bg-opacity-60 dark:text-gray-300"
->
+  class="fixed top-0 z-50 w-full border-b bg-white bg-opacity-60 p-3 text-gray-600 backdrop-blur-xl 2xl:px-5 2xl:pl-3 dark:border-gray-600 dark:bg-gray-900 dark:bg-opacity-60 dark:text-gray-300">
   <div class="flex items-center justify-between">
     <div class="flex items-center justify-start rtl:justify-end">
       <button
@@ -9,8 +8,7 @@
         aria-controls="logo-navbar"
         type="button"
         class="inline-flex items-center rounded-lg p-2 text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 2xl:hidden dark:hover:bg-gray-900"
-        (click)="toggleSidebar()"
-      >
+        (click)="toggleSidebar()">
         <span [innerHTML]="'faBars' | attachedIcon: '2x'"></span>
         <span class="sr-only">Open sidebar</span>
       </button>
@@ -24,22 +22,18 @@
     <label class="ms-auto inline-flex cursor-pointer items-center px-6">
       <span
         class="mx-3 text-lg"
-        [innerHTML]="'faSun' | attachedIcon: 'x'"
-      ></span>
+        [innerHTML]="'faSun' | attachedIcon: 'x'"></span>
       <input
         type="checkbox"
         name="theme-toggle"
         value=""
         class="peer sr-only"
-        (click)="toggleTheme()"
-      />
+        (click)="toggleTheme()" />
       <div
-        class="after: peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-400 after:transition-all after:content-[''] peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-primary-800"
-      ></div>
+        class="after: peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-400 after:transition-all after:content-[''] peer-checked:bg-primary-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-primary-800"></div>
       <span
         class="mx-3 text-lg"
-        [innerHTML]="'faMoon' | attachedIcon: 'x'"
-      ></span>
+        [innerHTML]="'faMoon' | attachedIcon: 'x'"></span>
     </label>
     <div class="flex items-center">
       <div class="ms-3 flex items-center">
@@ -50,8 +44,7 @@
               class="flex text-lg"
               aria-expanded="false"
               data-dropdown-toggle="dropdown-user"
-              (click)="toggleMenuNavbar()"
-            >
+              (click)="toggleMenuNavbar()">
               <span class="sr-only">Open user menu</span>
               <span [innerHTML]="'faCircleUser' | attachedIcon: '2x'"></span>
             </button>
@@ -61,8 +54,7 @@
               class="flex text-lg"
               aria-expanded="false"
               data-dropdown-toggle="dropdown-user"
-              (click)="toggleMenuNavbar()"
-            >
+              (click)="toggleMenuNavbar()">
               <span class="sr-only">Close user menu</span>
               <span [innerHTML]="'faCircleUser' | attachedIcon: '2x'"></span>
             </button>
@@ -71,8 +63,7 @@
         <div
           class="fixed right-4 top-10 z-50 my-4 w-48 list-none divide-y divide-gray-100 rounded-lg border bg-white text-base shadow-lg dark:divide-gray-600 dark:border-gray-500 dark:bg-gray-700"
           id="dropdown-user"
-          [ngClass]="{ hidden: !menuNavbarVisible }"
-        >
+          [ngClass]="{ hidden: !menuNavbarVisible }">
           <div class="px-4 py-3" role="none">
             <p class="text-sm" role="none">Welcome</p>
           </div>
@@ -80,48 +71,91 @@
             <li>
               <a
                 href="/register"
+                (click)="closeMenuNavbar()"
                 class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
-                role="menuitem"
-              >
+                role="menuitem">
                 <span [innerHTML]="'faUserPlus' | attachedIcon: 'x'"></span>
                 <span class="ms-4">Register</span>
               </a>
             </li>
-            <li>
-              <a
-                href="/profile"
-                class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
-                role="menuitem"
-              >
-                <span [innerHTML]="'faUser' | attachedIcon"></span>
-                <span class="ms-4">Profile</span>
-              </a>
-            </li>
+            @if (userToken) {
+              <li>
+                <a
+                  href="/profile"
+                  (click)="closeMenuNavbar()"
+                  class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                  role="menuitem">
+                  <span [innerHTML]="'faUser' | attachedIcon"></span>
+                  <span class="ms-4">Profile</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/my-cars"
+                  (click)="closeMenuNavbar()"
+                  class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                  role="menuitem">
+                  <span [innerHTML]="'faCar' | attachedIcon: 'x'"></span>
+                  <span class="ms-4">My Cars</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/my-lifts"
+                  (click)="closeMenuNavbar()"
+                  class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                  role="menuitem">
+                  <span [innerHTML]="'faCar' | attachedIcon"></span>
+                  <span class="ms-4">My Lifts</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/my-applications"
+                  (click)="closeMenuNavbar()"
+                  class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                  role="menuitem">
+                  <span [innerHTML]="'faAddressCard' | attachedIcon"></span>
+                  <span class="ms-4">My Applications</span>
+                </a>
+              </li>
+              @if(userRole === "admin") {
+                <li>
+                  <a
+                    href="/manage-cars"
+                    (click)="closeMenuNavbar()"
+                    class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                    role="menuitem">
+                    <span [innerHTML]="'faGear' | attachedIcon"></span>
+                    <span class="ms-4">Manage Cars</span>
+                  </a>
+                </li>
+              }
+            }
           </ul>
           <ul class="p-1" role="none">
             <li>
-              <button
-                type="button"
-                class="group flex w-full items-center rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
-                (click)="logout()"
-              >
-                <span
-                  [innerHTML]="'faRightFromBracket' | attachedIcon: 'x'"
-                ></span>
-                <span class="ms-4">Logout</span>
-              </button>
-            </li>
-            <li>
-              <a
-                href="/login"
-                class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
-                role="menuitem"
-              >
-                <span
-                  [innerHTML]="'faRightToBracket' | attachedIcon: 'x'"
-                ></span>
-                <span class="ms-4">Login</span>
-              </a>
+              @if (!userToken) {
+                <a
+                  href="/login"
+                  class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                  role="menuitem">
+                  <span
+                    [innerHTML]="'faRightToBracket' | attachedIcon: 'x'"></span>
+                  <span class="ms-4">Login</span>
+                </a>
+              } @else {
+                <button
+                  type="button"
+                  class="group flex w-full items-center rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
+                  (click)="logout()">
+                  <span
+                    [innerHTML]="
+                      'faRightFromBracket' | attachedIcon: 'x'
+                    "></span>
+                  <span class="ms-4">Logout</span>
+                </button>
+              }
             </li>
           </ul>
         </div>
@@ -137,65 +171,25 @@
     'translate-x-0': sidebarVisible,
     '-translate-x-full': !sidebarVisible,
   }"
-  aria-label="Sidebar"
->
+  aria-label="Sidebar">
   <div class="flex h-full flex-col justify-between overflow-y-auto p-3">
     <ul class="space-y-2 text-lg font-medium">
       <li>
         <a
           (click)="closeSidebar()"
           routerLink="/"
-          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
-        >
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20">
           <span [innerHTML]="'faHome' | attachedIcon: 'x'"></span>
           <span class="ms-4">Home</span>
-        </a>
-        <a
-          routerLink="/my-cars"
-          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
-        >
-          <span [innerHTML]="'faCar' | attachedIcon: 'x'"></span>
-          <span class="ms-4">My Cars</span>
         </a>
       </li>
       <li>
         <a
           (click)="closeSidebar()"
           routerLink="/lifts"
-          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
-        >
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20">
           <span [innerHTML]="'faThumbsUp' | attachedIcon"></span>
           <span class="ms-4">Need a lift?</span>
-        </a>
-      </li>
-      <li>
-        <a
-          (click)="closeSidebar()"
-          routerLink="/my-lifts"
-          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
-        >
-          <span [innerHTML]="'faCar' | attachedIcon"></span>
-          <span class="ms-4">My Lifts</span>
-        </a>
-      </li>
-      <li>
-        <a
-          (click)="closeSidebar()"
-          routerLink="/my-applications"
-          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
-        >
-          <span [innerHTML]="'faAddressCard' | attachedIcon"></span>
-          <span class="ms-4">My Applications</span>
-        </a>
-      </li>
-      <li>
-        <a
-          (click)="closeSidebar()"
-          routerLink="/manage-cars"
-          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
-        >
-          <span [innerHTML]="'faGear' | attachedIcon"></span>
-          <span class="ms-4">Manage Cars</span>
         </a>
       </li>
     </ul>

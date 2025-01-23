@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, HostListener } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { RouterLink } from '@angular/router'
 import { NgOptimizedImage } from '@angular/common'
@@ -28,7 +28,9 @@ import { UserRoles } from '../../models/user.model';
 export class SidebarComponent {
   sidebarVisible: boolean = false
   menuNavbarVisible: boolean = false
-  user: string | null = null
+  username: string | null = null
+  userRole: string | null = null
+  userToken: string | null = null
 
   constructor(
     private authService: AuthService,
@@ -38,7 +40,9 @@ export class SidebarComponent {
   }
 
   ngAfterViewInit(): void {
-    this.user = this.authService.getUserName()
+    this.username = this.authService.getUserName()
+    this.userRole = this.authService.getUserRole()
+    this.userToken = this.authService.getToken()
     const theme = localStorage.getItem('theme')
     const themeToggleCheckbox = document.querySelector(
       'input[type="checkbox"]'
@@ -56,8 +60,32 @@ export class SidebarComponent {
   }
 
   toggleMenuNavbar() {
+    this.username = this.authService.getUserName()
+    this.userRole = this.authService.getUserRole()
+    this.userToken = this.authService.getToken()
     this.menuNavbarVisible = !this.menuNavbarVisible
   }
+
+  @HostListener('window:click', ['$event'])
+onDocumentClick(event?: MouseEvent) {
+  if (!event) {
+    return;
+  }
+
+  const target = event.target as HTMLElement;
+  const dropdownElement = document.getElementById('dropdown-user');
+  const toggleButton = document.querySelector(
+    '[data-dropdown-toggle="dropdown-user"]'
+  );
+
+  if (
+    dropdownElement &&
+    !dropdownElement.contains(target) &&
+    (!toggleButton || !toggleButton.contains(target))
+  ) {
+    this.closeMenuNavbar();
+  }
+}
 
   closeSidebar() {
     this.sidebarVisible = false

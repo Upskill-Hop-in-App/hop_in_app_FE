@@ -112,11 +112,12 @@ export class CurrentLiftComponent implements OnInit {
         }
 
         if (this.lift && this.lift.status === 'finished' && this.isDriver) {
-          this.driverSubmited = this.lift.applications!.every(
+          this.driverSubmited = this.lift.applications!.filter(
+            (app) => app.status === 'ready'
+          ).every(
             (app) =>
-              app.status === 'ready' &&
               app.receivedPassengerRating &&
-              app.receivedPassengerRating > 0,
+              app.receivedPassengerRating > 0
           );
         }
         this.ratingsForm = this.createRatingsForm();
@@ -163,11 +164,12 @@ export class CurrentLiftComponent implements OnInit {
         this.lift = this.lifts[0];
 
         if (this.lift && this.lift.status === 'finished' && this.isDriver) {
-          this.driverSubmited = this.lift.applications!.every(
+          this.driverSubmited = this.lift.applications!.filter(
+            (app) => app.status === 'ready'
+          ).every(
             (app) =>
-              app.status === 'ready' &&
               app.receivedPassengerRating &&
-              app.receivedPassengerRating > 0,
+              app.receivedPassengerRating > 0
           );
         }
         this.ratingsForm = this.createRatingsForm();
@@ -282,7 +284,7 @@ export class CurrentLiftComponent implements OnInit {
         this.getLiftByCode(`cl=${this.liftCode}`, this.user);
       },
       error: (err) => {
-        this.toastr.error('Failed to finish lift', err.error.message);
+        this.toastr.error('Failed to finish lift', err.error.error);
       },
     });
   }
@@ -298,7 +300,7 @@ export class CurrentLiftComponent implements OnInit {
         this.getLiftByCode(`cl=${this.liftCode}`, this.user);
       },
       error: (err) => {
-        this.toastr.error('Failed to close lift', err.error.message);
+        this.toastr.error('Failed to close lift', err.error.error);
       },
     });
   }
