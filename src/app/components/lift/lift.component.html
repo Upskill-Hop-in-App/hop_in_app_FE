@@ -182,7 +182,6 @@
         <th scope="col">Driver</th>
         <th scope="col">Car</th>
         <th scope="col">Available seats</th>
-        <th scope="col">Status</th>
         <th scope="col">Created at</th>
         <th></th>
       </tr>
@@ -220,7 +219,6 @@
               {{ lift.providedSeats - lift.occupiedSeats! }} /
               {{ lift.providedSeats }}
             </td>
-            <td>{{ lift.status }}</td>
             <td>{{ lift.createdAt | date: "short" }}</td>
             <td>
               <div
