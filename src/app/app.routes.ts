@@ -8,6 +8,7 @@ import { UserGuard } from './guards/user.guard';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { MyCarsComponent } from './components/my-cars/my-cars.component';
+import { ManageCarsComponent } from './components/manage-cars/manage-cars.component';
 import { CurrentLiftComponent } from './current-lift/current-lift.component';
 
 export const routes: Routes = [
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'lifts', component: LiftComponent, canActivate: [UserGuard] },
   { path: 'my-lifts', component: MyLiftsComponent, canActivate: [UserGuard] },
+  { path: 'manage-cars', component: ManageCarsComponent,canActivate: [AdminGuard]},
   {
     path: 'my-applications',
     component: MyApplicationsComponent,

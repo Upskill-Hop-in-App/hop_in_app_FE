@@ -1,27 +1,28 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
-import { Lift } from '../../models/lift.model';
-import { MyCar } from '../../models/my-car.model';
-import { Application } from '../../models/application.model';
-import { LiftService } from '../../services/lift.service';
-import { FormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core'
+import { Lift } from '../../models/lift.model'
+import { MyCar } from '../../models/my-car.model'
+import { Application } from '../../models/application.model'
+import { LiftService } from '../../services/lift.service'
+import { FormsModule, Validators } from '@angular/forms'
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   FormArray,
-} from '@angular/forms';
-import { catchError, of } from 'rxjs';
-import { ModalComponent } from '../modal/modal.component';
-import { DOCUMENT } from '@angular/common';
-import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
-import { CommonModule } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationService } from '../../services/application.service';
+} from '@angular/forms'
+import { catchError, of } from 'rxjs'
+import { ModalComponent } from '../modal/modal.component'
+import { DOCUMENT } from '@angular/common'
+import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
+import { CommonModule } from '@angular/common'
+import { ToastrService } from 'ngx-toastr'
+import { ActivatedRoute, Router } from '@angular/router'
+import { ApplicationService } from '../../services/application.service'
 import { RouterLink } from '@angular/router';
 import { QueryParamsHandling } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service'
+import { MyCarService } from '../../services/my-car/my-car.service'
 
 @Component({
   selector: 'app-myLifts',
@@ -83,39 +84,57 @@ export class MyLiftsComponent implements OnInit {
       Validators.min(1),
     ]),
     occupiedSeats: new FormControl(0, [Validators.min(0)]),
-  });
+  })
+  filters: any = {
+    cl: '',
+    status: '',
+    startPointDistrict: '',
+    startPointMunicipality: '',
+    startPointParish: '',
+    endPointDistrict: '',
+    endPointMunicipality: '',
+    endPointParish: '',
+    providedSeats: '',
+    scheduleYear: '',
+    scheduleMonth: '',
+    scheduleDay: '',
+    scheduleHour: '',
+    driver: '',
+    car: '',
+  }
+  filtersApplied = false
 
-  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private LiftService: LiftService,
     private ApplicationService: ApplicationService,
+    private MyCarService: MyCarService,
     private AuthService: AuthService,
     @Inject(DOCUMENT) private document: Document,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
-    this.getUsername();
-    this.getLiftsByUsername(this.clientUsername);
-    this.loadStartDistricts();
-    this.loadEndDistricts();
-    this.getCars();
+    this.getUsername()
+    this.getLiftsByUsername(this.clientUsername)
+    this.loadStartDistricts()
+    this.loadEndDistricts()
   }
 
   getUsername() {
-    this.clientUsername = this.AuthService.getUserName();
+    this.clientUsername = this.AuthService.getUserName()
   }
 
   getLiftsByUsername(username: string): void {
     this.LiftService.getLiftsByUsername(this.clientUsername)
       .pipe(
         catchError((err) => {
-          this.toastr.info('No lift found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.info('No lift found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((data: Lift[]) => {
         this.lifts = data;
@@ -124,47 +143,100 @@ export class MyLiftsComponent implements OnInit {
   }
 
   getCars(): void {
-    this.LiftService.getCarsByUsername(this.clientUsername)
+    this.MyCarService.getCarByUsername(this.clientUsername)
       .pipe(
         catchError((err) => {
-          this.toastr.info('No car found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.info('No car found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((data: MyCar[]) => {
-        this.cars = data;
-      });
+        this.cars = data
+      })
+  }
+
+  cleanFilters(filters: any): any {
+    return Object.entries(filters)
+      .filter(
+        ([key, value]) => value !== '' && value !== null && value !== undefined
+      )
+      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {})
+  }
+
+  applyFilters() {
+    const query = this.buildQueryString(this.cleanFilters(this.filters))
+    this.LiftService.filterLift(query).subscribe(
+      (response) => {
+        this.lifts = response.data.filter(
+          (lift) => lift.driver.username === this.clientUsername
+        )
+        this.filtersApplied = true
+      },
+      (error) => {
+        console.error(error)
+        this.getLiftsByUsername(this.clientUsername)
+        this.filtersApplied = true
+      }
+    )
+  }
+
+  buildQueryString(filters: Record<string, string | number | boolean>): string {
+    return Object.entries(filters)
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join('&')
+  }
+
+  clearFilters() {
+    this.getLiftsByUsername(this.clientUsername)
+    this.filters = {
+      status: '',
+      startPointDistrict: '',
+      startPointMunicipality: '',
+      startPointParish: '',
+      endPointDistrict: '',
+      endPointMunicipality: '',
+      endPointParish: '',
+      providedSeats: '',
+      scheduleYear: '',
+      scheduleMonth: '',
+      scheduleDay: '',
+      scheduleHour: '',
+      car: '',
+    }
   }
 
   loadStartDistricts(): void {
     this.LiftService.getAllDistricts()
       .pipe(
         catchError((err) => {
-          this.toastr.error('No district found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.error('No district found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((districts: string[]) => {
-        this.startDistricts = districts;
-      });
+        this.startDistricts = districts
+      })
   }
 
   loadEndDistricts(): void {
     this.LiftService.getAllDistricts()
       .pipe(
         catchError((err) => {
-          this.toastr.error('No district found', err?.error?.message);
-          return of([]);
-        }),
+          this.toastr.error('No district found', err?.error?.message)
+          return of([])
+        })
       )
       .subscribe((districts: string[]) => {
-        this.endDistricts = districts;
-      });
+        this.endDistricts = districts
+      })
   }
 
   onStartDistrictChange(event: any) {
-    this.selectedStartDistrict = event.target.value;
-    this.loadStartMunicipalities();
+    this.selectedStartDistrict = event.target.value
+    this.loadStartMunicipalities()
   }
 
   loadStartMunicipalities(): void {
@@ -174,21 +246,21 @@ export class MyLiftsComponent implements OnInit {
           catchError((err) => {
             this.toastr.error(
               'Failed to load municipalities',
-              err?.error?.message,
-            );
-            return of([]);
-          }),
+              err?.error?.message
+            )
+            return of([])
+          })
         )
         .subscribe((municipalities: string[]) => {
-          this.startMunicipalities = municipalities;
-          this.liftForm.get('startPoint.municipality')?.enable();
-        });
+          this.startMunicipalities = municipalities
+          this.liftForm.get('startPoint.municipality')?.enable()
+        })
     }
   }
 
   onEndDistrictChange(event: any) {
-    this.selectedEndDistrict = event.target.value;
-    this.loadEndMunicipalities();
+    this.selectedEndDistrict = event.target.value
+    this.loadEndMunicipalities()
   }
 
   loadEndMunicipalities(): void {
@@ -198,44 +270,44 @@ export class MyLiftsComponent implements OnInit {
           catchError((err) => {
             this.toastr.error(
               'Failed to load municipalities',
-              err?.error?.message,
-            );
-            return of([]);
-          }),
+              err?.error?.message
+            )
+            return of([])
+          })
         )
         .subscribe((municipalities: string[]) => {
-          this.endMunicipalities = municipalities;
-          this.liftForm.get('endPoint.municipality')?.enable();
-        });
+          this.endMunicipalities = municipalities
+          this.liftForm.get('endPoint.municipality')?.enable()
+        })
     }
   }
 
   onStartMunicipalityChange(event: any) {
-    this.selectedStartMunicipality = event.target.value;
-    this.loadStartParishes();
+    this.selectedStartMunicipality = event.target.value
+    this.loadStartParishes()
   }
 
   loadStartParishes() {
     if (this.selectedStartMunicipality) {
       this.LiftService.getParishesByMunicipalities(
-        this.selectedStartMunicipality,
+        this.selectedStartMunicipality
       )
         .pipe(
           catchError((err) => {
-            this.toastr.error('Failed to load parishes', err?.error?.message);
-            return of([]);
-          }),
+            this.toastr.error('Failed to load parishes', err?.error?.message)
+            return of([])
+          })
         )
         .subscribe((parishes: string[]) => {
-          this.startParishes = parishes;
-          this.liftForm.get('startPoint.parish')?.enable();
-        });
+          this.startParishes = parishes
+          this.liftForm.get('startPoint.parish')?.enable()
+        })
     }
   }
 
   onEndMunicipalityChange(event: any) {
-    this.selectedEndMunicipality = event.target.value;
-    this.loadEndParishes();
+    this.selectedEndMunicipality = event.target.value
+    this.loadEndParishes()
   }
 
   loadEndParishes() {
@@ -243,29 +315,28 @@ export class MyLiftsComponent implements OnInit {
       this.LiftService.getParishesByMunicipalities(this.selectedEndMunicipality)
         .pipe(
           catchError((err) => {
-            this.toastr.error('Failed to load parishes', err?.error?.message);
-            return of([]);
-          }),
+            this.toastr.error('Failed to load parishes', err?.error?.message)
+            return of([])
+          })
         )
         .subscribe((parishes: string[]) => {
-          this.endParishes = parishes;
-          this.liftForm.get('endPoint.parish')?.enable();
-        });
+          this.endParishes = parishes
+          this.liftForm.get('endPoint.parish')?.enable()
+        })
     }
   }
 
   openModal(): void {
-    this.modalComponent.openModal();
+    this.modalComponent.openModal()
   }
 
   toggleCreate(): void {
-    this.currentModalTitle = 'Add lift';
-    this.showEditForm = false;
-    this.showDeleteForm = false;
-    this.showCreateForm = true;
-    this.showApplicationForm = false;
-    this.resetForm();
-    this.openModal();
+    this.currentModalTitle = 'Add lift'
+    this.showCreateForm = true
+    this.showApplicationForm = false
+    this.getCars()
+    this.resetForm()
+    this.openModal()
   }
 
   reset(): Lift {
@@ -290,21 +361,19 @@ export class MyLiftsComponent implements OnInit {
       createdAt: '',
       updatedAt: '',
       __v: '',
-    };
+    }
   }
 
   toggleApplication(lift: Lift) {
-    this.auxiliarLift = { ...lift };
-    this.currentModalTitle = 'List of applications';
-    this.showEditForm = false;
-    this.showDeleteForm = false;
-    this.showCreateForm = false;
-    this.showApplicationForm = true;
-    this.openModal();
+    this.auxiliarLift = { ...lift }
+    this.currentModalTitle = 'List of applications'
+    this.showCreateForm = false
+    this.showApplicationForm = true
+    this.openModal()
   }
 
   resetForm() {
-    this.liftForm.reset();
+    this.liftForm.reset()
   }
 
   confirmCreate(): void {
@@ -326,48 +395,48 @@ export class MyLiftsComponent implements OnInit {
       schedule: new Date(this.liftForm.value.schedule!),
       price: this.liftForm.value.price!,
       providedSeats: this.liftForm.value.providedSeats!,
-    };
+    }
     this.LiftService.createLift(newLift).subscribe({
       next: () => {
-        this.toastr.success('Lift created successfully.');
-        this.cancel();
-        this.getLiftsByUsername(this.clientUsername);
+        this.toastr.success('Lift created successfully.')
+        this.cancel()
+        this.getLiftsByUsername(this.clientUsername)
       },
       error: (err) => {
-        this.toastr.error('Failed to create new lift.', err.error.error);
+        this.toastr.error('Failed to create new lift.', err.error.error)
       },
-    });
+    })
   }
 
   cancel(): void {
-    this.modalComponent.closeModal();
-    this.resetForm();
+    this.modalComponent.closeModal()
+    this.resetForm()
   }
 
   acceptApplication(ca: string): void {
     this.ApplicationService.acceptApplication(ca).subscribe({
       next: () => {
-        this.toastr.success('Application accepted successfully.');
-        this.cancel();
-        this.getLiftsByUsername(this.clientUsername);
+        this.toastr.success('Application accepted successfully.')
+        this.cancel()
+        this.getLiftsByUsername(this.clientUsername)
       },
       error: (err) => {
-        this.toastr.error('Failed to accept application.', err.error.error);
+        this.toastr.error('Failed to accept application.', err.error.error)
       },
-    });
+    })
   }
 
   rejectApplication(ca: string): void {
     this.ApplicationService.rejectApplication(ca).subscribe({
       next: () => {
-        this.toastr.success('Application rejected successfully.');
-        this.cancel();
-        this.getLiftsByUsername(this.clientUsername);
+        this.toastr.success('Application rejected successfully.')
+        this.cancel()
+        this.getLiftsByUsername(this.clientUsername)
       },
       error: (err) => {
-        this.toastr.error('Failed to reject application.', err.error.error);
+        this.toastr.error('Failed to reject application.', err.error.error)
       },
-    });
+    })
   }
 
   updateLiftFlags(lifts: Lift[]) {

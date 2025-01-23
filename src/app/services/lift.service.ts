@@ -1,52 +1,42 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { Lift } from '../models/lift.model';
-import { MyCar } from '../models/my-car.model';
-import { AuthService } from './auth.service';
-
-interface DistrictResponse {
-  distrito: string;
-  municipios: Municipio[];
-}
-
-interface Municipio {
-  nome: string;
-  codigoine: string;
-}
-
-interface MunicipioFreguesiaResponse {
-  nome: string;
-  freguesias: string[];
-}
+import { Injectable } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { Observable, map } from 'rxjs'
+import { Lift } from '../models/lift.model'
+import { MyCar } from '../models/my-car.model'
+import { AuthService } from './auth.service'
+import {
+  DistrictResponse,
+  Municipio,
+  MunicipioFreguesiaResponse,
+} from '../models/location.model'
 
 @Injectable({
   providedIn: 'root',
 })
 export class LiftService {
-  private apiUrl = 'http://localhost:3000/api/lifts';
-  private carsUrl = 'http://localhost:3000/api/cars';
-  private districtsUrl = 'https://json.geoapi.pt/distritos';
-  private parishUrl = 'https://json.geoapi.pt/municipio';
+  private apiUrl = 'http://localhost:3000/api/lifts'
+  private carsUrl = 'http://localhost:3000/api/cars'
+  private districtsUrl = 'https://json.geoapi.pt/distritos'
+  private parishUrl = 'https://json.geoapi.pt/municipio'
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   getLifts(): Observable<Lift[]> {
-    const headers = this.authService.getHeaders();
+    const headers = this.authService.getHeaders()
     return this.http
       .get<{ message: string; data: Lift[] }>(this.apiUrl, { headers })
-      .pipe(map((response) => response.data));
+      .pipe(map((response) => response.data))
   }
 
   getLiftByCode(cl: string): Observable<{ message: string; data: Lift }> {
-    const headers = this.authService.getHeaders();
-    const localURL = this.apiUrl + '/cl/' + cl;
+    const headers = this.authService.getHeaders()
+    const localURL = this.apiUrl + '/cl/' + cl
     return this.http.get<{ message: string; data: Lift }>(localURL, {
       headers,
-    });
+    })
   }
 
   filterLifts(query: string): Observable<{ message: string; data: Lift[] }> {
@@ -62,7 +52,7 @@ export class LiftService {
     const localURL = `${this.apiUrl}/filter/username/${username}?${query}`;
     return this.http.get<{ message: string; data: Lift[] }>(localURL, {
       headers,
-    });
+    })
   }
 
   checkInProgress(username: string): Observable<boolean> {
@@ -78,7 +68,7 @@ export class LiftService {
   }
   
   createLift(lift: Lift): Observable<Lift> {
-    const headers = this.authService.getHeaders();
+    const headers = this.authService.getHeaders()
     return this.http.post<Lift>(
       this.apiUrl,
       {
@@ -98,13 +88,13 @@ export class LiftService {
         price: lift.price,
         providedSeats: lift.providedSeats,
       },
-      { headers },
-    );
+      { headers }
+    )
   }
 
   updateLift(oldLift: Lift, updatedLift: Lift): Observable<Lift> {
-    const headers = this.authService.getHeaders();
-    const localURL = this.apiUrl + '/' + oldLift.cl;
+    const headers = this.authService.getHeaders()
+    const localURL = this.apiUrl + '/' + oldLift.cl
     return this.http.put<Lift>(
       localURL,
       {
@@ -124,55 +114,55 @@ export class LiftService {
         price: updatedLift.price,
         providedSeats: updatedLift.providedSeats,
       },
-      { headers },
-    );
+      { headers }
+    )
   }
 
   getAllDistricts(): Observable<string[]> {
-    const headers = this.authService.getHeaders();
+    const headers = this.authService.getHeaders()
     return this.http
       .get<any[]>(this.districtsUrl, { headers })
-      .pipe(map((response) => response.map((district) => district.distrito)));
+      .pipe(map((response) => response.map((district) => district.distrito)))
   }
 
   getMunicipalitiesByDistrict(district: string): Observable<string[]> {
-    const headers = this.authService.getHeaders();
-    const url = `${this.districtsUrl}/${district}/municipios`;
+    const headers = this.authService.getHeaders()
+    const url = `${this.districtsUrl}/${district}/municipios`
     return this.http
       .get<DistrictResponse>(url, { headers })
       .pipe(
         map((response) =>
-          response.municipios.map((municipio) => municipio.nome),
-        ),
-      );
+          response.municipios.map((municipio) => municipio.nome)
+        )
+      )
   }
 
   getParishesByMunicipalities(municipio: string | null): Observable<string[]> {
-    const headers = this.authService.getHeaders();
-    const url = `${this.parishUrl}/${municipio}/freguesias`;
+    const headers = this.authService.getHeaders()
+    const url = `${this.parishUrl}/${municipio}/freguesias`
     return this.http
       .get<MunicipioFreguesiaResponse>(url, { headers })
-      .pipe(map((response) => response.freguesias));
+      .pipe(map((response) => response.freguesias))
   }
 
   getCarsByUsername(username: string): Observable<MyCar[]> {
-    const headers = this.authService.getHeaders();
+    const headers = this.authService.getHeaders()
     return this.http
       .get<{
-        message: string;
-        data: MyCar[];
+        message: string
+        data: MyCar[]
       }>(this.carsUrl + '/username/' + username, { headers })
-      .pipe(map((response) => response.data));
+      .pipe(map((response) => response.data))
   }
 
   getLiftsByUsername(username: string): Observable<Lift[]> {
-    const headers = this.authService.getHeaders();
+    const headers = this.authService.getHeaders()
     return this.http
       .get<{
-        message: string;
-        data: Lift[];
+        message: string
+        data: Lift[]
       }>(this.apiUrl + '/username/' + username, { headers })
-      .pipe(map((response) => response.data));
+      .pipe(map((response) => response.data))
   }
 
   updateStatusLift(code: string, status: string): Observable<any> {
