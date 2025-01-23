@@ -9,16 +9,16 @@ import {
   FormGroup,
   ReactiveFormsModule,
   FormArray,
-} from '@angular/forms'
-import { catchError, of } from 'rxjs'
-import { ModalComponent } from '../modal/modal.component'
-import { DOCUMENT } from '@angular/common'
-import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
-import { CommonModule } from '@angular/common'
-import { ToastrService } from 'ngx-toastr'
-import { ActivatedRoute, Router } from '@angular/router'
-import { ApplicationService } from '../../services/application.service'
-import { AuthService } from '../../services/auth.service'
+} from '@angular/forms';
+import { catchError, of } from 'rxjs';
+import { ModalComponent } from '../modal/modal.component';
+import { DOCUMENT } from '@angular/common';
+import { AttachedIconPipe } from '../../pipes/attached-icon.pipe';
+import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ApplicationService } from '../../services/application.service';
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-my-applications',
   imports: [
@@ -27,6 +27,7 @@ import { AuthService } from '../../services/auth.service'
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    RouterModule
   ],
   templateUrl: './my-applications.component.html',
   styleUrl: './my-applications.component.css',
@@ -53,6 +54,7 @@ export class MyApplicationsComponent implements OnInit {
     car: '',
   }
   filtersApplied = false
+  applicationFlags: { [key: string]: boolean } = {};
 
   @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
@@ -69,6 +71,14 @@ export class MyApplicationsComponent implements OnInit {
   ngOnInit() {
     this.getUsername()
     this.getApplicationsByUsername(this.clientUsername)
+  }
+
+  updateApplicationFlags(applications: Application[]) {
+    applications.forEach(app => {
+      this.applicationFlags[app.lift.cl] = !["open", "ready", "canceled", "closed"].includes(app.lift.status!);
+    });
+  
+    return this.applicationFlags;
   }
   
   /* ------------------------------- FILTER FUNCS -------------------------------- */
@@ -137,6 +147,7 @@ export class MyApplicationsComponent implements OnInit {
       )
       .subscribe((data: Application[]) => {
         this.applications = data
+        this.updateApplicationFlags(this.applications);
       })
   }
 

@@ -18,6 +18,9 @@ import { CommonModule } from '@angular/common'
 import { ToastrService } from 'ngx-toastr'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ApplicationService } from '../../services/application.service'
+import { RouterLink } from '@angular/router';
+import { QueryParamsHandling } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service'
 import { MyCarService } from '../../services/my-car/my-car.service'
 
@@ -30,28 +33,40 @@ import { MyCarService } from '../../services/my-car/my-car.service'
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
   templateUrl: './my-lifts.component.html',
   styleUrl: './my-lifts.component.css',
 })
 export class MyLiftsComponent implements OnInit {
-  lifts: Lift[] = []
-  cars: MyCar[] = []
-  startDistricts: string[] = []
-  startMunicipalities: string[] = []
-  startParishes: string[] = []
-  endDistricts: string[] = []
-  endMunicipalities: string[] = []
-  endParishes: string[] = []
-  selectedStartDistrict: string | null = null
-  selectedStartMunicipality: string | null = null
-  selectedEndDistrict: string | null = null
-  selectedEndMunicipality: string | null = null
-  auxiliarLift: Lift = this.reset()
-  showCreateForm: boolean = false
-  showApplicationForm: boolean = false
-  currentModalTitle: string = ''
-  clientUsername: string = ''
+  lifts: Lift[] = [];
+  lift: Lift = this.reset()
+  cars: MyCar[] = [];
+  startDistricts: string[] = [];
+  startMunicipalities: string[] = [];
+  startParishes: string[] = [];
+  endDistricts: string[] = [];
+  endMunicipalities: string[] = [];
+  endParishes: string[] = [];
+  selectedStartDistrict: string | null = null;
+  selectedStartMunicipality: string | null = null;
+  selectedEndDistrict: string | null = null;
+  selectedEndMunicipality: string | null = null;
+  auxiliarLift: Lift = this.reset();
+  showCreateForm: boolean = false;
+  showApplicationForm: boolean = false;
+  showCancelStatus: boolean = false;
+  currentLiftCode: string = "";
+  newStatus: string = "";
+  // backupLift: Lift = this.reset();
+  showDeleteForm: boolean = false;
+  showEditForm: boolean = false;
+  currentModalTitle: string = '';
+  flagStart: boolean = false;
+  liftFlags: { [key: string]: boolean } = {};
+
+  //TODO mudar aqui para ir busca-lo ao token
+  clientUsername: string = 'admin1_user';
 
   liftForm = new FormGroup({
     driver: new FormControl('', [Validators.required]),
@@ -122,8 +137,9 @@ export class MyLiftsComponent implements OnInit {
         })
       )
       .subscribe((data: Lift[]) => {
-        this.lifts = data
-      })
+        this.lifts = data;
+        this.updateLiftFlags(this.lifts);
+      });
   }
 
   getCars(): void {
@@ -149,7 +165,7 @@ export class MyLiftsComponent implements OnInit {
 
   applyFilters() {
     const query = this.buildQueryString(this.cleanFilters(this.filters))
-    this.LiftService.filterLift(query).subscribe(
+    this.LiftService.filterLifts(query).subscribe(
       (response) => {
         this.lifts = response.data.filter(
           (lift) => lift.driver.username === this.clientUsername
@@ -422,6 +438,56 @@ export class MyLiftsComponent implements OnInit {
       },
     })
   }
+
+  updateLiftFlags(lifts: Lift[]) {
+  
+    lifts.forEach(lift => {
+      this.liftFlags[lift.cl!] = lift.applications ? lift.applications.some((app) => app.status === "accepted" || app.status === "ready") : false;
+    });
+  
+    return this.liftFlags;
+  }
+
+  toggleCancelStatus(lift: Lift, cl: string, status: string): void {
+    this.auxiliarLift = { ...lift };
+    this.currentModalTitle = "Cancel Lift";
+    this.currentLiftCode = cl;
+    this.newStatus = status;
+    this.showEditForm = false;
+    this.showDeleteForm = false;
+    this.showCreateForm = false;
+    this.showCancelStatus = true;
+    this.showApplicationForm = false;
+    this.resetForm();
+    this.openModal();
+  }
+
+  updateCancelStatus(): void {
+    this.LiftService.updateStatusLift(
+      this.currentLiftCode,
+      this.newStatus,
+    ).subscribe({
+      next: () => {
+        this.toastr.success('Updated lift status');
+        this.cancel();
+        this.getLiftsByUsername(this.clientUsername);
+      },
+      error: (err) => {
+        this.toastr.error('Failed to update lift status', err.error.error);
+      },
+    });
+  }
+
+  /* toggleStartLift(lift: Lift):void {
+    this.auxiliarLift = {... lift}
+    this.showEditForm = false;
+    this.showDeleteForm = false;
+    this.showCreateForm = false;
+    this.showCancelStatus = false;
+    this.showApplicationForm = false;
+    this.resetForm();
+    this.openModal();
+  } */
 
   // toggleEdit(booking: Booking) {
   //   this.showCreateForm = false;

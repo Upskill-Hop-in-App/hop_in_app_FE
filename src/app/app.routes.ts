@@ -9,6 +9,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { MyCarsComponent } from './components/my-cars/my-cars.component';
 import { ManageCarsComponent } from './components/manage-cars/manage-cars.component';
+import { CurrentLiftComponent } from './current-lift/current-lift.component';
 
 export const routes: Routes = [
   { path: 'my-cars', component: MyCarsComponent, canActivate: [UserGuard] },
@@ -23,4 +24,5 @@ export const routes: Routes = [
     canActivate: [UserGuard],
   },
   { path: 'profile', component: ProfileComponent },
+  { path: 'current-lift', component: CurrentLiftComponent}
 ];

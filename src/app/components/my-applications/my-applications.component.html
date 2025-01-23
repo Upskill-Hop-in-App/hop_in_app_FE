@@ -196,9 +196,9 @@
           @for (application of applications; track application.ca) {
             <tr>
               <td>
-                {{ application.lift.startPoint.parish | titlecase }},
-                {{ application.lift.startPoint.municipality | titlecase }} ({{
-                  application.lift.startPoint.district | titlecase
+                {{ application.lift.startPoint?.parish! | titlecase }},
+                {{ application.lift.startPoint?.municipality! | titlecase }} ({{
+                  application.lift.startPoint?.district! | titlecase
                 }})
               </td>
               <td>
@@ -236,7 +236,16 @@
                   </div>
                 }
               </td>
-            </tr>
+              <td>
+            <button *ngIf="applicationFlags[application.lift.cl]"
+              class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              routerLink="/current-lift"
+              [queryParams]="{ lift: application.lift.cl }"
+            >
+              Go to Lift
+            </button>
+          </td>
+        </tr>
           }
         }
       </tbody>

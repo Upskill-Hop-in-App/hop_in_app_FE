@@ -286,7 +286,23 @@
                 }
               </div>
             </td>
-            <td>CANCEL LIFT</td>
+            <td>
+            <button
+              class="bg-secondary-500 hover:bg-secondary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              (click)="toggleCancelStatus(lift, lift.cl ?? '', 'canceled')"
+            >
+              Cancel
+            </button>
+          </td>
+          <td>
+            <button *ngIf="liftFlags[lift.cl!]"
+              class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              routerLink="/current-lift"
+              [queryParams]="{ lift: lift.cl }"
+            >
+              Start Lift
+            </button>
+          </td>
           </tr>
         }
       }
@@ -518,6 +534,47 @@
           Cancel
         </button>
       </div>
+    }
+    @if (showCancelStatus) {
+      <form (ngSubmit)="updateCancelStatus()" #deleteForm="ngForm" class="mt-4">
+        <div class="modal-header">
+          <h5 class="text-lg font-bold text-primary-600">
+            Confirm cancelation
+          </h5>
+        </div>
+        <div class="modal-body">
+          <p class="text-gray-700">You are about to cancel this lift:</p>
+          <div class="mt-1">
+            <strong class="block text-gray-800">From:</strong>
+            <span
+              >{{ auxiliarLift.startPoint.district }} -
+              {{ auxiliarLift.startPoint.municipality }} -
+              {{ auxiliarLift.startPoint.parish }}</span
+            >
+            <strong class="block text-gray-800">To:</strong>
+            <span
+              >{{ auxiliarLift.endPoint.district }} -
+              {{ auxiliarLift.endPoint.municipality }} -
+              {{ auxiliarLift.endPoint.parish }}</span
+            >
+          </div>
+        </div>
+        <div class="modal-footer mt-4 flex justify-between">
+          <button
+            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Confirm
+          </button>
+          <button
+            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            (click)="cancel()"
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     }
   </div></app-modal
 >

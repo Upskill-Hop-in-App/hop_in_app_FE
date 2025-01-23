@@ -100,7 +100,7 @@ export class LiftComponent implements OnInit {
 
   applyFilters() {
     const query = this.buildQueryString(this.cleanFilters(this.filters))
-    this.LiftService.filterLift(query).subscribe(
+    this.LiftService.filterLifts(query).subscribe(
       (response) => {
         this.lifts = response.data.filter((lift) => lift.status === 'open')
         this.filtersApplied = true

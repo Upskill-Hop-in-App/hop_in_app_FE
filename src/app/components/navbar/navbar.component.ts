@@ -28,6 +28,7 @@ import { UserRoles } from '../../models/user.model';
 export class SidebarComponent {
   sidebarVisible: boolean = false
   menuNavbarVisible: boolean = false
+  user: string | null = null
 
   constructor(
     private authService: AuthService,
@@ -37,6 +38,7 @@ export class SidebarComponent {
   }
 
   ngAfterViewInit(): void {
+    this.user = this.authService.getUserName()
     const theme = localStorage.getItem('theme')
     const themeToggleCheckbox = document.querySelector(
       'input[type="checkbox"]'
