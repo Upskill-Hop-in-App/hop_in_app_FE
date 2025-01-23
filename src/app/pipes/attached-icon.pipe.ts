@@ -10,7 +10,6 @@ import {
   faCalendarCheck,
   faCircleCheck,
   faCircleExclamation,
-  faFilterCircleXmark,
   faMagnifyingGlass,
   faMoon,
   faArrowUpRightFromSquare,
@@ -80,7 +79,6 @@ export class AttachedIconPipe implements PipeTransform {
     faUserPen,
     faUnlock,
     faGear,
-    faFilterCircleXmark,
   }
 
   constructor(private sanitizer: DomSanitizer) {}

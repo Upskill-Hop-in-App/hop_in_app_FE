@@ -158,7 +158,7 @@ export class MyLiftsComponent implements OnInit {
       },
       (error) => {
         console.error(error)
-        this.getLiftsByUsername(this.clientUsername)
+        this.lifts = []
         this.filtersApplied = true
       }
     )
