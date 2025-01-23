@@ -32,6 +32,7 @@ import {
   faAt,
   faUserPen,
   faUnlock,
+  faGear,
   faFilterCircleXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -76,6 +77,7 @@ export class AttachedIconPipe implements PipeTransform {
     faAt,
     faUserPen,
     faUnlock,
+    faGear,
     faFilterCircleXmark,
   }
 

@@ -1,0 +1,278 @@
+<!-- Filter -->
+<div class="filter-container mb-4 flex gap-4">
+  <div class="flex flex-col">
+    <label for="filterBrand" class="font-semibold">Filter by Brand:</label>
+    <input
+      type="text"
+      id="filterBrand"
+      class="input-standard"
+      [formControl]="brandControl"
+    />
+  </div>
+  <div class="flex flex-col">
+    <label for="filterModel" class="font-semibold">Filter by Model:</label>
+    <input
+      type="text"
+      id="filterModel"
+      class="input-standard"
+      [formControl]="modelControl"
+    />
+  </div>
+  <div class="flex items-end gap-2">
+    <button class="btn-primary" (click)="filterCars()">Filter</button>
+    <button
+      class="btn-gray"
+      (click)="clearFilter()"
+    >
+      <fa-icon [icon]="['fas', 'filter-circle-xmark']"></fa-icon>
+      Clear
+    </button>
+  </div>
+</div>
+<!-- Show Info -->
+<div class="table-container">
+    <button (click)="openCreateModal()" class="mb-4 flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+      <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+      <span>Add New Car</span>
+    </button>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Brand</th>
+          <th scope="col">Model</th>
+          <th scope="col">Start Year</th>
+          <th scope="col">End Year</th>
+          <th scope="col">Created at</th>
+          <th scope="col">Updated at</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (car of cars; track car.id) {
+          <tr>
+            <td>{{ car.brand }}</td>
+            <td>{{ car.model }}</td>
+            <td>{{ car.startYear }}</td>
+            <td>{{ car.endYear }}</td>
+            <td>{{ car.createdAt }}</td>
+            <td>{{ car.updatedAt }}</td>
+            <td>
+              <button (click)="openUpdateModal(car)" class="p-2 text-blue-600 hover:text-blue-800">
+                <fa-icon [icon]="['far', 'pen-to-square']"></fa-icon>
+              </button>
+            </td>
+            <td>
+              <button (click)="openDeleteModal(car)" class="p-2 text-red-600 hover:text-red-800">
+                <fa-icon [icon]="['far', 'trash-can']"></fa-icon>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  
+  <app-modal modalTitle="{{ currentModalTitle }}">
+    <div content>
+      <!-- ----------------------- Create New car Form ----------------------- -->
+      @if (showCreateForm === true) {
+        <form
+          [formGroup]="carForm"
+          (ngSubmit)="confirmCreate()"
+          class="space-y-8"
+        >
+          <div class="space-y-2">
+            <label for="carBrand" class="font-semibold">Brand: </label>
+            <input
+              type="text"
+              name="carBrand"
+              id="carBrand"
+              formControlName="brand"
+              class="input-standard"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="brand" class="font-semibold">Model: </label>
+            <input
+              type="text"
+              name="model"
+              id="model"
+              formControlName="model"
+              class="input-standard"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="brand" class="font-semibold">Start Year: </label>
+            <input
+              type="number"
+              name="startYear"
+              id="startYear"
+              formControlName="startYear"
+              class="input-standard"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="brand" class="font-semibold">End Year: </label>
+            <input
+              type="number"
+              name="endYear"
+              id="endYear"
+              formControlName="endYear"
+              class="input-standard"
+            />
+            <div class="space-y-2 border-t py-8 dark:border-gray-600">
+              <p class="font-semibold text-rose-500">
+                Please enter the car brand to
+                confirm:
+              </p>
+              <input
+                type="text"
+                name="confirmationCc"
+                id="confirmationCc"
+                class="input-standard"
+                formControlName="confirmationCc"
+                placeholder="Enter car brand"
+                required
+              />
+            </div>
+          </div>
+          <div class="buttons-modal-container">
+            <button type="button" (click)="closeModal()" class="btn-gray">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">Add Car</button>
+          </div>
+        </form>
+      }
+      <!-- -------------------------- Edit Car Form -------------------------- -->
+      @else if (showUpdateButton === true) {
+        <form [formGroup]="carForm" (ngSubmit)="confirmEdit()" class="space-y-8">
+          <div class="space-y-2">
+            <label for="carBrand" class="font-semibold">Brand:</label>
+            <input
+              type="text"
+              name="carBrand"
+              id="carBrand"
+              formControlName="brand"
+              class="input-standard"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="model" class="font-semibold">Model:</label>
+            <input
+              type="text"
+              name="model"
+              id="model"
+              placeholder="ex: model"
+              formControlName="model"
+              class="input-standard"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="model" class="font-semibold">StartYear:</label>
+            <input
+              type="text"
+              name="startYear"
+              id="startYear"
+              formControlName="startYear"
+              class="input-standard"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="model" class="font-semibold">End Year:</label>
+            <input
+              type="number"
+              name="endYear"
+              id="endYear"
+              formControlName="endYear"
+              class="input-standard"
+            />
+          </div>
+          <div class="buttons-modal-container">
+            <button type="button" (click)="closeModal()" class="btn-gray">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      }
+      <!-- ------------------------- Delete Car Form -------------------------- -->
+      @else if (showDeleteButton === true) {
+        <form
+          [formGroup]="carForm"
+          (ngSubmit)="confirmDelete()" 
+          #deleteForm="ngForm"
+        >
+          <div class="space-y-8">
+            <div class="space-y-2">
+              <label for="Brand" class="font-semibold">Brand:</label>
+              <input
+                type="text"
+                name="Brand"
+                id="brand"
+                formControlName="brand"
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
+            </div>
+            <div class="space-y-2">
+              <label for="carModel" class="font-semibold">Model:</label>
+              <input
+                type="text"
+                name="carModel"
+                id="carModel"
+                formControlName="model"
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
+            </div>
+            <div class="space-y-2">
+              <label for="zone" class="font-semibold">Start Year:</label>
+              <input
+                type="number"
+                name="startYear"
+                id="startYear"
+                formControlName="startYear"
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
+            </div>
+            <div class="space-y-2">
+              <label for="zone" class="font-semibold">End Year:</label>
+              <input
+                type="number"
+                name="endYear"
+                id="endYear"
+                formControlName="endYear"
+                class="input-disabled"
+                [readonly]="showDeleteForm ? true : null"
+              />
+            </div>
+            <div class="space-y-2 border-t py-8 dark:border-gray-600">
+              <p class="font-semibold text-rose-500">
+                This action cannot be undone. Please enter the car brand to
+                confirm:
+              </p>
+              <input
+                type="text"
+                name="confirmationCc"
+                id="confirmationCc"
+                class="input-standard"
+                formControlName="confirmationCc"
+                placeholder="Enter car brand"
+                required
+              />
+            </div>
+          </div>
+          <div class="buttons-modal-container">
+            <button class="btn-gray" (click)="closeModal()" type="button">
+              Cancel
+            </button>
+            <button class="btn-danger" type="submit">Delete</button>
+          </div>
+        </form>
+      }
+      <!-- ----------------------------------------------------------------------- -->
+    </div>
+  </app-modal>

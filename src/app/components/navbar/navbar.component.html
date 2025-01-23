@@ -171,6 +171,16 @@
           <span class="ms-4">My Applications</span>
         </a>
       </li>
+      <li>
+        <a
+          (click)="closeSidebar()"
+          routerLink="/manage-cars"
+          class="group flex items-center rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-opacity-20"
+        >
+          <span [innerHTML]="'faGear' | attachedIcon"></span>
+          <span class="ms-4">Manage Cars</span>
+        </a>
+      </li>
     </ul>
   </div>
 </aside>

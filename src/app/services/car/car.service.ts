@@ -84,10 +84,10 @@ export class CarService {
 
   /* ------------------------------- UPDATE -------------------------------- */
 
-  update(oldCar: Car, updatedCar: Car): Observable<Car> {
+  update(oldCar: Partial<Car>, updatedCar: Partial<Car>): Observable<Car> {
     const headers = this.authService.getHeaders();
     return this.http.put<Car>(
-      `${this.apiUrlCars}/${oldCar.brand}/${oldCar.brand}`,
+      `${this.apiUrlCars}/${oldCar.brand}/${oldCar.model}`,
       {
         model: updatedCar.model,
         brand: updatedCar.brand,
@@ -100,8 +100,8 @@ export class CarService {
 
   /* ------------------------------- DELETE -------------------------------- */
 
-  delete(): Observable<Car> {
+  delete(car: any): Observable<any> {
     const headers = this.authService.getHeaders();
-    return this.http.delete<Car>(this.apiUrlCars, { headers });
+    return this.http.delete<Car>(`${this.apiUrlCars}/${car.brand}/${car.model}`, { headers });
   }
 }
