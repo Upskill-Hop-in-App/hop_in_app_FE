@@ -23,6 +23,7 @@ export class RegisterComponent {
     contact: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required]),
+    rgpd: new FormControl(false, [Validators.requiredTrue]),
   });
 
   constructor(
@@ -42,6 +43,10 @@ export class RegisterComponent {
   }
 
   register(): void {
+    if (!this.registerForm.value.rgpd) {
+      this.toastr.error('You must agree with the RGPD terms and conditions');
+      return;
+    }
     if (
       this.registerForm.value.password !==
       this.registerForm.value.confirmPassword
