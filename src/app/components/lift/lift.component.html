@@ -182,54 +182,58 @@
         <th scope="col">Driver</th>
         <th scope="col">Car</th>
         <th scope="col">Available seats</th>
-        <th scope="col">Status</th>
         <th scope="col">Created at</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      @for (lift of lifts; track lift.cl) {
+      @if (lifts.length === 0) {
         <tr>
-          <td>
-            {{ lift.startPoint.parish | titlecase }},
-            {{ lift.startPoint.municipality | titlecase }} ({{
-              lift.startPoint.district | titlecase
-            }})
-          </td>
-          <td>
-            {{ lift.endPoint.parish | titlecase }},
-            {{ lift.endPoint.municipality | titlecase }} ({{
-              lift.endPoint.district | titlecase
-            }})
-          </td>
-          <td>{{ lift.schedule | date: "short" }}</td>
-          <td>{{ lift.price }}€</td>
-          <td>
-            {{ lift.driver.username }} <br />{{ lift.driver.driverRating
-            }}<span [innerHTML]="'faStar' | attachedIcon"></span>
-          </td>
-          <td>
-            {{ lift.car.brand | titlecase }} {{ lift.car.model | titlecase }}
-            {{ lift.car.color }}
-            {{ lift.car.plate }}
-          </td>
-          <td>
-            {{ lift.providedSeats - lift.occupiedSeats! }} /
-            {{ lift.providedSeats }}
-          </td>
-          <td>{{ lift.status }}</td>
-          <td>{{ lift.createdAt | date: "short" }}</td>
-          <td>
-            <div
-              class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-              <a (click)="toggleApplication(lift)">
-                <span>Apply</span
-                ><span
-                  [innerHTML]="'faCircleChevronRight' | attachedIcon"></span
-              ></a>
-            </div>
-          </td>
+          <td colspan="10" class="text-center">No lifts found</td>
         </tr>
+      } @else {
+        @for (lift of lifts; track lift.cl) {
+          <tr>
+            <td>
+              {{ lift.startPoint.parish | titlecase }},
+              {{ lift.startPoint.municipality | titlecase }} ({{
+                lift.startPoint.district | titlecase
+              }})
+            </td>
+            <td>
+              {{ lift.endPoint.parish | titlecase }},
+              {{ lift.endPoint.municipality | titlecase }} ({{
+                lift.endPoint.district | titlecase
+              }})
+            </td>
+            <td>{{ lift.schedule | date: "short" }}</td>
+            <td>{{ lift.price }}€</td>
+            <td>
+              {{ lift.driver.username }} <br />{{ lift.driver.driverRating
+              }}<span [innerHTML]="'faStar' | attachedIcon"></span>
+            </td>
+            <td>
+              {{ lift.car.brand | titlecase }} {{ lift.car.model | titlecase }}
+              {{ lift.car.color }}
+              {{ lift.car.plate }}
+            </td>
+            <td>
+              {{ lift.providedSeats - lift.occupiedSeats! }} /
+              {{ lift.providedSeats }}
+            </td>
+            <td>{{ lift.createdAt | date: "short" }}</td>
+            <td>
+              <div
+                class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
+                <a (click)="toggleApplication(lift)">
+                  <span>Apply</span
+                  ><span
+                    [innerHTML]="'faCircleChevronRight' | attachedIcon"></span
+                ></a>
+              </div>
+            </td>
+          </tr>
+        }
       }
     </tbody>
   </table>

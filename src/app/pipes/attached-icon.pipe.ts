@@ -8,8 +8,8 @@ import {
   faCarOn,
   faCircleUser,
   faCalendarCheck,
-  faCircleExclamation,
   faCircleCheck,
+  faCircleExclamation,
   faMagnifyingGlass,
   faMoon,
   faArrowUpRightFromSquare,
@@ -53,6 +53,7 @@ export class AttachedIconPipe implements PipeTransform {
     faCalendarCheck,
     faCircleCheck,
     faCircleExclamation,
+    faFilterCircleXmark,
     faMagnifyingGlass,
     faMoon,
     faArrowUpRightFromSquare,
@@ -78,7 +79,6 @@ export class AttachedIconPipe implements PipeTransform {
     faUserPen,
     faUnlock,
     faGear,
-    faFilterCircleXmark,
   }
 
   constructor(private sanitizer: DomSanitizer) {}
