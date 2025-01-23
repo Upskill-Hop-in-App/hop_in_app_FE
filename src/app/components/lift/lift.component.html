@@ -187,22 +187,23 @@
       </tr>
     </thead>
     <tbody>
-      @if(lifts.length === 0) {
+      @if (lifts.length === 0) {
         <tr>
           <td colspan="10" class="text-center">No lifts found</td>
         </tr>
       } @else {
-        
         @for (lift of lifts; track lift.cl) {
           <tr>
             <td>
-              {{ lift.startPoint.parish }}, {{ lift.startPoint.municipality }} ({{
-                lift.startPoint.district
+              {{ lift.startPoint.parish | titlecase }},
+              {{ lift.startPoint.municipality | titlecase }} ({{
+                lift.startPoint.district | titlecase
               }})
             </td>
             <td>
-              {{ lift.endPoint.parish }}, {{ lift.endPoint.municipality }} ({{
-                lift.endPoint.district
+              {{ lift.endPoint.parish | titlecase }},
+              {{ lift.endPoint.municipality | titlecase }} ({{
+                lift.endPoint.district | titlecase
               }})
             </td>
             <td>{{ lift.schedule | date: "short" }}</td>
@@ -212,7 +213,8 @@
               }}<span [innerHTML]="'faStar' | attachedIcon"></span>
             </td>
             <td>
-              {{ lift.car.brand }} {{ lift.car.model }} {{ lift.car.color }}
+              {{ lift.car.brand | titlecase }} {{ lift.car.model | titlecase }}
+              {{ lift.car.color }}
               {{ lift.car.plate }}
             </td>
             <td>
@@ -232,7 +234,6 @@
             </td>
           </tr>
         }
-        
       }
     </tbody>
   </table>
@@ -254,18 +255,18 @@
           <div class="mt-2">
             <strong class="block text-gray-800">Starting Point:</strong>
             <span
-              >{{ auxiliarLift.startPoint.parish }},
-              {{ auxiliarLift.startPoint.municipality }} ({{
-                auxiliarLift.startPoint.district
+              >{{ auxiliarLift.startPoint.parish | titlecase }},
+              {{ auxiliarLift.startPoint.municipality | titlecase }} ({{
+                auxiliarLift.startPoint.district | titlecase
               }})
             </span>
           </div>
           <div class="mt-1">
             <strong class="block text-gray-800">Destination:</strong>
             <span
-              >{{ auxiliarLift.endPoint.parish }},
-              {{ auxiliarLift.endPoint.municipality }} ({{
-                auxiliarLift.endPoint.district
+              >{{ auxiliarLift.endPoint.parish | titlecase }},
+              {{ auxiliarLift.endPoint.municipality | titlecase }} ({{
+                auxiliarLift.endPoint.district | titlecase
               }})</span
             >
           </div>
