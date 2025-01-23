@@ -16,7 +16,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'lifts', component: LiftComponent, canActivate: [UserGuard] },
   { path: 'my-lifts', component: MyLiftsComponent, canActivate: [UserGuard] },
-  { path: 'manage-cars', component: ManageCarsComponent,canActivate: [UserGuard]},
+  { path: 'manage-cars', component: ManageCarsComponent,canActivate: [AdminGuard]},
   {
     path: 'my-applications',
     component: MyApplicationsComponent,
