@@ -1,240 +1,233 @@
-<!-- ----------------------------------------------------------------------- -->
-
 <div class="main-container">
+  <!-- ------------------------------- Upper Bar -------------------------------- -->
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <div class="main-title">My Offered Lifts</div>
+    <div class="flex w-fit flex-row justify-end gap-1 space-x-2">
+      <button
+        data-cy="my-lifts-create-btn"
+        (click)="toggleCreate()"
+        class="btn-primary relative flex h-10 w-10 cursor-pointer items-center justify-center p-0"
+        [innerHTML]="'faPlus' | attachedIcon: ''"></button>
+    </div>
+  </div>
+
   <!-- Filter Form -->
-  <div class="py-6">
-    <div class="flex flex-col justify-end gap-4 lg:flex-row">
+  <form
+    (ngSubmit)="applyFilters()"
+    class="space-y-6 p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+    <div class="flex justify-between space-x-4">
+      <div class="flex-1 font-extrabold text-gray-600 dark:text-gray-400">
+        <span [innerHTML]="'faFilter' | attachedIcon"></span>
+        <span> FILTERS </span>
+      </div>
       <button
-        class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
-        (click)="applyFilters()">
-        <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span
-        ><span>Search </span>
-      </button>
-      <button
-        class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
+        class="btn-gray flex items-center justify-center gap-2 rounded-lg"
         (click)="clearFilters()">
         <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
       </button>
+      <button
+        class="btn-primary flex items-center justify-center gap-2 rounded-lg"
+        (click)="applyFilters()">
+        <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span>
+        <span>Search </span>
+      </button>
     </div>
-
-    <form (ngSubmit)="applyFilters()" class="mt-6 space-y-6">
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <!-- Status -->
-        <div>
-          <label
-            for="status"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Status</label
-          >
-          <select
-            id="status"
-            [(ngModel)]="filters.status"
-            name="status"
-            class="input-standard">
-            <option value="">--Select Status--</option>
-            <option value="open">Open</option>
-            <option value="ready">Ready</option>
-            <option value="inProgress">In Progress</option>
-            <option value="finished">Finished</option>
-            <option value="closed">Closed</option>
-            <option value="canceled">Canceled</option>
-          </select>
-        </div>
-
-        <!-- Start Point District -->
-        <div>
-          <label
-            for="startPointDistrict"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Start Point District</label
-          >
-          <input
-            id="startPointDistrict"
-            type="text"
-            [(ngModel)]="filters.startPointDistrict"
-            name="startPointDistrict"
-            class="input-standard" />
-        </div>
-
-        <!-- Start Point Municipality -->
-        <div>
-          <label
-            for="startPointMunicipality"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Start Point Municipality</label
-          >
-          <input
-            id="startPointMunicipality"
-            type="text"
-            [(ngModel)]="filters.startPointMunicipality"
-            name="startPointMunicipality"
-            class="input-standard" />
-        </div>
-
-        <!-- Start Point Parish -->
-        <div>
-          <label
-            for="startPointParish"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Start Point Parish</label
-          >
-          <input
-            id="startPointParish"
-            type="text"
-            [(ngModel)]="filters.startPointParish"
-            name="startPointParish"
-            class="input-standard" />
-        </div>
-
-        <!-- End Point District -->
-        <div>
-          <label
-            for="endPointDistrict"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >End Point District</label
-          >
-          <input
-            id="endPointDistrict"
-            type="text"
-            [(ngModel)]="filters.endPointDistrict"
-            name="endPointDistrict"
-            class="input-standard" />
-        </div>
-
-        <!-- End Point Municipality -->
-        <div>
-          <label
-            for="endPointMunicipality"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >End Point Municipality</label
-          >
-          <input
-            id="endPointMunicipality"
-            type="text"
-            [(ngModel)]="filters.endPointMunicipality"
-            name="endPointMunicipality"
-            class="input-standard" />
-        </div>
-
-        <!-- End Point Parish -->
-        <div>
-          <label
-            for="endPointParish"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >End Point Parish</label
-          >
-          <input
-            id="endPointParish"
-            type="text"
-            [(ngModel)]="filters.endPointParish"
-            name="endPointParish"
-            class="input-standard" />
-        </div>
-
-        <!-- Provided Seats -->
-        <div>
-          <label
-            for="providedSeats"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Provided Seats</label
-          >
-          <input
-            id="providedSeats"
-            type="number"
-            [(ngModel)]="filters.providedSeats"
-            name="providedSeats"
-            class="input-standard" />
-        </div>
-
-        <!-- Schedule Year -->
-        <div>
-          <label
-            for="scheduleYear"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Schedule Year</label
-          >
-          <input
-            id="scheduleYear"
-            type="number"
-            [(ngModel)]="filters.scheduleYear"
-            name="scheduleYear"
-            class="input-standard" />
-        </div>
-
-        <!-- Schedule Month -->
-        <div>
-          <label
-            for="scheduleMonth"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Schedule Month</label
-          >
-          <input
-            id="scheduleMonth"
-            type="number"
-            [(ngModel)]="filters.scheduleMonth"
-            name="scheduleMonth"
-            class="input-standard" />
-        </div>
-
-        <!-- Schedule Day -->
-        <div>
-          <label
-            for="scheduleDay"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Schedule Day</label
-          >
-          <input
-            id="scheduleDay"
-            type="number"
-            [(ngModel)]="filters.scheduleDay"
-            name="scheduleDay"
-            class="input-standard" />
-        </div>
-
-        <!-- Schedule Hour -->
-        <div>
-          <label
-            for="scheduleHour"
-            class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >Schedule Hour</label
-          >
-          <input
-            id="scheduleHour"
-            type="number"
-            [(ngModel)]="filters.scheduleHour"
-            name="scheduleHour"
-            class="input-standard" />
-        </div>
+    <div class="grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-6">
+      <!-- Start Point District -->
+      <div>
+        <label
+          for="startPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point District</label
+        >
+        <input
+          id="startPointDistrict"
+          type="text"
+          [(ngModel)]="filters.startPointDistrict"
+          name="startPointDistrict"
+          class="input-standard" />
       </div>
-    </form>
-  </div>
-  <!-- ------------------------------- Upper Bar -------------------------------- -->
-  <div class="flex flex-col justify-between py-4 md:flex-row">
-    <div>
-      <span class="main-title">My Offered Lifts</span>
-    </div>
-    <div class="flex flex-col justify-between gap-1 md:flex-row">
-      <div class="flex flex-row items-end gap-1"></div>
-      <div class="flex flex-row items-end justify-between gap-1">
-        <div class="flex w-fit flex-row justify-end gap-1">
-          <button
-            data-cy="my-lifts-create-btn"
-            (click)="toggleCreate()"
-            class="btn-primary relative flex h-10 w-10 cursor-pointer items-center justify-center p-0"
-            [innerHTML]="'faPlus' | attachedIcon: ''"></button>
-        </div>
+
+      <!-- Start Point Municipality -->
+      <div>
+        <label
+          for="startPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Municipality</label
+        >
+        <input
+          id="startPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.startPointMunicipality"
+          name="startPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- Start Point Parish -->
+      <div>
+        <label
+          for="startPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Start Point Parish</label
+        >
+        <input
+          id="startPointParish"
+          type="text"
+          [(ngModel)]="filters.startPointParish"
+          name="startPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point District -->
+      <div>
+        <label
+          for="endPointDistrict"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point District</label
+        >
+        <input
+          id="endPointDistrict"
+          type="text"
+          [(ngModel)]="filters.endPointDistrict"
+          name="endPointDistrict"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Municipality -->
+      <div>
+        <label
+          for="endPointMunicipality"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Municipality</label
+        >
+        <input
+          id="endPointMunicipality"
+          type="text"
+          [(ngModel)]="filters.endPointMunicipality"
+          name="endPointMunicipality"
+          class="input-standard" />
+      </div>
+
+      <!-- End Point Parish -->
+      <div>
+        <label
+          for="endPointParish"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >End Point Parish</label
+        >
+        <input
+          id="endPointParish"
+          type="text"
+          [(ngModel)]="filters.endPointParish"
+          name="endPointParish"
+          class="input-standard" />
+      </div>
+
+      <!-- Provided Seats -->
+      <div>
+        <label
+          for="providedSeats"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Provided Seats</label
+        >
+        <input
+          id="providedSeats"
+          type="number"
+          [(ngModel)]="filters.providedSeats"
+          name="providedSeats"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Year -->
+      <div>
+        <label
+          for="scheduleYear"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Year</label
+        >
+        <input
+          id="scheduleYear"
+          type="number"
+          [(ngModel)]="filters.scheduleYear"
+          name="scheduleYear"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Month -->
+      <div>
+        <label
+          for="scheduleMonth"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Month</label
+        >
+        <input
+          id="scheduleMonth"
+          type="number"
+          [(ngModel)]="filters.scheduleMonth"
+          name="scheduleMonth"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Day -->
+      <div>
+        <label
+          for="scheduleDay"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Day</label
+        >
+        <input
+          id="scheduleDay"
+          type="number"
+          [(ngModel)]="filters.scheduleDay"
+          name="scheduleDay"
+          class="input-standard" />
+      </div>
+
+      <!-- Schedule Hour -->
+      <div>
+        <label
+          for="scheduleHour"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Schedule Hour</label
+        >
+        <input
+          id="scheduleHour"
+          type="number"
+          [(ngModel)]="filters.scheduleHour"
+          name="scheduleHour"
+          class="input-standard" />
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label
+          for="status"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Status</label
+        >
+        <select
+          id="status"
+          [(ngModel)]="filters.status"
+          name="status"
+          class="input-standard">
+          <option value="">--Select Status--</option>
+          <option value="open">Open</option>
+          <option value="ready">Ready</option>
+          <option value="inProgress">In Progress</option>
+          <option value="finished">Finished</option>
+          <option value="closed">Closed</option>
+          <option value="canceled">Canceled</option>
+        </select>
       </div>
     </div>
-  </div>
+  </form>
   @if (lifts.length === 0) {
-    <tr>
-      <td colspan="10">
-        <div
-          class="rtl relative flex h-8 w-full items-center cursor-default justify-center">
-          <p>No lifts found</p>
-        </div>
-      </td>
-    </tr>
+    <div colspan="10">
+      <div
+        class="rtl relative flex h-8 w-full items-center cursor-default justify-center">
+        <p>No lifts found</p>
+      </div>
+    </div>
   } @else {
     @for (lift of lifts; track lift.cl) {
       <div class="card-container">
@@ -243,10 +236,9 @@
           <div [innerHTML]="'faCar' | attachedIcon: '5x'"></div>
         </div>
         <div class="flex-1 space-y-2 flex-col">
-          <div>
+          <div class="flex flex-nowrap">
             <div
               class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-              <span class="pe-2"> FROM: </span>
               <span class="">
                 {{ lift.startPoint.parish | titlecase }},
                 {{ lift.startPoint.municipality | titlecase }} -
@@ -254,8 +246,10 @@
               </span>
             </div>
             <div
+              class="text-2xl px-6 text-gray-500"
+              [innerHTML]="'faArrowRight' | attachedIcon: 'x'"></div>
+            <div
               class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-              <span class="pe-2"> TO: </span>
               <span class="font-extrabold">
                 {{ lift.endPoint.parish | titlecase }},
                 {{ lift.endPoint.municipality | titlecase }} -
@@ -324,11 +318,11 @@
                 </div>
               } @else if (lift.applications?.length === 1) {
                 <a (click)="toggleApplication(lift)"
-                  ><div class="btn-primary">See 1 application</div></a
+                  ><div class="btn-terciary">See 1 application</div></a
                 >
               } @else {
                 <a (click)="toggleApplication(lift)">
-                  <div class="btn-primary">
+                  <div class="btn-terciary">
                     See {{ lift.applications?.length }} applications
                   </div>
                 </a>
@@ -369,10 +363,8 @@
               class="input-small"
               formControlName="startDistrict"
               (change)="onStartDistrictChange($event)">
-              (change)="onStartDistrictChange($event)">
               <option
                 *ngFor="let startDistrict of startDistricts"
-                [value]="startDistrict">
                 [value]="startDistrict">
                 {{ startDistrict }}
               </option>
@@ -388,10 +380,8 @@
               formControlName="startMunicipality"
               [disabled]="!selectedStartDistrict"
               (change)="onStartMunicipalityChange($event)">
-              (change)="onStartMunicipalityChange($event)">
               <option
                 *ngFor="let startMunicipality of startMunicipalities"
-                [value]="startMunicipality">
                 [value]="startMunicipality">
                 {{ startMunicipality }}
               </option>
@@ -406,10 +396,8 @@
               class="input-small"
               formControlName="startParish"
               [disabled]="!selectedStartMunicipality">
-              [disabled]="!selectedStartMunicipality">
               <option
                 *ngFor="let startParish of startParishes"
-                [value]="startParish">
                 [value]="startParish">
                 {{ startParish }}
               </option>
@@ -430,10 +418,8 @@
               class="input-small"
               formControlName="endDistrict"
               (change)="onEndDistrictChange($event)">
-              (change)="onEndDistrictChange($event)">
               <option
                 *ngFor="let endDistrict of endDistricts"
-                [value]="endDistrict">
                 [value]="endDistrict">
                 {{ endDistrict }}
               </option>
@@ -449,10 +435,8 @@
               formControlName="endMunicipality"
               [disabled]="!selectedEndDistrict"
               (change)="onEndMunicipalityChange($event)">
-              (change)="onEndMunicipalityChange($event)">
               <option
                 *ngFor="let endMunicipality of endMunicipalities"
-                [value]="endMunicipality">
                 [value]="endMunicipality">
                 {{ endMunicipality }}
               </option>
@@ -466,7 +450,6 @@
               id="endParish"
               class="input-small"
               formControlName="endParish"
-              [disabled]="!selectedEndMunicipality">
               [disabled]="!selectedEndMunicipality">
               <option *ngFor="let endParish of endParishes" [value]="endParish">
                 {{ endParish }}
@@ -495,7 +478,6 @@
             type="datetime-local"
             required
             formControlName="schedule" />
-          formControlName="schedule" />
         </div>
 
         <!-- Price -->
@@ -509,7 +491,6 @@
             required
             placeholder="Example: 20"
             formControlName="price" />
-          formControlName="price" />
         </div>
 
         <!-- Provided Seats -->
@@ -525,7 +506,6 @@
             required
             placeholder="Example: 4"
             formControlName="providedSeats" />
-          formControlName="providedSeats" />
         </div>
 
         <!-- Botoes -->
@@ -560,12 +540,22 @@
               </p>
               <p>
                 <span class="font-bold"> Rating: </span>
-                <span
-                  >{{ application.passenger?.passengerRating }}
-                  <span
-                    class="text-yellow-500"
-                    [innerHTML]="'faStar' | attachedIcon"></span
-                ></span>
+                <ng-container
+                  *ngIf="
+                    isValidRating(application.passenger?.passengerRating!)
+                  ">
+                  <ng-container
+                    *ngFor="
+                      let star of getStarsArray(
+                        application.passenger?.passengerRating!
+                      );
+                      let i = index
+                    ">
+                    <span
+                      class="text-amber-400"
+                      [innerHTML]="'faStar' | attachedIcon"></span>
+                  </ng-container>
+                </ng-container>
               </p>
             </div>
             <div class="flex items-end justify-end space-x-4">
@@ -597,41 +587,36 @@
       </div>
     }
     @if (showCancelStatus) {
-      <form (ngSubmit)="updateCancelStatus()" #deleteForm="ngForm" class="mt-4">
-        <div class="modal-header">
-          <h5 class="text-lg font-bold text-primary-600">
-            Confirm cancelation
-          </h5>
-        </div>
-        <div class="modal-body">
-          <p class="text-gray-700">You are about to cancel this lift:</p>
-          <div class="mt-1">
-            <strong class="block text-gray-800">From:</strong>
-            <span
-              >{{ auxiliarLift.startPoint.district }} -
-              {{ auxiliarLift.startPoint.municipality }} -
-              {{ auxiliarLift.startPoint.parish }}</span
-            >
-            <strong class="block text-gray-800">To:</strong>
-            <span
-              >{{ auxiliarLift.endPoint.district }} -
-              {{ auxiliarLift.endPoint.municipality }} -
-              {{ auxiliarLift.endPoint.parish }}</span
-            >
+      <form (ngSubmit)="updateCancelStatus()" #deleteForm="ngForm">
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <p class="font-bold">From:</p>
+            <div class="input-disabled">
+              {{ auxiliarLift.startPoint.parish | titlecase }},
+              {{ auxiliarLift.startPoint.municipality | titlecase }} -
+              {{ auxiliarLift.startPoint.district | uppercase }}
+            </div>
           </div>
-        </div>
-        <div class="modal-footer mt-4 flex justify-between">
-          <button
-            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit">
-            Confirm
-          </button>
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            (click)="cancel()"
-            type="button">
-            Cancel
-          </button>
+          <div class="space-y-2">
+            <p class="font-bold">To:</p>
+            <div class="input-disabled">
+              {{ auxiliarLift.endPoint.parish | titlecase }},
+              {{ auxiliarLift.endPoint.municipality | titlecase }} -
+              {{ auxiliarLift.endPoint.district | uppercase }}
+            </div>
+          </div>
+          <div class="space-y-2">
+            <p class="font-bold">Schedule:</p>
+            <div class="input-disabled">
+              {{ auxiliarLift.schedule | date: "short" }}
+            </div>
+          </div>
+          <div class="modal-footer pt-4 flex justify-end space-x-4">
+            <button class="btn-gray" (click)="cancel()" type="button">
+              Cancel
+            </button>
+            <button class="btn-primary" type="submit">Confirm</button>
+          </div>
         </div>
       </form>
     }

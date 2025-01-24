@@ -1,7 +1,6 @@
 import { Component, HostListener } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { RouterLink, Router } from '@angular/router'
-import { NgOptimizedImage } from '@angular/common'
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
 import {
   FontAwesomeModule,
@@ -18,7 +17,6 @@ import { AuthService } from '../../services/auth.service'
     CommonModule,
     FontAwesomeModule,
     RouterLink,
-    NgOptimizedImage,
     AttachedIconPipe,
   ],
   templateUrl: './navbar.component.html',
