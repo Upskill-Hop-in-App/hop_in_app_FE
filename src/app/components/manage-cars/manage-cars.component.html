@@ -37,11 +37,12 @@
           Clear
         </button>
         <button
-        (click)="openCreateModal()"
-        class="btn-terciary">
-        <fa-icon [icon]="['fas', 'plus']"></fa-icon>
-        <span>Add New Car</span>
-      </button>
+          data-cy="managecars-add-car"
+          (click)="openCreateModal()"
+          class="btn-terciary">
+          <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+          <span>Add New Car</span>
+        </button>
       </div>
     </div>
   </div>
@@ -104,6 +105,7 @@
         <div class="space-y-2">
           <label for="carBrand" class="font-semibold">Brand: </label>
           <input
+            data-cy="addform-input-brand"
             type="text"
             name="carBrand"
             id="carBrand"
@@ -113,6 +115,7 @@
         <div class="space-y-2">
           <label for="brand" class="font-semibold">Model: </label>
           <input
+            data-cy="addform-input-model"
             type="text"
             name="model"
             id="model"
@@ -122,6 +125,7 @@
         <div class="space-y-2">
           <label for="brand" class="font-semibold">Start Year: </label>
           <input
+            data-cy="addform-input-startyear"
             type="number"
             name="startYear"
             id="startYear"
@@ -131,6 +135,7 @@
         <div class="space-y-2">
           <label for="brand" class="font-semibold">End Year: </label>
           <input
+            data-cy="addform-input-endyear"
             type="number"
             name="endYear"
             id="endYear"
@@ -141,6 +146,7 @@
               Please enter the car brand to confirm:
             </p>
             <input
+              data-cy="addform-input-confirmation"
               type="text"
               name="confirmationCc"
               id="confirmationCc"
@@ -154,7 +160,12 @@
           <button type="button" (click)="closeModal()" class="btn-gray">
             Cancel
           </button>
-          <button type="submit" class="btn-primary">Add Car</button>
+          <button
+            data-cy="addform-submit-btn"
+            type="submit"
+            class="btn-primary">
+            Add Car
+          </button>
         </div>
       </form>
     }
