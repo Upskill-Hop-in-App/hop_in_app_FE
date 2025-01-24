@@ -19,7 +19,10 @@
               <td>{{ app.status }}</td>
               <td>
                 @if (app.status === "accepted") {
-                  <button (click)="readyApplication(app.ca!)">
+                  <button
+                    class="btn-primary"
+                    data-cy="mark-ready-btn"
+                    (click)="readyApplication(app.ca!)">
                     Mark as Ready
                   </button>
                 }
@@ -30,6 +33,7 @@
       </tbody>
     </table>
     <button
+      data-cy="start-lift-btn"
       (click)="startLift()"
       class="bg-primary-500 text-white font-bold py-2 px-4 rounded">
       Start Lift
@@ -90,6 +94,7 @@
       </div>
       @if (isDriver) {
         <button
+        data-cy="finish-lift-btn"
           (click)="finishLift()"
           class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105">
           Finish Lift
@@ -154,6 +159,7 @@
       <!-- Button to open Ratings Modal -->
       @if (isDriver && !driverSubmited) {
         <button
+        data-cy="rate-passengers-btn"
           (click)="toggleRatingModal()"
           class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105">
           Rate Passenger(s)
@@ -161,6 +167,7 @@
       }
       @if (isDriver) {
         <button
+        data-cy="close-lift-btn"
           (click)="closeLift()"
           class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105">
           Close Lift
@@ -168,6 +175,7 @@
       }
       @if (isPassenger && !passengerSubmited) {
         <button
+        data-cy="rate-driver-btn"
           (click)="toggleRatingModal(lift)"
           class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105">
           Rate Driver
@@ -186,6 +194,7 @@
       </p>
 
       <button
+      data-cy="navigate-home-btn"
         (click)="navigateToHome()"
         class="bg-primary-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-600 mt-6 transition duration-200 shadow-md transform hover:scale-105">
         Return to Home
@@ -207,6 +216,7 @@
                 Rate {{ app.passenger?.username || "Unknown" }}
               </label>
               <input
+              data-cy="rate-value-passenger"
                 id="rating-{{ app.ca }}"
                 type="number"
                 formControlName="{{ app.ca }}"
@@ -218,6 +228,7 @@
         }
 
         <button
+        data-cy="submit-passenger-ratings-btn"
           type="submit"
           class="bg-primary-500 text-white font-bold py-2 px-4 rounded w-full mt-4">
           Submit Ratings
@@ -239,6 +250,7 @@
             Rate {{ auxiliarLift!.driver!.username }}
           </label>
           <input
+          data-cy="rate-value-driver"
             id="driverRating"
             type="number"
             formControlName="rating"
@@ -248,6 +260,7 @@
         </div>
 
         <button
+        data-cy="submit-driver-rating-btn"
           type="submit"
           class="bg-primary-500 text-white font-bold py-2 px-4 rounded w-full mt-4">
           Submit Ratings

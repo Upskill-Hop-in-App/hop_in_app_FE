@@ -167,6 +167,7 @@
               </li>
               <li>
                 <a
+                data-cy="menu-navbar-myApps"
                   href="/my-applications"
                   (click)="closeMenuNavbar()"
                   class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
@@ -202,6 +203,7 @@
                 </a>
               } @else {
                 <button
+                data-cy="logout-btn"
                   type="button"
                   class="group flex w-full items-center rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
                   (click)="logout()">
