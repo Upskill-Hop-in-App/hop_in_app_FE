@@ -1,14 +1,11 @@
 <div
   class="transition-visibility fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
-  id="modal"
->
+  id="modal">
   <div
-    class="relative max-h-full w-full max-w-2xl rounded-lg bg-white shadow-lg dark:bg-gray-900"
-  >
+    class="relative max-h-full w-full max-w-2xl rounded-lg bg-white shadow-lg dark:bg-gray-900">
     <div class="relative rounded-lg">
       <div
-        class="flex items-center justify-between rounded-t border-b p-6 md:px-8 dark:border-gray-600"
-      >
+        class="flex items-center justify-between rounded-t border-b p-6 md:px-8 dark:border-gray-600">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white">Login</h2>
       </div>
       <div class="space-y-4 p-4 md:p-8">
@@ -22,8 +19,7 @@
               name="email"
               id="email"
               formControlName="email"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <!-- --------------------------- Password Field ---------------------------- -->
@@ -35,16 +31,15 @@
               name="password"
               id="password"
               formControlName="password"
-              class="input-standard"
-            />
+              class="input-standard" />
           </div>
 
           <!-- ------------------------------- Buttons ------------------------------- -->
-          <div class="flex items-center justify-between gap-x-4">
+          <div class="flex items-center justify-end gap-x-4">
+            <a href="#" class="btn-gray">Go to Home</a>
             <button data-cy="submit-btn" type="submit" class="btn-primary">
               Login
             </button>
-            <a href="#" class="btn-gray">Go to Home</a>
           </div>
         </form>
       </div>
