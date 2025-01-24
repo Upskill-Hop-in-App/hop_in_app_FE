@@ -125,7 +125,6 @@ export class MyApplicationsComponent implements OnInit {
 
   applyFilters() {
     const query = this.buildQueryString(this.cleanFilters(this.filters))
-    console.log(query)
     this.ApplicationService.filterApplicationsByUsername(
       this.AuthService.getUserName(),
       query
