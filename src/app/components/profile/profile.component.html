@@ -1,63 +1,79 @@
 <div class="main-container">
-  <div class="table-container">
-    <table>
-      <th scope="col" colspan="2">My Profile</th>
-      <div
-        class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-        <a (click)="toggleEditProfile()"
-          ><span [innerHTML]="'faUserPen' | attachedIcon"></span
-        ></a>
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <div class="main-title">My Profile</div>
+    <div class="flex w-fit flex-row justify-end gap-1 space-x-2">
+      <a (click)="toggleEditProfile()">
+        <div class="btn-primary space-x-4">
+          <span [innerHTML]="'faUserPen' | attachedIcon"></span>
+          <span>Edit</span>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="font-bold space-y-4">
+    <div>
+      <span>Name: </span>
+      <span class="input-disabled">{{ user.name | titlecase }}</span>
+    </div>
+    <div>
+      <span>Username: </span>
+      <span class="input-disabled">{{ user.username }}</span>
+    </div>
+    <div>
+      <span>Email: </span>
+      <span class="input-disabled">{{ user.email }}</span>
+    </div>
+    <div>
+      <span>Contact: </span>
+      <span class="input-disabled">{{ user.contact }}</span>
+    </div>
+    <div>
+      <span>Rating as driver:</span>
+      <span class="input-disabled">
+        <ng-container *ngIf="isValidRating(user.driverRating!)">
+          <ng-container
+            *ngFor="
+              let star of getStarsArray(user.driverRating!);
+              let i = index
+            ">
+            <span
+              class="text-amber-400"
+              [innerHTML]="'faStar' | attachedIcon"></span>
+          </ng-container>
+        </ng-container>
+      </span>
+    </div>
+    <div>
+      <span>Rating as passenger: </span>
+      <span class="input-disabled">
+        <ng-container *ngIf="isValidRating(user.passengerRating!)">
+          <ng-container
+            *ngFor="
+              let star of getStarsArray(user.passengerRating!);
+              let i = index
+            ">
+            <span
+              class="text-amber-400"
+              [innerHTML]="'faStar' | attachedIcon"></span>
+          </ng-container>
+        </ng-container>
+      </span>
+    </div>
+  </div>
+
+  <div class="flex space-x-4 w-full justify-end">
+    <a (click)="toggleDelete()">
+      <div class="btn-danger">
+        <span [innerHTML]="'faTrashCan' | attachedIcon"></span>
+        <span> Delete account </span>
       </div>
-      <tr>
-        <td>Name</td>
-        <td>{{ user.name }}</td>
-      </tr>
-      <tr>
-        <td>Username</td>
-        <td>{{ user.username | titlecase }}</td>
-      </tr>
-      <tr>
-        <td>Email</td>
-        <td>{{ user.email }}</td>
-      </tr>
-      <tr>
-        <td>Contact</td>
-        <td>{{ user.contact }}</td>
-      </tr>
-      <tr>
-        <td>Rating as driver</td>
-        <td>
-          {{ user.driverRating }}
-          <span [innerHTML]="'faStar' | attachedIcon"></span>
-        </td>
-      </tr>
-      <tr>
-        <td>Rating as passenger</td>
-        <td>
-          {{ user.passengerRating }}
-          <span [innerHTML]="'faStar' | attachedIcon"></span>
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <div>
-    <div
-      class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-      <a (click)="toggleEditPassword()"
-        ><span [innerHTML]="'faUnlock' | attachedIcon"></span>Change password</a
-      >
-    </div>
-  </div>
-
-  <div>
-    <div
-      class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-      <a (click)="toggleDelete()"
-        ><span [innerHTML]="'faTrashCan' | attachedIcon"></span>Delete
-        account</a
-      >
-    </div>
+    </a>
+    <a (click)="toggleEditPassword()">
+      <div class="btn-primary">
+        <span [innerHTML]="'faUnlock' | attachedIcon"></span>
+        <span> Change password </span>
+      </div>
+    </a>
   </div>
 </div>
 
@@ -131,11 +147,11 @@
         </div>
 
         <!-- Botoes -->
-        <div class="flex items-center justify-between">
-          <button class="btn-primary" type="submit">Confirm</button>
+        <div class="flex items-center justify-end space-x-4">
           <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
           </button>
+          <button class="btn-primary" type="submit">Confirm</button>
         </div>
         <div></div>
       </form>
@@ -154,7 +170,7 @@
             New Password
           </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            class="input-standard"
             id="password"
             name="password"
             type="password"
@@ -179,11 +195,11 @@
         </div>
 
         <!-- Botoes -->
-        <div class="flex items-center justify-between">
-          <button class="btn-primary" type="submit">Confirm</button>
+        <div class="flex items-center justify-end gap-x-4 pt-4">
           <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
           </button>
+          <button class="btn-primary" type="submit">Confirm</button>
         </div>
       </form>
     }
@@ -195,33 +211,35 @@
         (ngSubmit)="confirmDelete()"
         #form="ngForm"
         class="px-8 pt-6 pb-8 mb-4">
-        <p>Email</p>
-        <p>{{ backupUser.email }}</p>
-        <!-- Confirm Email -->
-        <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
-            Confirm your email
-          </label>
-          <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
-            id="confirmationEmail"
-            name="confirmationEmail"
-            type="text"
-            required
-            placeholder="insert your email here..."
-            formControlName="confirmationEmail" />
-        </div>
-        <p class="mt-4 text-gray-700">
-          You are about to delete your account. This process is irreversible.
-          Are you sure?
-        </p>
+        <div class="space-y-4">
+          <div>
+            <label class="font-bold">Email</label>
+            <span class="input-disabled">{{ backupUser.email }}</span>
+          </div>
+          <!-- Confirm Email -->
+          <div class="font-bold">
+            <label class="" for="cd"> Confirm your email </label>
+            <input
+              class="input-disabled"
+              id="confirmationEmail"
+              name="confirmationEmail"
+              type="text"
+              required
+              placeholder="insert your email here..."
+              formControlName="confirmationEmail" />
+          </div>
+          <p class="mt-4 text-gray-700">
+            You are about to delete your account. This process is irreversible.
+            Are you sure?
+          </p>
 
-        <!-- Botoes -->
-        <div class="flex items-center justify-between">
-          <button class="btn-primary" type="submit">Delete</button>
-          <button class="btn-gray" type="button" (click)="cancel()">
-            Cancel
-          </button>
+          <!-- Botoes -->
+          <div class="flex items-center justify-end gap-x-4">
+            <button class="btn-gray" type="button" (click)="cancel()">
+              Cancel
+            </button>
+            <button class="btn-primary" type="submit">Delete</button>
+          </div>
         </div>
       </form>
     }

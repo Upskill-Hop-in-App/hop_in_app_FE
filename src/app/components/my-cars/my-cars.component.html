@@ -83,7 +83,6 @@
           [formGroup]="carForm"
           (ngSubmit)="confirmCreate()"
           class="space-y-8">
-          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
             <select
@@ -94,7 +93,6 @@
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400">
                 class="h-8 w-full text-gray-400">
                 Select Brand
               </option>
@@ -115,7 +113,6 @@
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                class="h-8 w-full text-gray-400">
                 Select Model
               </option>
               @for (model of models; track model) {
@@ -131,7 +128,6 @@
                 value=""
                 disabled
                 selected
-                class="h-8 w-full text-gray-400">
                 class="h-8 w-full text-gray-400">
                 Select Year
               </option>
@@ -150,7 +146,6 @@
               placeholder="ex: Blue"
               formControlName="color"
               class="input-standard" />
-              class="input-standard" />
           </div>
 
           <div class="space-y-2">
@@ -161,7 +156,6 @@
               id="plateNumber"
               placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard" />
               class="input-standard" />
           </div>
 
@@ -179,7 +173,6 @@
           [formGroup]="carForm"
           (ngSubmit)="confirmEdit()"
           class="space-y-8">
-          class="space-y-8">
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
             <select formControlName="brand" class="input-standard">
@@ -187,7 +180,6 @@
                 [value]="backupCar.brand"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400">
                 class="h-8 w-full text-gray-400">
                 {{ backupCar.brand }}
               </option>
@@ -205,7 +197,6 @@
                 disabled
                 selected
                 class="h-8 w-full text-gray-400">
-                class="h-8 w-full text-gray-400">
                 {{ backupCar.model }}
               </option>
               @for (model of models; track model) {
@@ -221,7 +212,6 @@
                 [value]="backupCar.year"
                 disabled
                 selected
-                class="h-8 w-full text-gray-400">
                 class="h-8 w-full text-gray-400">
                 {{ backupCar.year }}
               </option>
@@ -240,7 +230,6 @@
               placeholder="ex: Blue"
               formControlName="color"
               class="input-standard" />
-              class="input-standard" />
           </div>
 
           <div class="space-y-2">
@@ -251,7 +240,6 @@
               id="plateNumber"
               placeholder="ex: 22-YY-44"
               formControlName="plate"
-              class="input-standard" />
               class="input-standard" />
           </div>
 
@@ -269,7 +257,6 @@
           [formGroup]="carForm"
           (ngSubmit)="confirmDelete()"
           #deleteForm="ngForm">
-          #deleteForm="ngForm">
           <div class="space-y-8">
             <div class="space-y-2">
               <label for="brandName" class="font-semibold">Brand: </label>
@@ -279,7 +266,6 @@
                 id="brandName"
                 formControlName="brand"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null" />
                 [readonly]="showDeleteForm ? true : null" />
             </div>
 
@@ -292,7 +278,6 @@
                 formControlName="model"
                 class="input-disabled"
                 [readonly]="showDeleteForm ? true : null" />
-                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -303,7 +288,6 @@
                 id="yearName"
                 formControlName="year"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null" />
                 [readonly]="showDeleteForm ? true : null" />
             </div>
 
@@ -316,7 +300,6 @@
                 formControlName="color"
                 class="input-disabled"
                 [readonly]="showDeleteForm ? true : null" />
-                [readonly]="showDeleteForm ? true : null" />
             </div>
 
             <div class="space-y-2">
@@ -327,7 +310,6 @@
                 id="plateNumber"
                 formControlName="plate"
                 class="input-disabled"
-                [readonly]="showDeleteForm ? true : null" />
                 [readonly]="showDeleteForm ? true : null" />
             </div>
             <div class="space-y-2 border-t py-8 dark:border-gray-600">
@@ -342,7 +324,6 @@
                 class="input-standard"
                 formControlName="confirmationPlate"
                 placeholder="Enter car plate number"
-                required />
                 required />
             </div>
           </div>
