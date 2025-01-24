@@ -75,6 +75,9 @@
             <td>{{ car.updatedAt }}</td>
             <td>
               <button
+                [attr.data-cy]="
+                  'managecars-edit-car-' + car.brand + '-' + car.model
+                "
                 (click)="openUpdateModal(car)"
                 class="p-2 text-blue-600 hover:text-blue-800">
                 <fa-icon [icon]="['far', 'pen-to-square']"></fa-icon>
