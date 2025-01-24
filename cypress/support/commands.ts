@@ -64,7 +64,7 @@ Cypress.Commands.add('getByDataCy', (selector, ...args) => {
 /* -------------------------------------------------------------------------- */
 /* ------------------------------ DEMO FEATURES ----------------------------- */
 /* -------------------------------------------------------------------------- */
-Cypress.Commands.add('demoWait', (time = 10) => {
+Cypress.Commands.add('demoWait', (time = 100) => {
   cy.wait(time)
 })
 
