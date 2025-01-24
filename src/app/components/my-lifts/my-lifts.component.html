@@ -4,6 +4,7 @@
     <div class="main-title">My Offered Lifts</div>
     <div class="flex w-fit flex-row justify-end gap-1 space-x-2">
       <button
+        data-cy="my-lifts-create-btn"
         (click)="toggleCreate()"
         class="btn-primary relative flex h-10 w-10 cursor-pointer items-center justify-center p-0"
         [innerHTML]="'faPlus' | attachedIcon: ''"></button>
@@ -316,17 +317,18 @@
                   <p>No applications yet</p>
                 </div>
               } @else if (lift.applications?.length === 1) {
-                <a (click)="toggleApplication(lift)"
+                <a data-cy="see-apps" (click)="toggleApplication(lift)"
                   ><div class="btn-terciary">See 1 application</div></a
                 >
               } @else {
-                <a (click)="toggleApplication(lift)">
+                <a data-cy="see-apps" (click)="toggleApplication(lift)">
                   <div class="btn-terciary">
                     See {{ lift.applications?.length }} applications
                   </div>
                 </a>
               }
               <button
+                data-cy="go-to-lift-btn"
                 *ngIf="liftFlags[lift.cl!]"
                 class="btn-primary"
                 routerLink="/current-lift"
@@ -358,6 +360,7 @@
           <div class="w-1/3">
             <label for="startDistrict">District</label>
             <select
+              data-cy="start-district-dropdown"
               id="startDistrict"
               class="input-small"
               formControlName="startDistrict"
@@ -374,6 +377,7 @@
           <div class="w-1/3">
             <label for="startMunicipality">Municipality</label>
             <select
+              data-cy="start-municipality-dropdown"
               id="startMunicipality"
               class="input-small"
               formControlName="startMunicipality"
@@ -391,6 +395,7 @@
           <div class="w-1/3">
             <label for="startParish">Parish</label>
             <select
+              data-cy="start-parish-dropdown"
               id="startParish"
               class="input-small"
               formControlName="startParish"
@@ -413,6 +418,7 @@
           <div class="w-1/3">
             <label for="endDistrict">District</label>
             <select
+              data-cy="end-district-dropdown"
               id="endDistrict"
               class="input-small"
               formControlName="endDistrict"
@@ -429,6 +435,7 @@
           <div class="w-1/3">
             <label for="endMunicipality">Municipality</label>
             <select
+              data-cy="end-municipality-dropdown"
               id="endMunicipality"
               class="input-small"
               formControlName="endMunicipality"
@@ -446,6 +453,7 @@
           <div class="w-1/3">
             <label for="endParish">Parish</label>
             <select
+              data-cy="end-parish-dropdown"
               id="endParish"
               class="input-small"
               formControlName="endParish"
@@ -460,7 +468,11 @@
         <!-- Car -->
         <div>
           <label for="car" class="font-bold">Car</label>
-          <select id="car" class="input-small" formControlName="car">
+          <select
+            data-cy="car-select"
+            id="car"
+            class="input-small"
+            formControlName="car">
             <option *ngFor="let car of cars" [value]="car.cc">
               {{ car.plate }}
             </option>
@@ -471,6 +483,7 @@
         <div class="mb-6">
           <label class="block font-bold mb-2" for="cschedule"> Schedule </label>
           <input
+            data-cy="schedule-select"
             class="input-standard"
             id="schedule"
             name="schedule"
@@ -483,6 +496,7 @@
         <div class="mb-4">
           <label class="block font-bold mb-2" for="cd"> Price </label>
           <input
+            data-cy="price-input"
             class="input-standard"
             id="price"
             name="price"
@@ -498,6 +512,7 @@
             Number of passengers <span class="italic">(max.)</span>
           </label>
           <input
+            data-cy="seats-input"
             class="input-standard"
             id="providedSeats"
             name="providedSeats"
@@ -512,7 +527,9 @@
           <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
           </button>
-          <button class="btn-primary" type="submit">Confirm</button>
+          <button data-cy="create-lift-btn" class="btn-primary" type="submit">
+            Confirm
+          </button>
         </div>
         <div></div>
       </form>
@@ -566,6 +583,12 @@
                   Reject
                 </button>
                 <button
+                  [attr.data-cy]="
+                    'accept-' +
+                    application.passenger?.username +
+                    '-' +
+                    application.status
+                  "
                   class="btn-primary"
                   (click)="acceptApplication(application.ca!)">
                   Accept

@@ -48,7 +48,7 @@
         <span [innerHTML]="'faHome' | attachedIcon: 'x'"></span>
         <span> Home </span>
       </a>
-      <a
+      <a data-cy="menu-navbar-need-lift"
         routerLink="/lifts"
         class="p-2 space-x-2 hover:text-primary-700 rounded-full font-medium"
         [ngClass]="{'text-gray-200 hover:text-primary-300': !isHomePage}">
@@ -99,6 +99,7 @@
         <div>
           @if (!menuNavbarVisible) {
             <button
+              data-cy="menu-navbar-btn"
               type="button"
               class="flex text-lg"
               aria-expanded="false"
@@ -160,6 +161,7 @@
               </li>
               <li>
                 <a
+                data-cy="menu-navbar-myLifts"
                   href="/my-lifts"
                   (click)="closeMenuNavbar()"
                   class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
@@ -170,6 +172,7 @@
               </li>
               <li>
                 <a
+                data-cy="menu-navbar-myApps"
                   href="/my-applications"
                   (click)="closeMenuNavbar()"
                   class="flex w-full rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
@@ -205,6 +208,7 @@
                 </a>
               } @else {
                 <button
+                data-cy="logout-btn"
                   type="button"
                   class="group flex w-full items-center rounded-lg p-3 px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-opacity-20"
                   (click)="logout()">

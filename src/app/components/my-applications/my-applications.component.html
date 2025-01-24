@@ -296,6 +296,10 @@
                 </div>
               }
               <button
+              [attr.data-cy]="
+                    'go-to-lift-' +
+                    application.status
+                  "
                 *ngIf="applicationFlags[application.lift.cl]"
                 class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 routerLink="/current-lift"
