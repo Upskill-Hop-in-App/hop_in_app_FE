@@ -1,21 +1,31 @@
-<!-- Filter Form -->
-<div class="py-6">
-  <div class="flex flex-col justify-end gap-4 lg:flex-row">
-    <button
-      class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
-      (click)="applyFilters()">
-      <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span
-      ><span>Search </span>
-    </button>
-    <button
-      class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
-      (click)="clearFilters()">
-      <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
-    </button>
+<div class="main-container">
+  <!-- ------------------------------- Upper Bar -------------------------------- -->
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <span class="main-title">Find a Lift</span>
   </div>
 
-  <form (ngSubmit)="applyFilters()" class="mt-6 space-y-6">
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+  <!-- Filter Form -->
+  <form
+    (ngSubmit)="applyFilters()"
+    class="space-y-6 p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+    <div class="flex justify-between space-x-4">
+      <div class="flex-1 font-extrabold text-gray-600 dark:text-gray-400">
+        <span [innerHTML]="'faFilter' | attachedIcon"></span>
+        <span> FILTERS </span>
+      </div>
+      <button
+        class="btn-gray flex items-center justify-center gap-2 rounded-lg"
+        (click)="clearFilters()">
+        <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
+      </button>
+      <button
+        class="btn-primary flex items-center justify-center gap-2 rounded-lg"
+        (click)="applyFilters()">
+        <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span>
+        <span>Search </span>
+      </button>
+    </div>
+    <div class="grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-6">
       <!-- Start Point District -->
       <div>
         <label
@@ -167,17 +177,7 @@
       </div>
     </div>
   </form>
-</div>
 
-<!-- ----------------------------------------------------------------------- -->
-
-<div class="main-container">
-  <!-- ------------------------------- Upper Bar -------------------------------- -->
-  <div class="flex flex-col justify-between py-4 md:flex-row">
-    <div>
-      <span class="main-title">Find a Lift</span>
-    </div>
-  </div>
   <div class="space-y-6">
     @if (lifts.length === 0) {
       <tr>
@@ -191,20 +191,21 @@
             <div [innerHTML]="'faCar' | attachedIcon: '5x'"></div>
           </div>
           <div class="flex-1 space-y-2 flex-col">
-            <div>
+            <div class="flex flex-nowrap">
               <div
                 class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-                <span class="pe-2"> FROM: </span>
-                <span class="">
+                <span>
                   {{ lift.startPoint.parish | titlecase }},
                   {{ lift.startPoint.municipality | titlecase }} -
                   {{ lift.startPoint.district | uppercase }}
                 </span>
               </div>
               <div
+                class="text-2xl px-6 text-gray-500"
+                [innerHTML]="'faArrowRight' | attachedIcon: 'x'"></div>
+              <div
                 class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-                <span class="pe-2"> TO: </span>
-                <span class="font-extrabold">
+                <span>
                   {{ lift.endPoint.parish | titlecase }},
                   {{ lift.endPoint.municipality | titlecase }} -
                   {{ lift.endPoint.district | uppercase }}
@@ -284,8 +285,8 @@
                   (click)="toggleApplication(lift)">
                   <span>Apply</span>
                   <span
-                    [innerHTML]="'faCircleChevronRight' | attachedIcon"></span
-                ></a>
+                    [innerHTML]="'faCircleChevronRight' | attachedIcon"></span>
+                </a>
               </div>
             </div>
           </div>
