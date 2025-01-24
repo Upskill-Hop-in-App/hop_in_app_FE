@@ -1,7 +1,7 @@
 <nav
   class="fixed top-0 z-50 w-full p-5 text-gray-700 shadow-sm xl:px-5 xl:pl-3 border-b border-gray-50 border-opacity-10"
   [ngClass]="{
-    'bg-gradient-to-r from-primary-600 via-primary-700 to-primary-700 dark:bg-gradient-to-r dark:from-primary-600 dark:via-secondary-800 dark:to-secondary-800 backdrop-blur-2xl':
+    'bg-gradient-to-r from-primary-600 text-gray-200 via-primary-700 to-primary-700 dark:bg-gradient-to-r dark:from-primary-600 dark:via-secondary-800 dark:to-secondary-800 backdrop-blur-2xl':
       !isHomePage,
   }">
   <div class="flex items-center justify-between">
@@ -43,31 +43,36 @@
     <div class="hidden xl:flex space-x-6 justify-end grow mr-8">
       <a
         routerLink="/"
-        class="p-2 space-x-2 hover:text-primary-800 rounded-full font-medium">
+        class="p-2 space-x-2 hover:text-primary-700 rounded-full font-medium"
+        [ngClass]="{'text-gray-200 hover:text-primary-300': !isHomePage}">
         <span [innerHTML]="'faHome' | attachedIcon: 'x'"></span>
         <span> Home </span>
       </a>
       <a
         routerLink="/lifts"
-        class="p-2 space-x-2 hover:text-primary-800 rounded-full font-medium">
+        class="p-2 space-x-2 hover:text-primary-700 rounded-full font-medium"
+        [ngClass]="{'text-gray-200 hover:text-primary-300': !isHomePage}">
         <span [innerHTML]="'faThumbsUp' | attachedIcon: 'x'"></span>
         <span> Find a Lift </span>
       </a>
       <a
         routerLink="/my-lifts"
-        class="p-2 space-x-2 hover:text-primary-800 rounded-full font-medium">
+        class="p-2 space-x-2 hover:text-primary-700 rounded-full font-medium"
+        [ngClass]="{'text-gray-200 hover:text-primary-300': !isHomePage}">
         <span [innerHTML]="'faCar' | attachedIcon: 'x'"></span>
         <span> Offer a Lift </span>
       </a>
       <a
         routerLink="/my-applications"
-        class="p-2 space-x-2 hover:text-primary-800 rounded-full font-medium">
+        class="p-2 space-x-2 hover:text-primary-700 rounded-full font-medium"
+        [ngClass]="{'text-gray-200 hover:text-primary-300': !isHomePage}">
         <span [innerHTML]="'faAddressCard' | attachedIcon: 'x'"></span>
         <span>My Applications</span>
       </a>
       <a
         routerLink="/my-lifts"
-        class="p-2 space-x-2 hover:text-primary-800 rounded-full font-medium">
+        class="p-2 space-x-2 hover:text-primary-700 rounded-full font-medium"
+        [ngClass]="{'text-gray-200 hover:text-primary-300': !isHomePage}">
         <span [innerHTML]="'faCarSide' | attachedIcon: 'x'"></span>
         <span>My Lifts</span>
       </a>
