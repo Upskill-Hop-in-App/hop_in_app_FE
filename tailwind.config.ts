@@ -5,6 +5,10 @@ const config: Config = {
   darkMode: 'selector',
   content: ['./src/**/*.{html,ts}'],
   theme: {
+    fontFamily: {
+      condensed: ['Sofia Sans Extra Condensed', 'sans-serif'],
+      semiCondensed: ['Sofia Sans Semi Condensed', 'sans-serif'],
+    },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
@@ -47,9 +51,14 @@ const config: Config = {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
         },
+        bounceSlow: {
+          '0%, 100%': { transform: 'translateY(20)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
       },
       animation: {
         bounceCar: 'bounceCar 0.6s ease-in-out infinite',
+        bounceSlow: 'bounceSlow 3s ease-in-out infinite',
       },
     },
   },
