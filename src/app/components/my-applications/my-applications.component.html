@@ -1,42 +1,33 @@
 <div class="main-container">
-  <!-- Filter Form -->
-  <div class="flex flex-col justify-end gap-4 lg:flex-row">
-    <button
-      class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
-      (click)="applyFilters()">
-      <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span
-      ><span>Search </span>
-    </button>
-    <button
-      class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
-      (click)="clearFilters()">
-      <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
-    </button>
+  <!-- ------------------------------- Upper Bar -------------------------------- -->
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <div>
+      <span class="main-title">My Applications</span>
+    </div>
   </div>
 
-  <form (ngSubmit)="applyFilters()" class="mt-6 space-y-6">
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <!-- Status -->
-      <div>
-        <label
-          for="status"
-          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-          >Status</label
-        >
-        <select
-          id="status"
-          [(ngModel)]="filters.status"
-          name="status"
-          class="input-standard">
-          <option value="">--Select Status--</option>
-          <option value="pending">Pending</option>
-          <option value="accepted">Accepted</option>
-          <option value="ready">Ready</option>
-          <option value="rejected">Rejected</option>
-          <option value="canceled">Canceled</option>
-        </select>
+  <!-- Filter Form -->
+  <form
+    (ngSubmit)="applyFilters()"
+    class="space-y-6 p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+    <div class="flex justify-between space-x-4">
+      <div class="flex-1 font-extrabold text-gray-600 dark:text-gray-400">
+        <span [innerHTML]="'faFilter' | attachedIcon"></span>
+        <span> FILTERS </span>
       </div>
-
+      <button
+        class="btn-gray flex items-center justify-center gap-2 rounded-lg"
+        (click)="clearFilters()">
+        <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
+      </button>
+      <button
+        class="btn-primary flex items-center justify-center gap-2 rounded-lg"
+        (click)="applyFilters()">
+        <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span>
+        <span>Search </span>
+      </button>
+    </div>
+    <div class="grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-6">
       <!-- Start Point District -->
       <div>
         <label
@@ -169,136 +160,154 @@
           name="scheduleTime"
           class="input-standard" />
       </div>
+
+      <!-- Status -->
+      <div>
+        <label
+          for="status"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Status</label
+        >
+        <select
+          id="status"
+          [(ngModel)]="filters.status"
+          name="status"
+          class="input-standard">
+          <option value="">--Select Status--</option>
+          <option value="pending">Pending</option>
+          <option value="accepted">Accepted</option>
+          <option value="ready">Ready</option>
+          <option value="rejected">Rejected</option>
+          <option value="canceled">Canceled</option>
+        </select>
+      </div>
     </div>
   </form>
-  <div>
-    @if (applications.length === 0) {
-      <tr>
-        <td colspan="9" class="text-center">No applications found</td>
-      </tr>
-    } @else {
-      @for (application of applications; track application.ca) {
-        <div class="card-container">
-          <div
-            class="min-h-48 min-w-48 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-50 dark:text-gray-500 flex items-center justify-center align-middle flex-none">
-            <span [innerHTML]="'faAddressCard' | attachedIcon: '5x'"></span>
-          </div>
-          <div class="flex-1 space-y-2 flex-col">
-            <div>
-              <div
-                class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-                <span class="pe-2"> FROM: </span>
-                <span class="">
-                  {{ application.lift.startPoint?.parish! | titlecase }},
-                  {{ application.lift.startPoint?.municipality! | titlecase }} -
-                  {{ application.lift.startPoint?.district! | uppercase }}
-                </span>
-              </div>
-              <div
-                class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
-                <span class="pe-2"> TO: </span>
-                <span class="font-extrabold">
-                  {{ application.lift.endPoint?.parish! | titlecase }},
-                  {{ application.lift.endPoint?.municipality! | titlecase }} -
-                  {{ application.lift.endPoint?.district! | uppercase }}
-                </span>
-              </div>
-            </div>
-            <p class="text-sm font-semibold">
-              <span class=""> Schedule: </span>
-              {{ application.lift.schedule | date: "short" }}
-            </p>
-            <p
-              class="text-white w-fit px-4 py-1 rounded-full text-[14px]"
-              [ngClass]="{
-                'bg-sky-700': application.lift.status === 'open',
-                'bg-primary-700': application.lift.status === 'ready',
-                'bg-amber-600': application.lift.status === 'inProgress',
-                'bg-orange-500': application.lift.status === 'finished',
-                'bg-gray-600': application.lift.status === 'closed',
-                'bg-rose-700': application.lift.status === 'canceled',
-              }">
-              {{ application.lift.status | titlecase }}
-            </p>
+  @if (applications.length === 0) {
+    <div colspan="9" class="text-center">No applications found</div>
+  } @else {
+    @for (application of applications; track application.ca) {
+      <div class="card-container">
+        <div
+          class="min-h-48 min-w-48 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-50 dark:text-gray-500 flex items-center justify-center align-middle flex-none">
+          <span [innerHTML]="'faAddressCard' | attachedIcon: '5x'"></span>
+        </div>
+        <div class="flex-1 space-y-2 flex-col">
+          <div class="flex flex-nowrap">
             <div
-              class="border-l-2 ps-3 text-gray-500 dark:text-gray-400 text-sm"
-              [ngClass]="{
-                'border-sky-300 dark:border-sky-800':
-                  application.lift.status === 'open',
-                'border-primary-300 dark:border-primary-800':
-                  application.lift.status === 'ready',
-                'border-amber-300 dark:border-amber-800':
-                  application.lift.status === 'inProgress',
-                'border-orange-300 dark:border-orange-800':
-                  application.lift.status === 'finished',
-                'border-gray-300 dark:border-gray-800':
-                  application.lift.status === 'closed',
-                'border-rose-300 dark:border-rose-800':
-                  application.lift.status === 'canceled',
-              }">
-              <p>Created at: {{ application.createdAt | date: "short" }}</p>
-              <p>
-                Driver: {{ application.lift.driver?.name | titlecase }}
-                <ng-container
-                  *ngIf="isValidRating(application.lift.driver?.driverRating)">
-                  <ng-container
-                    *ngFor="
-                      let star of getStarsArray(
-                        application.lift.driver?.driverRating
-                      );
-                      let i = index
-                    ">
-                    <span
-                      class="text-amber-400"
-                      [innerHTML]="'faStar' | attachedIcon"></span>
-                  </ng-container>
-                </ng-container>
-                <span
-                  *ngIf="!isValidRating(application.lift.driver?.driverRating)"
-                  >Invalid Rating</span
-                >
-              </p>
+              class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+              <span>
+                {{ application.lift.startPoint?.parish! | titlecase }},
+                {{ application.lift.startPoint?.municipality! | titlecase }} -
+                {{ application.lift.startPoint?.district! | uppercase }}
+              </span>
+            </div>
+            <div
+              class="text-2xl px-6 text-gray-500"
+              [innerHTML]="'faArrowRight' | attachedIcon: 'x'"></div>
+            <div
+              class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+              <span>
+                {{ application.lift.endPoint?.parish! | titlecase }},
+                {{ application.lift.endPoint?.municipality! | titlecase }} -
+                {{ application.lift.endPoint?.district! | uppercase }}
+              </span>
             </div>
           </div>
-          <div class="text-end flex flex-col justify-between">
-            <div class="font-bold">
-              <p>
-                {{ application.lift.car?.brand | titlecase }}
-                {{ application.lift.car?.model | titlecase }} -
-                {{ application.lift.car?.color | titlecase }}
-              </p>
-              <p>Plate: {{ application.lift.car?.plate | uppercase }}</p>
-            </div>
-            <div>
-              <p class="text-3xl font-extrabold pb-4">
-                {{ application.lift.price }} €
-              </p>
-              <div class="flex space-x-4 justify-end">
-                @if (
-                  application.status === "pending" ||
-                  application.status === "accepted" ||
-                  application.status === "ready"
-                ) {
-                  <div class="btn-danger">
-                    <a (click)="toggleCancel(application)">
-                      <span>Cancel</span></a
-                    >
-                  </div>
-                }
-                <button
-                  *ngIf="applicationFlags[application.lift.cl]"
-                  class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  routerLink="/current-lift"
-                  [queryParams]="{ lift: application.lift.cl }">
-                  Go to Lift
-                </button>
-              </div>
+          <p class="text-sm font-semibold">
+            <span class=""> Schedule: </span>
+            {{ application.lift.schedule | date: "short" }}
+          </p>
+          <p
+            class="text-white w-fit px-4 py-1 rounded-full text-[14px]"
+            [ngClass]="{
+              'bg-sky-700': application.lift.status === 'open',
+              'bg-primary-700': application.lift.status === 'ready',
+              'bg-amber-600': application.lift.status === 'inProgress',
+              'bg-orange-500': application.lift.status === 'finished',
+              'bg-gray-600': application.lift.status === 'closed',
+              'bg-rose-700': application.lift.status === 'canceled',
+            }">
+            {{ application.lift.status | titlecase }}
+          </p>
+          <div
+            class="border-l-2 ps-3 text-gray-500 dark:text-gray-400 text-sm"
+            [ngClass]="{
+              'border-sky-300 dark:border-sky-800':
+                application.lift.status === 'open',
+              'border-primary-300 dark:border-primary-800':
+                application.lift.status === 'ready',
+              'border-amber-300 dark:border-amber-800':
+                application.lift.status === 'inProgress',
+              'border-orange-300 dark:border-orange-800':
+                application.lift.status === 'finished',
+              'border-gray-300 dark:border-gray-800':
+                application.lift.status === 'closed',
+              'border-rose-300 dark:border-rose-800':
+                application.lift.status === 'canceled',
+            }">
+            <p>Created at: {{ application.createdAt | date: "short" }}</p>
+            <p>
+              Driver: {{ application.lift.driver?.name | titlecase }}
+              <ng-container
+                *ngIf="isValidRating(application.lift.driver?.driverRating)">
+                <ng-container
+                  *ngFor="
+                    let star of getStarsArray(
+                      application.lift.driver?.driverRating
+                    );
+                    let i = index
+                  ">
+                  <span
+                    class="text-amber-400"
+                    [innerHTML]="'faStar' | attachedIcon"></span>
+                </ng-container>
+              </ng-container>
+              <span
+                *ngIf="!isValidRating(application.lift.driver?.driverRating)"
+                >Invalid Rating</span
+              >
+            </p>
+          </div>
+        </div>
+        <div class="text-end flex flex-col justify-between">
+          <div class="font-bold">
+            <p>
+              {{ application.lift.car?.brand | titlecase }}
+              {{ application.lift.car?.model | titlecase }} -
+              {{ application.lift.car?.color | titlecase }}
+            </p>
+            <p>Plate: {{ application.lift.car?.plate | uppercase }}</p>
+          </div>
+          <div>
+            <p class="text-3xl font-extrabold pb-4">
+              {{ application.lift.price }} €
+            </p>
+            <div class="flex space-x-4 justify-end">
+              @if (
+                application.status === "pending" ||
+                application.status === "accepted" ||
+                application.status === "ready"
+              ) {
+                <div class="btn-danger">
+                  <a (click)="toggleCancel(application)">
+                    <span>Cancel</span></a
+                  >
+                </div>
+              }
+              <button
+                *ngIf="applicationFlags[application.lift.cl]"
+                class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                routerLink="/current-lift"
+                [queryParams]="{ lift: application.lift.cl }">
+                Go to Lift
+              </button>
             </div>
           </div>
         </div>
-      }
+      </div>
     }
-  </div>
+  }
 </div>
 
 <app-modal modalTitle="{{ currentModalTitle }}">
