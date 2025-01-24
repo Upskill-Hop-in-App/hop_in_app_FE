@@ -3,7 +3,7 @@ import {
   UserLogin,
   UserRegister,
   UserRoles,
-} from './../../src/app/models/user.model'
+} from '../../src/app/models/user.model'
 describe('Register and Login', () => {
   const randomNumber = getRandomNumber()
   const adminTest: UserRegister = {
@@ -34,17 +34,10 @@ describe('Register and Login', () => {
     })
   })
 
-  it.skip('Should register a client', () => {
-    cy.register(
-      clientTest.email,
-      clientTest.name,
-      clientTest.username,
-      clientTest.contact,
-      clientTest.password
-    )
-  })
-
-  it.skip('Should login as a client', () => {
-    cy.login(`tobias-${randomNumber}@test.com`, `psw@${randomNumber}`)
+  it('Should login as a client', () => {
+    cy.login(`admin1@test.com`, `admin123`)
+    cy.getByDataCy("menu-navbar-btn").click()
+    cy.getByDataCy("menu-navbar-myLifts").click()
+    cy.getByDataCy("my-lifts-create-btn").click()
   })
 })
