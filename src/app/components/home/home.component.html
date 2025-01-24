@@ -30,20 +30,25 @@
             Every Lift Counts. Sign up and go!
           </h1>
         </div>
-        <div class="flex items-center justify-start space-x-4 text-sm">
-          <button
-            class="transition truncate border-2 bg-primary-600 hover:bg-primary-800 duration-300 text-white font-bold rounded-full px-6 py-2"
-            style="text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3)"
-            routerLink="/safety-info">
-            Register
-          </button>
-          <button
-            class="truncate border-2 text-white bg-sky-600 hover:bg-sky-800 font-bold py-2 px-6 rounded-full transition-all duration-300"
-            style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3)"
-            routerLink="/tourpacks">
-            Login
-          </button>
-        </div>
+        @if (!userToken) {
+          <div class="flex items-center justify-start space-x-4 text-sm">
+            <a href="/register">
+              <button
+                class="transition truncate border-2 bg-primary-600 hover:bg-primary-800 duration-300 text-white font-bold rounded-full px-6 py-2"
+                style="text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3)"
+                routerLink="/register">
+                Register
+              </button>
+            </a>
+            <a href="/login">
+              <button
+                class="truncate border-2 text-white bg-sky-600 hover:bg-sky-800 font-bold py-2 px-6 rounded-full transition-all duration-300"
+                style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3)">
+                Login
+              </button>
+            </a>
+          </div>
+        }
       </div>
       <!-- ------------------------------ Carousel ------------------------------- -->
       <div class="hidden md:flex items-center justify-center xl:w-1/2 mt-8">
