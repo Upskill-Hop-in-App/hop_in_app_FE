@@ -9,6 +9,7 @@
       <div class="flex flex-row items-end justify-between gap-1">
         <div class="flex w-fit flex-row justify-end gap-1">
           <span
+            data-cy="mycars-add-car"
             (click)="openCreateModal()"
             class="btn-primary relative flex h-10 w-10 cursor-pointer items-center justify-center p-0"
             [innerHTML]="'faPlus' | attachedIcon: ''"></span>
@@ -46,6 +47,7 @@
               <td>
                 <div class="group relative">
                   <span
+                    [attr.data-cy]="'mycars-edit-car-' + car.plate"
                     (click)="openEditModal(car)"
                     class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
                     [innerHTML]="'faPenToSquare' | attachedIcon: ''"></span>
@@ -59,6 +61,7 @@
               <td>
                 <div class="group relative">
                   <span
+                    [attr.data-cy]="'mycars-delete-car-' + car.plate"
                     (click)="openDeleteModal(car)"
                     class="cursor-pointer transition-opacity duration-300 ease-in-out group-hover:opacity-0"
                     [innerHTML]="'faTrashCan' | attachedIcon: ''"></span>
@@ -86,6 +89,7 @@
           <div class="space-y-2">
             <label for="brandName" class="font-semibold">Brand: </label>
             <select
+              data-cy="addform-select-brand"
               formControlName="brand"
               (ngModelChange)="onBrandChange()"
               class="input-standard">
@@ -105,6 +109,7 @@
           <div class="space-y-2">
             <label for="modelName" class="font-semibold">Model: </label>
             <select
+              data-cy="addform-select-model"
               formControlName="model"
               (ngModelChange)="onModelChange()"
               class="input-standard">
@@ -123,7 +128,10 @@
 
           <div class="space-y-2">
             <label for="yearName" class="font-semibold">Year: </label>
-            <select formControlName="year" class="input-standard">
+            <select
+              data-cy="addform-select-year"
+              formControlName="year"
+              class="input-standard">
               <option
                 value=""
                 disabled
@@ -140,6 +148,7 @@
           <div class="space-y-2">
             <label for="colorName" class="font-semibold">Color: </label>
             <input
+              data-cy="addform-input-color"
               type="text"
               name="colorName"
               id="colorName"
@@ -151,6 +160,7 @@
           <div class="space-y-2">
             <label for="plateNumber" class="font-semibold">Plate: </label>
             <input
+              data-cy="addform-input-plate"
               type="text"
               name="plateNumber"
               id="plateNumber"
@@ -163,7 +173,12 @@
             <button type="button" (click)="closeModal()" class="btn-gray">
               Cancel
             </button>
-            <button type="submit" class="btn-primary">Add Car</button>
+            <button
+              data-cy="addform-submit-btn"
+              type="submit"
+              class="btn-primary">
+              Add Car
+            </button>
           </div>
         </form>
       }
@@ -224,6 +239,7 @@
           <div class="space-y-2">
             <label for="colorName" class="font-semibold">Color: </label>
             <input
+              data-cy="editform-input-color"
               type="text"
               name="colorName"
               id="colorName"
@@ -235,6 +251,7 @@
           <div class="space-y-2">
             <label for="plateNumber" class="font-semibold">Plate: </label>
             <input
+              data-cy="editform-input-plate"
               type="text"
               name="plateNumber"
               id="plateNumber"
@@ -247,7 +264,12 @@
             <button type="button" (click)="closeModal()" class="btn-gray">
               Cancel
             </button>
-            <button type="submit" class="btn-primary">Save</button>
+            <button
+              data-cy="editform-submit-btn"
+              type="submit"
+              class="btn-primary">
+              Save
+            </button>
           </div>
         </form>
       }
@@ -318,6 +340,7 @@
                 confirm:
               </p>
               <input
+                data-cy="deleteform-input-confirm"
                 type="text"
                 name="confirmationPlate"
                 id="confirmationPlate"
@@ -331,7 +354,12 @@
             <button class="btn-gray" (click)="closeModal()" type="button">
               Cancel
             </button>
-            <button class="btn-danger" type="submit">Delete</button>
+            <button
+              data-cy="deleteform-submit-btn"
+              class="btn-danger"
+              type="submit">
+              Delete
+            </button>
           </div>
         </form>
       }
