@@ -1,43 +1,38 @@
-<!-- Filter Form -->
-<div class="py-6">
-  <div class="flex flex-col justify-end gap-4 lg:flex-row">
-    <button
-      class="btn-primary flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
-      (click)="applyFilters()">
-      <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span
-      ><span>Search </span>
-    </button>
-    <button
-      class="btn-gray flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium shadow"
-      (click)="clearFilters()">
-      <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
-    </button>
+<div class="main-container">
+  <!-- ------------------------------- Upper Bar -------------------------------- -->
+  <div class="flex flex-col justify-between py-4 md:flex-row">
+    <div class="main-title">My Offered Lifts</div>
+    <div class="flex w-fit flex-row justify-end gap-1 space-x-2">
+      <button
+        data-cy="my-lifts-create-btn"
+        (click)="toggleCreate()"
+        class="btn-primary relative flex h-10 w-10 cursor-pointer items-center justify-center p-0"
+        [innerHTML]="'faPlus' | attachedIcon: ''"></button>
+    </div>
   </div>
 
-  <form (ngSubmit)="applyFilters()" class="mt-6 space-y-6">
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <!-- Status -->
-      <div>
-        <label
-          for="status"
-          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-          >Status</label
-        >
-        <select
-          id="status"
-          [(ngModel)]="filters.status"
-          name="status"
-          class="input-standard">
-          <option value="">--Select Status--</option>
-          <option value="open">Open</option>
-          <option value="ready">Ready</option>
-          <option value="inProgress">In Progress</option>
-          <option value="finished">Finished</option>
-          <option value="closed">Closed</option>
-          <option value="canceled">Canceled</option>
-        </select>
+  <!-- Filter Form -->
+  <form
+    (ngSubmit)="applyFilters()"
+    class="space-y-6 p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+    <div class="flex justify-between space-x-4">
+      <div class="flex-1 font-extrabold text-gray-600 dark:text-gray-400">
+        <span [innerHTML]="'faFilter' | attachedIcon"></span>
+        <span> FILTERS </span>
       </div>
-
+      <button
+        class="btn-gray flex items-center justify-center gap-2 rounded-lg"
+        (click)="clearFilters()">
+        <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
+      </button>
+      <button
+        class="btn-primary flex items-center justify-center gap-2 rounded-lg"
+        (click)="applyFilters()">
+        <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span>
+        <span>Search </span>
+      </button>
+    </div>
+    <div class="grid grid-cols-3 gap-4 md:grid-cols-4 lg:grid-cols-6">
       <!-- Start Point District -->
       <div>
         <label
@@ -202,119 +197,150 @@
           name="scheduleHour"
           class="input-standard" />
       </div>
+
+      <!-- Status -->
+      <div>
+        <label
+          for="status"
+          class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >Status</label
+        >
+        <select
+          id="status"
+          [(ngModel)]="filters.status"
+          name="status"
+          class="input-standard">
+          <option value="">--Select Status--</option>
+          <option value="open">Open</option>
+          <option value="ready">Ready</option>
+          <option value="inProgress">In Progress</option>
+          <option value="finished">Finished</option>
+          <option value="closed">Closed</option>
+          <option value="canceled">Canceled</option>
+        </select>
+      </div>
     </div>
   </form>
-</div>
-
-<!-- ----------------------------------------------------------------------- -->
-
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">From</th>
-        <th scope="col">To</th>
-        <th scope="col">Schedule</th>
-        <th scope="col">Price</th>
-        <th scope="col">Car</th>
-        <th scope="col">Available seats</th>
-        <th scope="col">Status</th>
-        <th scope="col">Created at</th>
-        <th scope="col">Applications</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      @if (lifts.length === 0) {
-        <tr>
-          <td colspan="10">
+  @if (lifts.length === 0) {
+    <div colspan="10">
+      <div
+        class="rtl relative flex h-8 w-full items-center cursor-default justify-center">
+        <p>No lifts found</p>
+      </div>
+    </div>
+  } @else {
+    @for (lift of lifts; track lift.cl) {
+      <div class="card-container">
+        <div
+          class="min-h-48 min-w-48 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-50 dark:text-gray-500 flex items-center justify-center align-middle flex-none">
+          <div [innerHTML]="'faCar' | attachedIcon: '5x'"></div>
+        </div>
+        <div class="flex-1 space-y-2 flex-col">
+          <div class="flex flex-nowrap">
             <div
-              class="rtl relative flex h-8 w-full items-center cursor-default justify-center">
-              <p>No lifts found</p>
+              class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+              <span class="">
+                {{ lift.startPoint.parish | titlecase }},
+                {{ lift.startPoint.municipality | titlecase }} -
+                {{ lift.startPoint.district | uppercase }}
+              </span>
             </div>
-          </td>
-        </tr>
-      } @else {
-        @for (lift of lifts; track lift.cl) {
-          <tr>
-            <td>
-              {{ lift.startPoint.parish | titlecase }},
-             
-            {{ lift.startPoint.municipality | titlecase }} ({{
-                lift.startPoint.district | titlecase
-              }})
-            </td>
-            <td>
-              {{ lift.endPoint.parish | titlecase }},
-            {{ lift.endPoint.municipality | titlecase }} ({{
-                lift.endPoint.district | titlecase
-              }})
-            </td>
-            <td>{{ lift.schedule | date: "short" }}</td>
-            <td>{{ lift.price }}€</td>
-            <td>
-              {{ lift.car.brand | titlecase }} {{ lift.car.model | titlecase }}
-            {{ lift.car.color }}
-              {{ lift.car.plate }}
-            </td>
-            <td>
-              {{ lift.providedSeats - lift.occupiedSeats! }} /
+            <div
+              class="text-2xl px-6 text-gray-500"
+              [innerHTML]="'faArrowRight' | attachedIcon: 'x'"></div>
+            <div
+              class="text-xl 3xl:text-2xl font-extrabold text-primary-700 dark:text-primary-600">
+              <span class="font-extrabold">
+                {{ lift.endPoint.parish | titlecase }},
+                {{ lift.endPoint.municipality | titlecase }} -
+                {{ lift.endPoint.district | uppercase }}
+              </span>
+            </div>
+          </div>
+          <p class="text-sm font-semibold">
+            <span class=""> Schedule: </span>
+            {{ lift.schedule | date: "short" }}
+          </p>
+          <p
+            class="text-white w-fit px-4 py-1 rounded-full text-[14px]"
+            [ngClass]="{
+              'bg-sky-700': lift.status === 'open',
+              'bg-primary-700': lift.status === 'ready',
+              'bg-amber-600': lift.status === 'inProgress',
+              'bg-orange-500': lift.status === 'finished',
+              'bg-gray-600': lift.status === 'closed',
+              'bg-rose-700': lift.status === 'canceled',
+            }">
+            {{ lift.status | titlecase }}
+          </p>
+          <div
+            class="border-l-2 ps-3 text-gray-500 dark:text-gray-400 text-sm"
+            [ngClass]="{
+              'border-sky-300 dark:border-sky-800': lift.status === 'open',
+              'border-primary-300 dark:border-primary-800':
+                lift.status === 'ready',
+              'border-amber-300 dark:border-amber-800':
+                lift.status === 'inProgress',
+              'border-orange-300 dark:border-orange-800':
+                lift.status === 'finished',
+              'border-gray-300 dark:border-gray-800': lift.status === 'closed',
+              'border-rose-300 dark:border-rose-800':
+                lift.status === 'canceled',
+            }">
+            <p>Created at: {{ lift.createdAt | date: "short" }}</p>
+            <p>By: Yourself</p>
+          </div>
+        </div>
+        <div class="text-end flex flex-col justify-between">
+          <div class="font-bold">
+            <p>
+              {{ lift.car.brand | titlecase }}
+              {{ lift.car.model | titlecase }} -
+              {{ lift.car.color | titlecase }}
+            </p>
+            <p>Plate: {{ lift.car.plate | uppercase }}</p>
+          </div>
+          <div>
+            <p class="font-semibold">
+              Available Seats: {{ lift.providedSeats - lift.occupiedSeats! }} /
               {{ lift.providedSeats }}
-            </td>
-            <td>{{ lift.status }}</td>
-            <td>{{ lift.createdAt | date: "short" }}</td>
-            <td>
-              <div>
-                @if (lift.applications?.length === 0) {
-                  <div
-                    class="rtl relative flex h-8 w-full items-center cursor-default justify-center btn-gray">
-                    <p>No applications yet</p>
+            </p>
+            <p class="text-3xl font-extrabold pb-4">{{ lift.price }} €</p>
+            <div class="flex space-x-4 justify-end">
+              <button
+                class="btn-danger"
+                (click)="toggleCancelStatus(lift, lift.cl ?? '', 'canceled')">
+                Cancel
+              </button>
+              @if (lift.applications?.length === 0) {
+                <div class="btn-gray">
+                  <p>No applications yet</p>
+                </div>
+              } @else if (lift.applications?.length === 1) {
+                <a data-cy="see-apps" (click)="toggleApplication(lift)"
+                  ><div class="btn-terciary">See 1 application</div></a
+                >
+              } @else {
+                <a data-cy="see-apps" (click)="toggleApplication(lift)">
+                  <div class="btn-terciary">
+                    See {{ lift.applications?.length }} applications
                   </div>
-                } @else if (lift.applications?.length === 1) {
-                  <div
-                    class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary">
-                    <a (click)="toggleApplication(lift)">Inspect application</a>
-                  </div>
-                } @else {
-                  <div
-                    class="rtl relative flex h-8 w-full cursor-pointer items-center justify-center btn-primary">
-                    <a (click)="toggleApplication(lift)"
-                      >Inspect all
-                      {{ lift.applications?.length }} applications</a
-                    >
-                  </div>
-                }
-              </div>
-            </td>
-            <td>
-            <button
-              class="bg-secondary-500 hover:bg-secondary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              (click)="toggleCancelStatus(lift, lift.cl ?? '', 'canceled')"
-            >
-              Cancel
-            </button>
-          </td>
-          <td>
-            <button *ngIf="liftFlags[lift.cl!]"
-              class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              routerLink="/current-lift"
-              [queryParams]="{ lift: lift.cl }"
-            >
-              Start Lift
-            </button>
-          </td>
-          </tr>
-        }
-      }
-    </tbody>
-  </table>
-</div>
-
-<div
-  class="rtl relative flex h-8 w-8 cursor-pointer items-center justify-center btn-primary">
-  <a (click)="toggleCreate()"
-    ><span [innerHTML]="'faPlus' | attachedIcon"></span
-  ></a>
+                </a>
+              }
+              <button
+                data-cy="go-to-lift-btn"
+                *ngIf="liftFlags[lift.cl!]"
+                class="btn-primary"
+                routerLink="/current-lift"
+                [queryParams]="{ lift: lift.cl }">
+                Go to Lift
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
 </div>
 
 <app-modal modalTitle="{{ currentModalTitle }}">
@@ -325,14 +351,18 @@
         [formGroup]="liftForm"
         (ngSubmit)="confirmCreate()"
         #form="ngForm"
-        class="bg-white px-8 pt-6 pb-8 mb-4">
+        class="px-8 pb-4 space-y-2 text-sm">
         <!-- STARTPOINT -->
-        <div>
+        <div
+          class="flex space-x-4 w-full border dark:border-gray-600 p-2 rounded-lg">
+          <h3 class="font-bold w-14">From:</h3>
           <!-- District Select -->
-          <div>
-            <label for="startDistrict">Select District</label>
+          <div class="w-1/3">
+            <label for="startDistrict">District</label>
             <select
+              data-cy="start-district-dropdown"
               id="startDistrict"
+              class="input-small"
               formControlName="startDistrict"
               (change)="onStartDistrictChange($event)">
               <option
@@ -344,10 +374,12 @@
           </div>
 
           <!-- Municipality Select -->
-          <div>
-            <label for="startMunicipality">Select Municipality</label>
+          <div class="w-1/3">
+            <label for="startMunicipality">Municipality</label>
             <select
+              data-cy="start-municipality-dropdown"
               id="startMunicipality"
+              class="input-small"
               formControlName="startMunicipality"
               [disabled]="!selectedStartDistrict"
               (change)="onStartMunicipalityChange($event)">
@@ -360,10 +392,12 @@
           </div>
 
           <!-- Parish Select -->
-          <div>
-            <label for="startParish">Select Parish</label>
+          <div class="w-1/3">
+            <label for="startParish">Parish</label>
             <select
+              data-cy="start-parish-dropdown"
               id="startParish"
+              class="input-small"
               formControlName="startParish"
               [disabled]="!selectedStartMunicipality">
               <option
@@ -376,12 +410,17 @@
         </div>
 
         <!-- ENDPOINT -->
-        <div>
+
+        <div
+          class="flex space-x-4 w-full border dark:border-gray-600 p-2 rounded-lg">
+          <h3 class="font-bold w-14">To:</h3>
           <!-- District Select -->
-          <div>
-            <label for="endDistrict">Select District</label>
+          <div class="w-1/3">
+            <label for="endDistrict">District</label>
             <select
+              data-cy="end-district-dropdown"
               id="endDistrict"
+              class="input-small"
               formControlName="endDistrict"
               (change)="onEndDistrictChange($event)">
               <option
@@ -393,10 +432,12 @@
           </div>
 
           <!-- Municipality Select -->
-          <div>
-            <label for="endMunicipality">Select Municipality</label>
+          <div class="w-1/3">
+            <label for="endMunicipality">Municipality</label>
             <select
+              data-cy="end-municipality-dropdown"
               id="endMunicipality"
+              class="input-small"
               formControlName="endMunicipality"
               [disabled]="!selectedEndDistrict"
               (change)="onEndMunicipalityChange($event)">
@@ -409,10 +450,12 @@
           </div>
 
           <!-- Parish Select -->
-          <div>
-            <label for="endParish">Select Parish</label>
+          <div class="w-1/3">
+            <label for="endParish">Parish</label>
             <select
+              data-cy="end-parish-dropdown"
               id="endParish"
+              class="input-small"
               formControlName="endParish"
               [disabled]="!selectedEndMunicipality">
               <option *ngFor="let endParish of endParishes" [value]="endParish">
@@ -424,8 +467,12 @@
 
         <!-- Car -->
         <div>
-          <label for="car">Select Car</label>
-          <select id="car" formControlName="car">
+          <label for="car" class="font-bold">Car</label>
+          <select
+            data-cy="car-select"
+            id="car"
+            class="input-small"
+            formControlName="car">
             <option *ngFor="let car of cars" [value]="car.cc">
               {{ car.plate }}
             </option>
@@ -434,13 +481,10 @@
 
         <!-- Schedule -->
         <div class="mb-6">
-          <label
-            class="block text-gray-700 text-sm font-bold mb-2"
-            for="cschedule">
-            Schedule
-          </label>
+          <label class="block font-bold mb-2" for="cschedule"> Schedule </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            data-cy="schedule-select"
+            class="input-standard"
             id="schedule"
             name="schedule"
             type="datetime-local"
@@ -450,11 +494,10 @@
 
         <!-- Price -->
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
-            Price
-          </label>
+          <label class="block font-bold mb-2" for="cd"> Price </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            data-cy="price-input"
+            class="input-standard"
             id="price"
             name="price"
             type="number"
@@ -465,11 +508,12 @@
 
         <!-- Provided Seats -->
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="cd">
+          <label class="block font-bold mb-2" for="cd">
             Number of passengers <span class="italic">(max.)</span>
           </label>
           <input
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:italic"
+            data-cy="seats-input"
+            class="input-standard"
             id="providedSeats"
             name="providedSeats"
             type="number"
@@ -479,17 +523,12 @@
         </div>
 
         <!-- Botoes -->
-        <div class="flex items-center justify-between">
-          <button
-            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit">
-            Confirm
-          </button>
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-            (click)="cancel()">
+        <div class="flex items-center justify-end space-x-4 pt-8">
+          <button class="btn-gray" type="button" (click)="cancel()">
             Cancel
+          </button>
+          <button data-cy="create-lift-btn" class="btn-primary" type="submit">
+            Confirm
           </button>
         </div>
         <div></div>
@@ -498,81 +537,108 @@
     <!-- ----------------------------------------------------------------------- -->
     <!-- ------------------------- Toogle Application -------------------------- -->
     @if (showApplicationForm) {
-      @for (application of auxiliarLift.applications; track application.ca) {
-        <div>
-          <p>Passenger</p>
-          <p>{{ application.passenger?.username }}</p>
-          <p>Contact</p>
-          <p>{{ application.passenger?.contact }}</p>
-          <p>Rating</p>
-          <p>{{ application.passenger?.passengerRating }}</p>
-        </div>
-        @if (application.status === "pending") {
-          <div class="flex items-center justify-between">
-            <button
-              class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              (click)="acceptApplication(application.ca!)">
-              Accept
-            </button>
-            <button
-              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-              (click)="rejectApplication(application.ca!)">
-              Reject
-            </button>
+      <div class="space-y-8">
+        @for (application of auxiliarLift.applications; track application.ca) {
+          <div
+            class="border p-4 rounded-lg dark:border-gray-500 shadow-md flex space-x-4 text-nowrap">
+            <div
+              class="min-h-[72px] min-w-[72px] rounded-lg bg-gray-300 dark:bg-gray-600 text-gray-50 dark:text-gray-400 flex items-center justify-center align-middle">
+              <div [innerHTML]="'faUser' | attachedIcon: '2x'"></div>
+            </div>
+            <div class="w-full ms:auto">
+              <p>
+                <span class="font-bold"> Passenger: </span>
+                <span>{{ application.passenger?.username }}</span>
+              </p>
+              <p>
+                <span class="font-bold"> Contact: </span>
+                <span>{{ application.passenger?.contact }}</span>
+              </p>
+              <p>
+                <span class="font-bold"> Rating: </span>
+                <ng-container
+                  *ngIf="
+                    isValidRating(application.passenger?.passengerRating!)
+                  ">
+                  <ng-container
+                    *ngFor="
+                      let star of getStarsArray(
+                        application.passenger?.passengerRating!
+                      );
+                      let i = index
+                    ">
+                    <span
+                      class="text-amber-400"
+                      [innerHTML]="'faStar' | attachedIcon"></span>
+                  </ng-container>
+                </ng-container>
+              </p>
+            </div>
+            <div class="flex items-end justify-end space-x-4">
+              @if (application.status === "pending") {
+                <button
+                  class="btn-danger"
+                  type="button"
+                  (click)="rejectApplication(application.ca!)">
+                  Reject
+                </button>
+                <button
+                  [attr.data-cy]="
+                    'accept-' +
+                    application.passenger?.username +
+                    '-' +
+                    application.status
+                  "
+                  class="btn-primary"
+                  (click)="acceptApplication(application.ca!)">
+                  Accept
+                </button>
+              } @else {
+                <div class="btn-gray">
+                  <span>{{ application.status }}</span>
+                </div>
+              }
+            </div>
           </div>
-        } @else {
-          <p>Status</p>
-          <p>{{ application.status }}</p>
         }
-      }
-      <div>
-        <button
-          class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="button"
-          (click)="cancel()">
-          Cancel
-        </button>
+        <div class="flex justify-end pt-4">
+          <button class="btn-gray" type="button" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
       </div>
     }
     @if (showCancelStatus) {
-      <form (ngSubmit)="updateCancelStatus()" #deleteForm="ngForm" class="mt-4">
-        <div class="modal-header">
-          <h5 class="text-lg font-bold text-primary-600">
-            Confirm cancelation
-          </h5>
-        </div>
-        <div class="modal-body">
-          <p class="text-gray-700">You are about to cancel this lift:</p>
-          <div class="mt-1">
-            <strong class="block text-gray-800">From:</strong>
-            <span
-              >{{ auxiliarLift.startPoint.district }} -
-              {{ auxiliarLift.startPoint.municipality }} -
-              {{ auxiliarLift.startPoint.parish }}</span
-            >
-            <strong class="block text-gray-800">To:</strong>
-            <span
-              >{{ auxiliarLift.endPoint.district }} -
-              {{ auxiliarLift.endPoint.municipality }} -
-              {{ auxiliarLift.endPoint.parish }}</span
-            >
+      <form (ngSubmit)="updateCancelStatus()" #deleteForm="ngForm">
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <p class="font-bold">From:</p>
+            <div class="input-disabled">
+              {{ auxiliarLift.startPoint.parish | titlecase }},
+              {{ auxiliarLift.startPoint.municipality | titlecase }} -
+              {{ auxiliarLift.startPoint.district | uppercase }}
+            </div>
           </div>
-        </div>
-        <div class="modal-footer mt-4 flex justify-between">
-          <button
-            class="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Confirm
-          </button>
-          <button
-            class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            (click)="cancel()"
-            type="button"
-          >
-            Cancel
-          </button>
+          <div class="space-y-2">
+            <p class="font-bold">To:</p>
+            <div class="input-disabled">
+              {{ auxiliarLift.endPoint.parish | titlecase }},
+              {{ auxiliarLift.endPoint.municipality | titlecase }} -
+              {{ auxiliarLift.endPoint.district | uppercase }}
+            </div>
+          </div>
+          <div class="space-y-2">
+            <p class="font-bold">Schedule:</p>
+            <div class="input-disabled">
+              {{ auxiliarLift.schedule | date: "short" }}
+            </div>
+          </div>
+          <div class="modal-footer pt-4 flex justify-end space-x-4">
+            <button class="btn-gray" (click)="cancel()" type="button">
+              Cancel
+            </button>
+            <button class="btn-primary" type="submit">Confirm</button>
+          </div>
         </div>
       </form>
     }

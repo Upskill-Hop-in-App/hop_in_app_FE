@@ -12,15 +12,15 @@ import {
 } from '@angular/forms'
 import { catchError, of } from 'rxjs'
 import { ModalComponent } from '../modal/modal.component'
-import { DOCUMENT } from '@angular/common'
+import { DOCUMENT, TitleCasePipe, UpperCasePipe } from '@angular/common'
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
 import { CommonModule } from '@angular/common'
 import { ToastrService } from 'ngx-toastr'
 import { ActivatedRoute, Router } from '@angular/router'
 import { ApplicationService } from '../../services/application.service'
-import { RouterLink } from '@angular/router';
-import { QueryParamsHandling } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { RouterLink } from '@angular/router'
+import { QueryParamsHandling } from '@angular/router'
+import { RouterModule } from '@angular/router'
 import { AuthService } from '../../services/auth.service'
 import { MyCarService } from '../../services/my-car/my-car.service'
 
@@ -33,40 +33,42 @@ import { MyCarService } from '../../services/my-car/my-car.service'
     AttachedIconPipe,
     CommonModule,
     ReactiveFormsModule,
+    TitleCasePipe,
+    UpperCasePipe,
     RouterModule,
   ],
   templateUrl: './my-lifts.component.html',
   styleUrl: './my-lifts.component.css',
 })
 export class MyLiftsComponent implements OnInit {
-  lifts: Lift[] = [];
+  lifts: Lift[] = []
   lift: Lift = this.reset()
-  cars: MyCar[] = [];
-  startDistricts: string[] = [];
-  startMunicipalities: string[] = [];
-  startParishes: string[] = [];
-  endDistricts: string[] = [];
-  endMunicipalities: string[] = [];
-  endParishes: string[] = [];
-  selectedStartDistrict: string | null = null;
-  selectedStartMunicipality: string | null = null;
-  selectedEndDistrict: string | null = null;
-  selectedEndMunicipality: string | null = null;
-  auxiliarLift: Lift = this.reset();
-  showCreateForm: boolean = false;
-  showApplicationForm: boolean = false;
-  showCancelStatus: boolean = false;
-  currentLiftCode: string = "";
-  newStatus: string = "";
+  cars: MyCar[] = []
+  startDistricts: string[] = []
+  startMunicipalities: string[] = []
+  startParishes: string[] = []
+  endDistricts: string[] = []
+  endMunicipalities: string[] = []
+  endParishes: string[] = []
+  selectedStartDistrict: string | null = null
+  selectedStartMunicipality: string | null = null
+  selectedEndDistrict: string | null = null
+  selectedEndMunicipality: string | null = null
+  auxiliarLift: Lift = this.reset()
+  showCreateForm: boolean = false
+  showApplicationForm: boolean = false
+  showCancelStatus: boolean = false
+  currentLiftCode: string = ''
+  newStatus: string = ''
   // backupLift: Lift = this.reset();
-  showDeleteForm: boolean = false;
-  showEditForm: boolean = false;
-  currentModalTitle: string = '';
-  flagStart: boolean = false;
-  liftFlags: { [key: string]: boolean } = {};
+  showDeleteForm: boolean = false
+  showEditForm: boolean = false
+  currentModalTitle: string = ''
+  flagStart: boolean = false
+  liftFlags: { [key: string]: boolean } = {}
 
   //TODO mudar aqui para ir busca-lo ao token
-  clientUsername: string = 'admin1_user';
+  clientUsername: string = 'admin1_user'
 
   liftForm = new FormGroup({
     driver: new FormControl('', [Validators.required]),
@@ -137,9 +139,9 @@ export class MyLiftsComponent implements OnInit {
         })
       )
       .subscribe((data: Lift[]) => {
-        this.lifts = data;
-        this.updateLiftFlags(this.lifts);
-      });
+        this.lifts = data
+        this.updateLiftFlags(this.lifts)
+      })
   }
 
   getCars(): void {
@@ -334,6 +336,7 @@ export class MyLiftsComponent implements OnInit {
     this.currentModalTitle = 'Add lift'
     this.showCreateForm = true
     this.showApplicationForm = false
+    this.showCancelStatus = false
     this.getCars()
     this.resetForm()
     this.openModal()
@@ -369,6 +372,7 @@ export class MyLiftsComponent implements OnInit {
     this.currentModalTitle = 'List of applications'
     this.showCreateForm = false
     this.showApplicationForm = true
+    this.showCancelStatus = false
     this.openModal()
   }
 
@@ -440,157 +444,57 @@ export class MyLiftsComponent implements OnInit {
   }
 
   updateLiftFlags(lifts: Lift[]) {
-  
-    lifts.forEach(lift => {
-      this.liftFlags[lift.cl!] = lift.applications ? lift.applications.some((app) => app.status === "accepted" || app.status === "ready") : false;
-    });
-  
-    return this.liftFlags;
+    lifts.forEach((lift) => {
+      this.liftFlags[lift.cl!] = lift.applications
+        ? lift.applications.some(
+            (app) => app.status === 'accepted' || app.status === 'ready'
+          )
+        : false
+    })
+
+    return this.liftFlags
   }
 
   toggleCancelStatus(lift: Lift, cl: string, status: string): void {
-    this.auxiliarLift = { ...lift };
-    this.currentModalTitle = "Cancel Lift";
-    this.currentLiftCode = cl;
-    this.newStatus = status;
-    this.showEditForm = false;
-    this.showDeleteForm = false;
-    this.showCreateForm = false;
-    this.showCancelStatus = true;
-    this.showApplicationForm = false;
-    this.resetForm();
-    this.openModal();
+    this.auxiliarLift = { ...lift }
+    this.currentModalTitle = 'Confirm Cancelation'
+    this.currentLiftCode = cl
+    this.newStatus = status
+    this.showEditForm = false
+    this.showDeleteForm = false
+    this.showCreateForm = false
+    this.showCancelStatus = true
+    this.showApplicationForm = false
+    this.resetForm()
+    this.openModal()
   }
 
   updateCancelStatus(): void {
     this.LiftService.updateStatusLift(
       this.currentLiftCode,
-      this.newStatus,
+      this.newStatus
     ).subscribe({
       next: () => {
-        this.toastr.success('Updated lift status');
-        this.cancel();
-        this.getLiftsByUsername(this.clientUsername);
+        this.toastr.success('Updated lift status')
+        this.cancel()
+        this.getLiftsByUsername(this.clientUsername)
       },
       error: (err) => {
-        this.toastr.error('Failed to update lift status', err.error.error);
+        this.toastr.error('Failed to update lift status', err.error.error)
       },
-    });
+    })
   }
 
-  /* toggleStartLift(lift: Lift):void {
-    this.auxiliarLift = {... lift}
-    this.showEditForm = false;
-    this.showDeleteForm = false;
-    this.showCreateForm = false;
-    this.showCancelStatus = false;
-    this.showApplicationForm = false;
-    this.resetForm();
-    this.openModal();
-  } */
+  isValidRating(rating: any): boolean {
+    return !isNaN(rating) && rating >= 0 && rating <= 5
+  }
 
-  // toggleEdit(booking: Booking) {
-  //   this.showCreateForm = false;
-  //   this.showDeleteForm = false;
-  //   this.backupBooking = { ...booking };
-  //   this.bookingForm.setValue({
-  //     customer: booking.customer.email!,
-  //     tourPack: booking.tourPack.ct,
-  //     date: booking.date!.toString(),
-  //   });
-  //   this.showEditForm = true;
-  //   this.openModal();
-  // }
-
-  // confirmEdit(): void {
-  //   this.auxiliarBooking.customer.email = this.bookingForm.value.customer!;
-  //   this.auxiliarBooking.tourPack.ct = this.bookingForm.value.tourPack!;
-  //   this.auxiliarBooking.date = new Date(this.bookingForm.value.date!);
-
-  //   this.BookingService.updateBooking(
-  //     this.backupBooking,
-  //     this.auxiliarBooking,
-  //   ).subscribe({
-  //     next: () => {
-  //       this.toastr.success('Booking updated successfully.');
-  //       this.cancel();
-  //       this.getBookings();
-  //     },
-  //     error: (err) => {
-  //       this.toastr.error(
-  //         'Failed to update booking.',
-  //         err.error.message ? err.error.message : err.error.error,
-  //       );
-  //     },
-  //   });
-  // }
-
-  // toggleDelete(booking: Booking): void {
-  //   this.confirmationEmail = '';
-  //   this.showCreateForm = false;
-  //   this.showEditForm = false;
-  //   this.showDeleteForm = true;
-  //   this.auxiliarBooking = { ...booking };
-  //   this.openModal();
-  // }
-
-  // confirmDelete(): void {
-  //   if (this.confirmationEmail === this.auxiliarBooking.customer.email) {
-  //     this.BookingService.deleteBooking(this.auxiliarBooking).subscribe({
-  //       next: () => {
-  //         this.toastr.success('Booking deleted successfully.');
-  //         this.cancel();
-  //         this.getBookings();
-  //       },
-  //       error: (err) => {
-  //         this.toastr.error('Failed to delete booking.', err.error.error);
-  //       },
-  //     });
-  //   } else {
-  //     console.error('Confirmation code does not match');
-  //   }
-  // }
-
-  // showFilterParameters(): void {
-  //   const filter = this.document.getElementById('filters');
-  //   if (filter) {
-  //     if (filter.classList.contains('invisible')) {
-  //       filter.classList.remove('invisible', 'w-0');
-  //       filter.classList.add('visible', 'w-full');
-  //     } else {
-  //       filter.classList.remove('visible', 'w-full');
-  //       filter.classList.add('invisible', 'w-0');
-  //     }
-  //   }
-  // }
-
-  // filterBooking(): void {
-  //   if (this.selectedFilter === 'code') {
-  //     this.BookingService.getBookingByCode(this.inputFilter).subscribe(
-  //       (data: { message: string; data: Booking }) => {
-  //         this.bookings = [];
-  //         this.bookings.push(data.data);
-  //       },
-  //       (err: any) => {
-  //         this.toastr.info(
-  //           'Failed to fetch bookings by code.',
-  //           err?.error?.error,
-  //         );
-  //       },
-  //     );
-  //   }
-  //   if (this.selectedFilter === 'email') {
-  //     this.BookingService.getBookingByEmail(this.inputFilter).subscribe(
-  //       (data: { message: string; data: Booking[] }) => {
-  //         this.bookings = data.data;
-  //       },
-  //       (err: any) => {
-  //         this.toastr.info(
-  //           'Failed to fetch booking by email.',
-  //           err?.error?.error,
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+  getStarsArray(rating: any): number[] {
+    if (typeof rating === 'number' && !isNaN(rating)) {
+      const wholeStars = Math.floor(rating)
+      const hasPartialStar = rating % 1 !== 0
+      return new Array(wholeStars).concat(hasPartialStar ? [0.5] : [])
+    }
+    return []
+  }
 }

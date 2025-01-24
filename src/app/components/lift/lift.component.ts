@@ -15,7 +15,6 @@ import { DOCUMENT } from '@angular/common'
 import { AttachedIconPipe } from '../../pipes/attached-icon.pipe'
 import { CommonModule } from '@angular/common'
 import { ToastrService } from 'ngx-toastr'
-import { ActivatedRoute, Router } from '@angular/router'
 import { ApplicationService } from '../../services/application.service'
 import { AuthService } from '../../services/auth.service'
 
@@ -59,8 +58,6 @@ export class LiftComponent implements OnInit {
   @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
     private LiftService: LiftService,
     private ApplicationService: ApplicationService,
     private AuthService: AuthService,
@@ -202,5 +199,18 @@ export class LiftComponent implements OnInit {
         this.toastr.error('Failed to create application.', err.error.error)
       },
     })
+  }
+
+  isValidRating(rating: any): boolean {
+    return !isNaN(rating) && rating >= 0 && rating <= 5
+  }
+
+  getStarsArray(rating: any): number[] {
+    if (typeof rating === 'number' && !isNaN(rating)) {
+      const wholeStars = Math.floor(rating)
+      const hasPartialStar = rating % 1 !== 0
+      return new Array(wholeStars).concat(hasPartialStar ? [0.5] : [])
+    }
+    return []
   }
 }

@@ -1,18 +1,13 @@
-import { DOCUMENT } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { ApplicationService } from '../services/application.service';
-import { LiftService } from '../services/lift.service';
-import { ToastrService } from 'ngx-toastr';
-import { ModalComponent } from '../components/modal/modal.component';
-import { AttachedIconPipe } from '../pipes/attached-icon.pipe';
-import { catchError, Observable, of } from 'rxjs';
-import { Lift } from '../models/lift.model';
-import {
-  RouterLink,
-  Router,
-  ActivatedRoute,
-  QueryParamsHandling,
-} from '@angular/router';
+import { DOCUMENT, TitleCasePipe } from '@angular/common'
+import { Component, Inject, OnInit, ViewChild } from '@angular/core'
+import { ApplicationService } from '../services/application.service'
+import { LiftService } from '../services/lift.service'
+import { ToastrService } from 'ngx-toastr'
+import { ModalComponent } from '../components/modal/modal.component'
+import { AttachedIconPipe } from '../pipes/attached-icon.pipe'
+import { catchError, Observable, of } from 'rxjs'
+import { Lift } from '../models/lift.model'
+import { Router, ActivatedRoute, QueryParamsHandling } from '@angular/router'
 import {
   FormControl,
   FormControlName,
@@ -20,51 +15,51 @@ import {
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { AuthService } from '../services/auth.service';
+} from '@angular/forms'
+import { AuthService } from '../services/auth.service'
 
 @Component({
   selector: 'app-current-lift',
   imports: [
-    RouterLink,
     FormsModule,
     ReactiveFormsModule,
     AttachedIconPipe,
     ModalComponent,
+    TitleCasePipe,
   ],
   templateUrl: './current-lift.component.html',
   styleUrl: './current-lift.component.css',
 })
 export class CurrentLiftComponent implements OnInit {
-  lift: Lift = this.reset();
-  lifts: Lift[] = [];
-  liftCode: string | null = null;
-  clientUsername: string = 'admin';
-  liftStarted: boolean = false;
-  liftFinished: boolean = false;
-  liftClosed: boolean = false;
-  showRatingModal: boolean = false;
-  showDriverRatingModal: boolean = false;
-  currentModalTitle: string = '';
-  userRole: string | null = '';
-  user: string = '';
-  isDriver: boolean = false;
-  isPassenger: boolean = false;
-  driverSubmited: boolean = false;
-  passengerSubmited: boolean = false;
-  role: string = '';
-  noLifts: boolean = false;
-  auxiliarLift: Lift = this.reset();
-  ratingsForm: FormGroup;
+  lift: Lift = this.reset()
+  lifts: Lift[] = []
+  liftCode: string | null = null
+  clientUsername: string = 'admin'
+  liftStarted: boolean = false
+  liftFinished: boolean = false
+  liftClosed: boolean = false
+  showRatingModal: boolean = false
+  showDriverRatingModal: boolean = false
+  currentModalTitle: string = ''
+  userRole: string | null = ''
+  user: string = ''
+  isDriver: boolean = false
+  isPassenger: boolean = false
+  driverSubmited: boolean = false
+  passengerSubmited: boolean = false
+  role: string = ''
+  noLifts: boolean = false
+  auxiliarLift: Lift = this.reset()
+  ratingsForm: FormGroup
   driverRatingForm = new FormGroup({
     rating: new FormControl(null, [
       Validators.required,
       Validators.min(1),
       Validators.max(5),
     ]),
-  });
+  })
 
-  @ViewChild(ModalComponent) modalComponent!: ModalComponent;
+  @ViewChild(ModalComponent) modalComponent!: ModalComponent
 
   constructor(
     private LiftService: LiftService,
@@ -73,22 +68,22 @@ export class CurrentLiftComponent implements OnInit {
     private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService,
+    private authService: AuthService
   ) {
-    this.ratingsForm = new FormGroup({});
+    this.ratingsForm = new FormGroup({})
   }
 
   ngOnInit() {
-    this.userRole = this.authService.getUserRole();
-    this.user = this.authService.getUserName();
-    this.ratingsForm = this.createRatingsForm();
+    this.userRole = this.authService.getUserRole()
+    this.user = this.authService.getUserName()
+    this.ratingsForm = this.createRatingsForm()
     this.route.queryParamMap.subscribe((params) => {
-      this.liftCode = params.get('lift');
-    });
+      this.liftCode = params.get('lift')
+    })
     if (this.liftCode) {
-      this.getLiftByCode(`cl=${this.liftCode}`, this.user);
+      this.getLiftByCode(`cl=${this.liftCode}`, this.user)
     } else {
-      this.getLiftInProgress(``, this.user);
+      this.getLiftInProgress(``, this.user)
     }
   }
 
@@ -98,29 +93,31 @@ export class CurrentLiftComponent implements OnInit {
         catchError((err) => {
           this.toastr.error(
             'No lift found',
-            err?.error?.message || 'Error fetching lift',
-          );
-          return of({ message: '', data: [] });
-        }),
+            err?.error?.message || 'Error fetching lift'
+          )
+          return of({ message: '', data: [] })
+        })
       )
       .subscribe((response: { message: string; data: Lift[] }) => {
-        this.lift = response.data[0] || null;
+        this.lift = response.data[0] || null
 
-        if(this.lift) {
+        if (this.lift) {
           this.isDriver = this.lift.driver.username === user
-          this.isPassenger = this.lift.applications!.some((app) => app.passenger!.username === user)
+          this.isPassenger = this.lift.applications!.some(
+            (app) => app.passenger!.username === user
+          )
         }
 
         if (this.lift && this.lift.status === 'finished' && this.isDriver) {
-          this.driverSubmited = this.lift.applications!.every(
-            (app) =>
-              app.status === 'ready' &&
-              app.receivedPassengerRating &&
-              app.receivedPassengerRating > 0,
-          );
+          this.driverSubmited = this.lift
+            .applications!.filter((app) => app.status === 'ready')
+            .every(
+              (app) =>
+                app.receivedPassengerRating && app.receivedPassengerRating > 0
+            )
         }
-        this.ratingsForm = this.createRatingsForm();
-      });
+        this.ratingsForm = this.createRatingsForm()
+      })
   }
 
   getLiftInProgress(query: string, user: string): void {
@@ -129,49 +126,47 @@ export class CurrentLiftComponent implements OnInit {
         catchError((err) => {
           this.toastr.error(
             'No lift found',
-            err?.error?.message || 'Error fetching lift',
-          );
-          return of({ message: '', data: [] });
-        }),
+            err?.error?.message || 'Error fetching lift'
+          )
+          return of({ message: '', data: [] })
+        })
       )
       .subscribe((response: { message: string; data: Lift[] }) => {
-        this.isDriver = false;
-        this.isPassenger = false;
+        this.isDriver = false
+        this.isPassenger = false
         this.lifts = response.data.filter(
           (lift) =>
             lift.status !== 'open' &&
             lift.status !== 'ready' &&
             lift.status !== 'closed' &&
-            lift.status !== 'canceled',
-        );
+            lift.status !== 'canceled'
+        )
 
         this.lifts = this.lifts.filter(
           (lift) =>
             lift.driver.username === user ||
-            lift.applications?.some((app) => app.passenger?.username === user),
-        );
+            lift.applications?.some((app) => app.passenger?.username === user)
+        )
 
         this.LiftService.getRole(user).subscribe((response: string) => {
-          this.role = response;
-        });
-        this.isDriver = this.lifts.some(
-          (lift) => lift.driver.username === user,
-        );
+          this.role = response
+        })
+        this.isDriver = this.lifts.some((lift) => lift.driver.username === user)
         this.isPassenger = this.lifts.some((lift) =>
-          lift.applications?.some((app) => app.passenger?.username === user),
-        );
-        this.lift = this.lifts[0];
+          lift.applications?.some((app) => app.passenger?.username === user)
+        )
+        this.lift = this.lifts[0]
 
         if (this.lift && this.lift.status === 'finished' && this.isDriver) {
-          this.driverSubmited = this.lift.applications!.every(
-            (app) =>
-              app.status === 'ready' &&
-              app.receivedPassengerRating &&
-              app.receivedPassengerRating > 0,
-          );
+          this.driverSubmited = this.lift
+            .applications!.filter((app) => app.status === 'ready')
+            .every(
+              (app) =>
+                app.receivedPassengerRating && app.receivedPassengerRating > 0
+            )
         }
-        this.ratingsForm = this.createRatingsForm();
-      });
+        this.ratingsForm = this.createRatingsForm()
+      })
   }
 
   getClosedLift(query: string, user: string): void {
@@ -180,27 +175,27 @@ export class CurrentLiftComponent implements OnInit {
         catchError((err) => {
           this.toastr.error(
             'No lift found',
-            err?.error?.message || 'Error fetching lift',
-          );
-          return of({ message: '', data: [] });
-        }),
+            err?.error?.message || 'Error fetching lift'
+          )
+          return of({ message: '', data: [] })
+        })
       )
       .subscribe((response: { message: string; data: Lift[] }) => {
-        this.isDriver = false;
-        this.isPassenger = false;
+        this.isDriver = false
+        this.isPassenger = false
         this.lifts = response.data.filter(
           (lift) =>
             lift.status !== 'open' &&
             lift.status !== 'ready' &&
-            lift.status !== 'canceled',
-        );
+            lift.status !== 'canceled'
+        )
         this.lifts = this.lifts.filter(
           (lift) =>
             lift.driver.username === user ||
-            lift.applications?.some((app) => app.passenger?.username === user),
-        );
-        this.lift = this.lifts[0];
-      });
+            lift.applications?.some((app) => app.passenger?.username === user)
+        )
+        this.lift = this.lifts[0]
+      })
   }
 
   reset(): Lift {
@@ -225,161 +220,161 @@ export class CurrentLiftComponent implements OnInit {
       createdAt: '',
       updatedAt: '',
       __v: '',
-    };
+    }
   }
 
   openModal(): void {
-    this.modalComponent.openModal();
+    this.modalComponent.openModal()
   }
 
   resetForm() {
-    this.ratingsForm.reset();
+    this.ratingsForm.reset()
   }
 
   readyApplication(ca: string): void {
     this.ApplicationService.readyApplication(ca).subscribe({
       next: () => {
-        this.toastr.success('Application status updated');
-        const app = this.lift.applications?.find((a) => a.ca === ca);
+        this.toastr.success('Application status updated')
+        const app = this.lift.applications?.find((a) => a.ca === ca)
         if (app) {
-          app.status = 'ready';
+          app.status = 'ready'
         }
       },
       error: (err) => {
-        this.toastr.error('Failed to update application status', err.message);
+        this.toastr.error('Failed to update application status', err.message)
       },
-    });
+    })
   }
 
   getOccupiedSeats(): number {
     return (
       this.lift.applications?.filter((app) => app.status === 'ready').length ||
       0
-    );
+    )
   }
 
   startLift(): void {
     this.LiftService.updateStatusLift(this.lift.cl!, 'inProgress').subscribe({
       next: () => {
-        this.toastr.success('Lift started successfully');
-        this.liftStarted = true;
-          this.getLiftByCode(`cl=${this.liftCode}`, this.user);
+        this.toastr.success('Lift started successfully')
+        this.liftStarted = true
+        this.getLiftByCode(`cl=${this.liftCode}`, this.user)
       },
       error: (err) => {
-        this.toastr.error('Failed to start lift', err.error.message);
+        this.toastr.error('Failed to start lift', err.error.message)
       },
-    });
+    })
   }
 
   finishLift(): void {
     this.LiftService.updateStatusLift(this.lift.cl!, 'finished').subscribe({
       next: () => {
-        this.toastr.success('Lift finished successfully');
-        this.liftStarted = false;
-        this.liftFinished = true;
-        this.liftClosed = false;
+        this.toastr.success('Lift finished successfully')
+        this.liftStarted = false
+        this.liftFinished = true
+        this.liftClosed = false
         /* this.getLiftInProgress(``, this.user!); */
-        this.getLiftByCode(`cl=${this.liftCode}`, this.user);
+        this.getLiftByCode(`cl=${this.liftCode}`, this.user)
       },
       error: (err) => {
-        this.toastr.error('Failed to finish lift', err.error.message);
+        this.toastr.error('Failed to finish lift', err.error.error)
       },
-    });
+    })
   }
 
   closeLift(): void {
     this.LiftService.updateStatusLift(this.lift.cl!, 'closed').subscribe({
       next: () => {
-        this.toastr.success('Lift closed successfully');
-        this.liftStarted = false;
-        this.liftFinished = false;
-        this.liftClosed = true;
+        this.toastr.success('Lift closed successfully')
+        this.liftStarted = false
+        this.liftFinished = false
+        this.liftClosed = true
         /* this.getClosedLift(``, this.user!); */
-        this.getLiftByCode(`cl=${this.liftCode}`, this.user);
+        this.getLiftByCode(`cl=${this.liftCode}`, this.user)
       },
       error: (err) => {
-        this.toastr.error('Failed to close lift', err.error.message);
+        this.toastr.error('Failed to close lift', err.error.error)
       },
-    });
+    })
   }
 
   toggleRatingModal(lift?: Lift): void {
-    this.currentModalTitle = 'Ratings (1-5)';
+    this.currentModalTitle = 'Ratings (1-5)'
     if (lift) {
-      this.auxiliarLift = { ...lift };
+      this.auxiliarLift = { ...lift }
     }
-    this.showRatingModal = true;
-    this.resetForm();
-    this.openModal();
+    this.showRatingModal = true
+    this.resetForm()
+    this.openModal()
   }
 
   cancel(): void {
-    this.modalComponent.closeModal();
-    this.resetForm();
+    this.modalComponent.closeModal()
+    this.resetForm()
   }
 
   createRatingsForm(): FormGroup {
-    const formControls: { [key: string]: FormControl } = {};
+    const formControls: { [key: string]: FormControl } = {}
     this.lift.applications?.forEach((app) => {
       if (app.status === 'ready') {
         formControls[app.ca!] = new FormControl(null, [
           Validators.required,
           Validators.min(1),
           Validators.max(5),
-        ]);
+        ])
       }
-    });
-    return new FormGroup(formControls);
+    })
+    return new FormGroup(formControls)
   }
 
   submitRatings(): void {
     if (this.ratingsForm.valid) {
       Object.entries(this.ratingsForm.value).forEach(([ca, rating]) => {
-        const passengerCa = ca as string;
-        const passengerRating = rating as number;
+        const passengerCa = ca as string
+        const passengerRating = rating as number
         this.ApplicationService.updatePassengerRating(
           passengerCa,
-          passengerRating,
+          passengerRating
         ).subscribe({
           next: () => {
-            this.driverSubmited = true;
-            this.cancel();
-            this.toastr.success('Ratings submitted successfully');
+            this.driverSubmited = true
+            this.cancel()
+            this.toastr.success('Ratings submitted successfully')
           },
           error: (err) => {
-            this.toastr.error('Failed to submit ratings', err.error.message);
+            this.toastr.error('Failed to submit ratings', err.error.message)
           },
-        });
-      });
+        })
+      })
     } else {
-      this.toastr.error('Please fill in all ratings between 1 and 5');
+      this.toastr.error('Please fill in all ratings between 1 and 5')
     }
   }
 
   submitDriverRating(): void {
     if (this.driverRatingForm.valid) {
-      let cl = this.auxiliarLift.cl;
-      let rating = this.driverRatingForm.value.rating;
+      let cl = this.auxiliarLift.cl
+      let rating = this.driverRatingForm.value.rating
       this.LiftService.updateDriverRating(cl!, rating!).subscribe({
         next: () => {
-          this.passengerSubmited = true;
-          this.cancel();
-          this.toastr.success('Ratings submitted successfully');
+          this.passengerSubmited = true
+          this.cancel()
+          this.toastr.success('Ratings submitted successfully')
         },
         error: (err) => {
-          this.toastr.error('Failed to submit ratings', err.error.message);
+          this.toastr.error('Failed to submit ratings', err.error.message)
         },
-      });
+      })
     } else {
-      this.toastr.error('Please fill in all ratings between 1 and 5');
+      this.toastr.error('Please fill in all ratings between 1 and 5')
     }
   }
 
   navigateToHome(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/'])
   }
 
   resetView() {
-    this.liftCode = null;
+    this.liftCode = null
   }
 }

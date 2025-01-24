@@ -159,7 +159,6 @@ export class ManageCarsComponent implements OnInit {
         })
       )
       .subscribe((data: Car[]) => {
-        console.log('Cars loaded:', data)
         this.cars = data
       })
   }
