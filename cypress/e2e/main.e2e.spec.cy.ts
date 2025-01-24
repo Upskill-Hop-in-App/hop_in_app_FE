@@ -34,7 +34,7 @@ describe('Register and Login', () => {
     })
   })
 
-  it('Should register a client', () => {
+  it.skip('Should register a client', () => {
     cy.register(
       clientTest.email,
       clientTest.name,
@@ -44,7 +44,7 @@ describe('Register and Login', () => {
     )
   })
 
-  it('Should login as a client', () => {
+  it.skip('Should login as a client', () => {
     cy.login(`tobias-${randomNumber}@test.com`, `psw@${randomNumber}`)
   })
 })

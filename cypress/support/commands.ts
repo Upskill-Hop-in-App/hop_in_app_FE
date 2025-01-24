@@ -12,6 +12,7 @@ Cypress.Commands.add('register', (email, name, username, contact, password) => {
   cy.getByDataCy('input-contact').type(contact)
   cy.getByDataCy('input-password').type(password)
   cy.getByDataCy('input-password-confirmation').type(password)
+  cy.getByDataCy('checkbox-rgpd').click()
   cy.highlight('submit-btn')
   cy.getByDataCy('submit-btn').click()
 
@@ -64,7 +65,7 @@ Cypress.Commands.add('getByDataCy', (selector, ...args) => {
 /* -------------------------------------------------------------------------- */
 /* ------------------------------ DEMO FEATURES ----------------------------- */
 /* -------------------------------------------------------------------------- */
-Cypress.Commands.add('demoWait', (time = 1000) => {
+Cypress.Commands.add('demoWait', (time = 300) => {
   cy.wait(time)
 })
 
