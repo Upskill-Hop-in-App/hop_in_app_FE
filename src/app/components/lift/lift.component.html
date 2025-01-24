@@ -19,8 +19,9 @@
         <span [innerHTML]="'faFilterCircleXmark' | attachedIcon"></span>
       </button>
       <button
+        data-cy="filter-search-btn"
         class="btn-primary flex items-center justify-center gap-2 rounded-lg"
-        (click)="applyFilters()">
+        type="submit">
         <span [innerHTML]="'faMagnifyingGlass' | attachedIcon"></span>
         <span>Search </span>
       </button>
@@ -49,6 +50,7 @@
           >Start Point Municipality</label
         >
         <input
+          data-cy="filter-start-point-municipality"
           id="startPointMunicipality"
           type="text"
           [(ngModel)]="filters.startPointMunicipality"
@@ -110,6 +112,7 @@
         >
         <input
           id="endPointParish"
+          data-cy="filter-end-point-parish"
           type="text"
           [(ngModel)]="filters.endPointParish"
           name="endPointParish"
@@ -281,6 +284,10 @@
               <p class="text-3xl font-extrabold pb-4">{{ lift.price }} €</p>
               <div class="flex space-x-4 justify-end">
                 <a
+                [attr.data-cy]="
+                'apply-' +
+                lift.driver.username
+              "
                   class="btn-primary space-x-2"
                   (click)="toggleApplication(lift)">
                   <span>Apply</span>
@@ -386,7 +393,7 @@
           <button class="btn-gray" (click)="cancel()" type="button">
             Cancel
           </button>
-          <button class="btn-primary" type="submit">Confirm</button>
+          <button data-cy="confirm-apply" class="btn-primary" type="submit">Confirm</button>
         </div>
       </form>
     }

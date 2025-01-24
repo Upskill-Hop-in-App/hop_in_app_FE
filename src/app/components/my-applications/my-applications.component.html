@@ -290,7 +290,11 @@
                 application.status === "ready"
               ) {
                 <div class="btn-danger">
-                  <a (click)="toggleCancel(application)">
+                  <a [attr.data-cy]="
+                  'cancel-' +
+                  application.lift.endPoint!.parish!
+                "
+                  (click)="toggleCancel(application)">
                     <span>Cancel</span></a
                   >
                 </div>
@@ -392,7 +396,7 @@
           <button class="btn-gray" (click)="cancel()" type="button">
             Back
           </button>
-          <button class="btn-danger" type="submit">Confirm</button>
+          <button data-cy="confirm-cancel-application-btn" class="btn-danger" type="submit">Confirm</button>
         </div>
       </form>
     }

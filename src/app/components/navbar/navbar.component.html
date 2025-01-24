@@ -59,12 +59,14 @@
       </a>
       <a
         routerLink="/my-lifts"
+        data-cy="my-lifts-navbar-btn"
         class="p-2 space-x-2 rounded-full font-medium hover:scale-105 transition-transform"
         [ngClass]="{ 'text-gray-200 hover:text-primary-300': !isHomePage }">
         <span [innerHTML]="'faCar' | attachedIcon: 'x'"></span>
         <span> Offer a Lift </span>
       </a>
       <a
+      data-cy="my-applications-navbar-btn"
         routerLink="/my-applications"
         class="p-2 space-x-2 rounded-full font-medium hover:scale-105 transition-transform"
         [ngClass]="{ 'text-gray-200 hover:text-primary-300': !isHomePage }">
