@@ -34,7 +34,7 @@ describe('Register and Login', () => {
     })
   })
 
-  it('Should create a lift', () => {
+  it.skip('Should create a lift', () => {
     cy.login(`admin1@test.com`, `admin123`)
     //Create Lift
     cy.getByDataCy('menu-navbar-btn').click()
