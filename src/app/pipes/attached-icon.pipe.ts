@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { icon } from '@fortawesome/fontawesome-svg-core'
 import {
+  faArrowRight,
   faHome,
   faBars,
   faCar,
@@ -36,6 +37,7 @@ import {
   faUnlock,
   faGear,
   faFilterCircleXmark,
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faTrashCan as faSlimTrashCan,
@@ -47,6 +49,7 @@ import {
 })
 export class AttachedIconPipe implements PipeTransform {
   private iconMap = {
+    faArrowRight,
     faHome,
     faBars,
     faCar,
@@ -57,6 +60,7 @@ export class AttachedIconPipe implements PipeTransform {
     faCircleCheck,
     faCircleExclamation,
     faFilterCircleXmark,
+    faFilter,
     faMagnifyingGlass,
     faMoon,
     faArrowUpRightFromSquare,

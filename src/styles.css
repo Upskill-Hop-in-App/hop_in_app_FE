@@ -19,10 +19,13 @@
     @apply block w-full cursor-not-allowed rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400;
   }
   .btn-primary {
-    @apply w-fit cursor-pointer whitespace-nowrap rounded-lg bg-primary-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800;
+    @apply w-fit cursor-pointer whitespace-nowrap rounded-lg bg-primary-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-1 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800;
   }
   .btn-secondary {
     @apply w-fit cursor-pointer whitespace-nowrap rounded-lg bg-secondary-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-secondary-800 focus:outline-none focus:ring-1 focus:ring-secondary-300 sm:w-auto dark:bg-secondary-500 dark:hover:bg-secondary-700 dark:focus:ring-secondary-800;
+  }
+  .btn-terciary {
+    @apply w-fit cursor-pointer whitespace-nowrap rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-800 focus:outline-none focus:ring-1 focus:ring-sky-300 sm:w-auto dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800;
   }
   .btn-danger {
     @apply w-fit cursor-pointer whitespace-nowrap rounded-lg bg-rose-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-rose-800 focus:outline-none focus:ring-1 focus:ring-rose-300 sm:w-auto dark:bg-rose-500 dark:hover:bg-rose-700 dark:focus:ring-rose-800;
@@ -34,7 +37,7 @@
     @apply relative overflow-x-auto shadow-md sm:rounded-lg;
   }
   .card-container {
-    @apply flex flex-nowrap text-nowrap overflow-x-auto w-full justify-between border p-4 rounded-lg dark:border-gray-500 shadow-md space-x-4 text-gray-700 dark:text-gray-300;
+    @apply flex flex-nowrap align-top text-nowrap overflow-x-auto w-full justify-between border p-4 rounded-lg dark:border-gray-500 shadow-lg space-x-4 text-gray-700 dark:text-gray-300;
   }
   .buttons-modal-container {
     @apply flex justify-end gap-x-4 border-t pt-8 pb-4 dark:border-gray-600;

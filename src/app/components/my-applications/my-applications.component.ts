@@ -125,7 +125,6 @@ export class MyApplicationsComponent implements OnInit {
 
   applyFilters() {
     const query = this.buildQueryString(this.cleanFilters(this.filters))
-    console.log(query)
     this.ApplicationService.filterApplicationsByUsername(
       this.AuthService.getUserName(),
       query
@@ -228,10 +227,10 @@ export class MyApplicationsComponent implements OnInit {
 
   getStarsArray(rating: any): number[] {
     if (typeof rating === 'number' && !isNaN(rating)) {
-      const wholeStars = Math.floor(rating) // Integer part
-      const hasPartialStar = rating % 1 !== 0 // Check if it's a float
-      return new Array(wholeStars).concat(hasPartialStar ? [0.5] : []) // Add partial star if necessary
+      const wholeStars = Math.floor(rating)
+      const hasPartialStar = rating % 1 !== 0
+      return new Array(wholeStars).concat(hasPartialStar ? [0.5] : [])
     }
-    return [] // Return empty array for invalid ratings
+    return []
   }
 }
